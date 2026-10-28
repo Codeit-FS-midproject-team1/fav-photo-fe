@@ -83,14 +83,14 @@ erDiagram
     int id PK
     int user_id FK "사용자"
     int amount "금액 (+ 적립 / - 차감)"
-    enum reason "가입 | 구매 | 판매 | 랜덤"
+    enum reason "SIGNUP 가입 | PURCHASE 구매 | SALE 판매 | RANDOM 랜덤"
     datetime created_at
   }
 
   notifications["알림 (B)"] {
     int id PK
     int user_id FK "대상"
-    enum type "SIGNUP 가입 축하 | OFFER_RECEIVED 교환 제안 도착 | OFFER_ACCEPTED 승인 | OFFER_REJECTED 거절 | PURCHASE_COMPLETED 구매 완료 | SALE_COMPLETED 판매 성사 | SOLD_OUT 품절"
+    enum type "SIGNUP 가입 축하 | OFFER_RECEIVED 교환 제안 도착 | OFFER_ACCEPTED 승인 | OFFER_REJECTED 거절 | PURCHASE_COMPLETED 구매 완료 | SALE_COMPLETED 판매 성사 | SOLD_OUT 품절 | LISTING_UPDATED 판매글 수정"
     string message "내용"
     string link "관련 화면"
     boolean is_read "읽음 여부"
@@ -111,4 +111,24 @@ erDiagram
     string year_month "연월 (KST, 예: 2026-10)"
     int created_count "생성 수 (최대 3)"
   }
+
+  users ||--o{ refresh_tokens : "로그인 기기"
+  users ||--o{ photo_cards : "생성"
+  users ||--o{ card_items : "소유"
+  photo_cards ||--|{ card_items : "발행량만큼"
+  users ||--o{ sale_listings : "판매"
+  photo_cards ||--o{ sale_listings : "판매 대상"
+  sale_listings |o--o{ card_items : "판매 중인 카드"
+  sale_listings ||--o{ exchange_offers : "받은 제안"
+  users ||--o{ exchange_offers : "제안"
+  card_items ||--o{ exchange_offers : "제시 카드"
+  users ||--o{ trades : "판매자"
+  users ||--o{ trades : "상대방"
+  photo_cards ||--o{ trades : "거래 카드"
+  photo_cards |o--o{ trades : "교환으로 받은 카드"
+  users ||--o{ point_histories : "포인트 증감"
+  users ||--o{ notifications : "알림"
+  users ||--o{ random_point_logs : "일별 참여"
+  users ||--o{ creation_logs : "월별 생성"
+
 ```
