@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
-language: "ko-KR"
+language: ko-KR
 
 reviews:
   profile: chill
@@ -49,7 +49,7 @@ reviews:
         - 훅 규칙 준수, useEffect 의존성 배열과 클린업 확인
 
 chat:
-  auto_reply: false
+  auto_reply: true
 
 knowledge_base:
   code_guidelines:
