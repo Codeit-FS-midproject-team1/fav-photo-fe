@@ -32,7 +32,7 @@ reviews:
       instructions: |
         - TypeScript 문법(타입, interface, enum 등)은 사용하지 않고 JavaScript 문법만 사용하는지 확인
         - var 대신 const/let 사용, 불필요한 console.log 제거
-    - path: "app/**"
+    - path: "**/app/**"
       instructions: |
         - App Router 규칙 준수 (page.js, layout.js, loading.js, error.js)
         - 클라이언트 훅(useState, useEffect 등)을 쓰는 파일에 'use client' 선언이 있는지 확인
@@ -51,9 +51,8 @@ reviews:
 chat:
   auto_reply: false
 
-# ERD 문서를 리뷰 때 참고시키려면 아래 주석을 풀고 경로를 맞추세요.
-# knowledge_base:
-#   code_guidelines:
-#     enabled: true
-#     filePatterns:
-#       - "docs/erd.md"
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "erd.md"
