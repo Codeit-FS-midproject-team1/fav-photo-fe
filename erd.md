@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
   users["사용자 (A)"] {
     int id PK
@@ -110,3 +111,4 @@ erDiagram
     string year_month "연월 (KST, 예: 2026-10)"
     int created_count "생성 수 (최대 3)"
   }
+```
