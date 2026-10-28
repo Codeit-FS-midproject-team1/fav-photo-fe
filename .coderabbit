@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: ko-KR
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - develop
+
+  path_filters:
+    - "!**/node_modules/**"
+    - "!.next/**"
+    - "!out/**"
+    - "!build/**"
+    - "!coverage/**"
+    - "!**/*.lock"
+    - "!**/package-lock.json"
+    - "!**/pnpm-lock.yaml"
+    - "!public/**"
+
+  path_instructions:
+    - path: "**/*.{js,jsx}"
+      instructions: |
+        - TypeScript 문법(타입, interface, enum 등)은 사용하지 않고 JavaScript 문법만 사용하는지 확인
+        - var 대신 const/let 사용, 불필요한 console.log 제거
+    - path: "app/**"
+      instructions: |
+        - App Router 규칙 준수 (page.js, layout.js, loading.js, error.js)
+        - 클라이언트 훅(useState, useEffect 등)을 쓰는 파일에 'use client' 선언이 있는지 확인
+        - 서버 컴포넌트에서 불필요하게 'use client'를 쓰지 않았는지 확인
+    - path: "app/api/**"
+      instructions: |
+        - 입력값 검증, 에러 처리, 적절한 HTTP 상태 코드 사용 여부 확인
+        - 비밀 키/환경변수가 클라이언트로 노출되지 않는지 확인
+    - path: "components/**"
+      instructions: |
+        - 컴포넌트 단일 책임, props 구조, key 속성 누락 여부 확인
+        - 접근성(alt, aria-label, 키보드 접근) 확인
+    - path: "hooks/**"
+      instructions: |
+        - 훅 규칙 준수, useEffect 의존성 배열과 클린업 확인
+    - path: "**/*.{test,spec}.{js,jsx}"
+      instructions: |
+        - 주요 케이스와 엣지 케이스가 테스트되는지 확인
+
+chat:
+  auto_reply: true
+
+# ERD 문서를 리뷰 때 참고시키려면 아래 주석을 풀고 경로를 맞추세요.
+# knowledge_base:
+#   code_guidelines:
+#     enabled: true
+#     filePatterns:
+#       - "docs/erd.md"
