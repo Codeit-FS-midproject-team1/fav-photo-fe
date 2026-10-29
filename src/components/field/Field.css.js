@@ -8,7 +8,7 @@ export const field = style({
 });
 
 export const label = style({
-  color: vars.color.black,
+  color: vars.color.white,
   fontSize: 18,
 });
 
