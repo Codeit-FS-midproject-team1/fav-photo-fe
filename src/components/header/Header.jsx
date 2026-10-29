@@ -1,15 +1,15 @@
 import Image from "next/image";
 import * as styles from "./Header.css.js";
 import logoImage from "@/assets/images/logo.svg";
-import notificationIcon from "@/assets/images/notification.svg";
 import Link from "next/link";
+import Icon from "@/components/icon/Icon.jsx";
 
 function LoggedInActions({ points, username }) {
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{points} P</span>
       <button type="button" className={styles.iconButton}>
-        <Image src={notificationIcon} alt="알림" width={24} height={24} />
+        <Icon name="alarmDefault" />
       </button>
       <button className={styles.userButton} type="button">
         {username}

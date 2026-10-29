@@ -1,7 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "@/styles/theme.css";
-import { fontWeight } from "@/styles/typography.css";
-import { collectMeta } from "next/dist/build/utils";
+import { vars, fontWeight } from "@/styles/theme.css";
 
 export const header = style({
   background: vars.color.black,
