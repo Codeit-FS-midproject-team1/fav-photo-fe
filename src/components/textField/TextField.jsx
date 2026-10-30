@@ -8,7 +8,7 @@ const placeholders = {
 
 const errorMessages = {
   email: "이메일 형식이 아닙니다.",
-  text: "포토카드 이름은 최대 30자까지 입력 가능합니다.",
+  text: "포토카드 이름은 최대 15자까지 입력 가능합니다.",
 };
 
 export default function TextField({
