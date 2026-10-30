@@ -35,7 +35,14 @@ export default function Header({ isLoggedIn, points, username }) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <Image src={logoImage} alt="최애의 포토 로고" width={140} height={25} />
+        <Link href={"/"}>
+          <Image
+            src={logoImage}
+            alt="최애의 포토 로고"
+            width={140}
+            height={25}
+          />
+        </Link>
         {isLoggedIn ? (
           <LoggedInActions points={points} username={username} />
         ) : (
