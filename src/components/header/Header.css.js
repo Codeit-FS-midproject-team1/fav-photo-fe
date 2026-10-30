@@ -9,7 +9,7 @@ export const inner = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "28 220",
+  padding: "28px 220px",
 });
 
 export const actions = style({
