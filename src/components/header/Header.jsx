@@ -16,7 +16,7 @@ function LoggedInActions({ points, username }) {
       </button>
       <span className={styles.divider} />
       <button className={styles.logoutButton} type="button">
-        로그아웃
+        로그아웃  {/* TODO: 로그아웃 기능 연결 */}
       </button>
     </nav>
   );

@@ -1,5 +1,6 @@
 import * as styles from "./TextField.css.js";
 import Field from "@/components/field/Field";
+import { useId } from "react";
 
 const placeholders = {
   email: "이메일을 입력해 주세요",
@@ -11,6 +12,8 @@ const errorMessages = {
   text: "포토카드 이름은 최대 15자까지 입력 가능합니다.",
 };
 
+const defaultErrorMessage = "입력값을 확인해 주세요.";
+
 export default function TextField({
   label,
   error,
@@ -20,15 +23,19 @@ export default function TextField({
   placeholder,
   ...inputProps
 }) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
   const displayError =
-    error === true ? errorMessages[type] : error || undefined;
+    error === true
+      ? (errorMessages[type] ?? defaultErrorMessage)
+      : error || undefined;
 
   return (
-    <Field label={label} error={displayError} htmlFor={id}>
+    <Field label={label} error={displayError} htmlFor={inputId}>
       <div className={styles.inputWrapper}>
         <input
           {...inputProps}
-          id={id}
+          id={inputId}
           type={type}
           placeholder={placeholder ?? placeholders[type]}
           className={displayError ? styles.inputError : styles.input}

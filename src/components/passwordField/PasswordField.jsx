@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useState } from "react";
 import * as styles from "./PasswordField.css.js";
 import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon";
@@ -11,16 +11,18 @@ export default function PasswordField({
   placeholder = "비밀번호를 입력해 주세요",
   ...inputProps
 }) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
   const [visible, setVisible] = useState(false);
   const displayError =
     error === true ? "비밀번호가 일치하지 않습니다." : error || undefined;
 
   return (
-    <Field label={label} error={displayError} htmlFor={id}>
+    <Field label={label} error={displayError} htmlFor={inputId}>
       <div className={styles.inputWrapper}>
         <input
           {...inputProps}
-          id={id}
+          id={inputId}
           type={visible ? "text" : "password"}
           placeholder={placeholder}
           className={displayError ? styles.inputError : styles.input}
