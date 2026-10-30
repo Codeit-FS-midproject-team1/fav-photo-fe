@@ -4,19 +4,19 @@ import logoImage from "@/assets/images/logo.svg";
 import Link from "next/link";
 import Icon from "@/components/icon/Icon.jsx";
 
-function LoggedInActions({ points, username }) {
+function LoggedInActions({ points, username, unreadCount }) {
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{points.toLocaleString()} P</span>
       <button type="button" className={styles.iconButton}>
-        <Icon name="alarmDefault" />
+        <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
       </button>
       <button className={styles.userButton} type="button">
         {username}
       </button>
       <span className={styles.divider} />
       <button className={styles.logoutButton} type="button">
-        로그아웃  {/* TODO: 로그아웃 기능 연결 */}
+        로그아웃 {/* TODO: 로그아웃 기능 연결 */}
       </button>
     </nav>
   );
@@ -31,7 +31,12 @@ function LoggedOutActions() {
   );
 }
 
-export default function Header({ isLoggedIn, points, username }) {
+export default function Header({
+  isLoggedIn,
+  points,
+  username,
+  unreadCount = 0,
+}) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
@@ -44,7 +49,11 @@ export default function Header({ isLoggedIn, points, username }) {
           />
         </Link>
         {isLoggedIn ? (
-          <LoggedInActions points={points} username={username} />
+          <LoggedInActions
+            points={points}
+            username={username}
+            unreadCount={unreadCount}
+          />
         ) : (
           <LoggedOutActions />
         )}

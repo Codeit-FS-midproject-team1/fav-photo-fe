@@ -12,7 +12,7 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 const brB = localfont({
-  src: "../assets/fonts/br-B.otf",
+  src: "../assets/fonts/br-B.woff2",
   display: "swap",
   variable: "--font-br-b",
 });
@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko">
       <body className={`${themeClass} ${notoSansKR.className} ${brB.variable}`}>
-        <Header isLoggedIn={true} points={1540} username={"유디"} /> {/* TODO: /users/me 연결 */}
+        <Header isLoggedIn={true} points={1540} username={"유디"} unreadCount={1} /> {/* TODO: /users/me 연결 */}
         {children}
       </body>
     </html>

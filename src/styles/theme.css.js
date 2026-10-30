@@ -1,4 +1,3 @@
-// theme.css.js
 import { createTheme, createThemeContract } from "@vanilla-extract/css";
 
 export const vars = createThemeContract({
