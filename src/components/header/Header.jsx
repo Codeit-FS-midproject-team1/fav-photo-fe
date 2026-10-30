@@ -7,7 +7,7 @@ import Icon from "@/components/icon/Icon.jsx";
 function LoggedInActions({ points, username }) {
   return (
     <nav className={styles.actions}>
-      <span className={styles.points}>{points} P</span>
+      <span className={styles.points}>{points.toLocaleString()} P</span>
       <button type="button" className={styles.iconButton}>
         <Icon name="alarmDefault" />
       </button>
