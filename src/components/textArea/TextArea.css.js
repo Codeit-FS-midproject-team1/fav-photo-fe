@@ -27,8 +27,20 @@ export const textareaError = style([
 ]);
 
 export const counter = style({
-  alignSelf: "flex-end",
   margin: 0,
+  marginLeft: "auto",
   color: vars.color.gray400,
-  fontSize: 12,
+});
+
+export const metaRow = style({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+});
+
+export const errorMessage = style({
+  margin: 0,
+  color: vars.color.red,
+  fontWeight: fontWeight.light,
 });
