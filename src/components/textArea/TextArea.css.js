@@ -29,7 +29,7 @@ export const textareaError = style([
 export const counter = style({
   margin: 0,
   marginLeft: "auto",
-  color: vars.color.gray400,
+  color: vars.color.gray200,
 });
 
 export const metaRow = style({
