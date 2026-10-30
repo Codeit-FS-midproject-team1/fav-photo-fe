@@ -30,21 +30,26 @@ reviews:
   path_instructions:
     - path: "**/*.{js,jsx}"
       instructions: |
-        - TypeScript 문법(타입, interface, enum 등)은 사용하지 않고 JavaScript 문법만 사용하는지 확인
         - var 대신 const/let 사용, 불필요한 console.log 제거
     - path: "**/app/**"
       instructions: |
         - App Router 규칙 준수 (page.js, layout.js, loading.js, error.js)
         - 클라이언트 훅(useState, useEffect 등)을 쓰는 파일에 'use client' 선언이 있는지 확인
         - 서버 컴포넌트에서 불필요하게 'use client'를 쓰지 않았는지 확인
-    - path: "app/api/**"
+    - path: "src/app/api/**"
       instructions: |
         - 입력값 검증, 에러 처리, 적절한 HTTP 상태 코드 사용 여부 확인
         - 비밀 키/환경변수가 클라이언트로 노출되지 않는지 확인
-    - path: "components/**"
+    - path: "src/components/**"
       instructions: |
-        - 컴포넌트 단일 책임, props 구조, key 속성 누락 여부 확인
-    - path: "hooks/**"
+        - 컴포넌트가 하나의 책임만 갖는지 확인 (데이터 fetching, 로직, UI 혼재 시 분리 제안)
+        - props: 불필요한 props drilling, 과도한 props 개수, 타입/기본값 누락 확인
+        - 리스트 렌더링 시 key 누락 및 index key 사용 여부 확인
+        - useEffect/useMemo/useCallback 의존성 배열 누락 확인
+        - 공통 컴포넌트는 하드코딩된 값(색상, 문구) 대신 props나 디자인 토큰으로 받는지 확인
+        - 접근성(alt, aria-label, button/label 시맨틱) 누락 확인
+        - 문제가 있는 경우에만 코멘트하고, 취향 차이 수준의 지적은 생략
+    - path: "src/hooks/**"
       instructions: |
         - 훅 규칙 준수, useEffect 의존성 배열과 클린업 확인
 
