@@ -1,0 +1,63 @@
+.backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 65%);
+}
+.modal {
+  width: min(100%, 560px);
+  max-height: min(92vh, 900px);
+  overflow-y: auto;
+  border-radius: 16px;
+  background: #fff;
+  color: #222;
+  box-shadow: 0 16px 64px rgb(0 0 0 / 22%);
+}
+.header { display: flex; justify-content: space-between; gap: 20px; padding: 28px 28px 0; }
+.title { margin: 0; font-size: 22px; font-weight: 700; }
+.subtitle { margin: 8px 0 0; color: #666; font-size: 14px; }
+.close { width: 36px; height: 36px; border: 0; background: transparent; font-size: 28px; cursor: pointer; }
+.close:disabled { opacity: .4; cursor: not-allowed; }
+.form { display: grid; gap: 20px; padding: 24px 28px 28px; }
+.field { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+.label { font-size: 14px; font-weight: 700; }
+.input, .textarea {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  font: inherit;
+}
+.textarea { min-height: 104px; resize: vertical; }
+.input:focus, .textarea:focus { outline: 2px solid #316df6; outline-offset: 1px; }
+.columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.help, .count { margin: 0; color: #777; font-size: 12px; }
+.count { align-self: flex-end; }
+.error { margin: 0; color: #bc2424; font-size: 13px; }
+.footer { display: flex; gap: 12px; }
+.cancel, .submit {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cancel { border: 1px solid #ccc; background: white; color: #222; }
+.submit { border: 1px solid #222; background: #222; color: white; }
+.cancel:disabled, .submit:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 480px) {
+  .backdrop { align-items: flex-end; padding: 0; }
+  .modal { max-height: 94vh; border-radius: 16px 16px 0 0; }
+  .header { padding: 22px 18px 0; }
+  .form { padding: 20px 18px; }
+  .columns { grid-template-columns: 1fr; }
+}
