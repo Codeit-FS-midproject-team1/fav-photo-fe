@@ -31,7 +31,7 @@ export default function CardTile({
 }) {
   const Root = href ? Link : onClick ? "button" : "div";
   const rootProps = href
-    ? { href }
+    ? { href, onClick }
     : onClick
       ? { onClick, type: "button" }
       : {};

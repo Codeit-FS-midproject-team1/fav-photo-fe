@@ -5,6 +5,7 @@ export const card = style({
   display: "flex",
   flexDirection: "column",
   width: "100%",
+  minWidth: 0,
   padding: 40,
   background: vars.color.gray500,
   border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -37,6 +38,7 @@ export const soldOut = style({
   width: "60%",
   height: "auto",
   transform: "translate(-50%, -50%)",
+  pointerEvents: "none",
 });
 
 export const badge = style({ position: "absolute", top: 10, left: 10 });
