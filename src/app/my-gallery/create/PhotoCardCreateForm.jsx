@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation.js";
 import Image from "next/image.js";
 import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
@@ -21,6 +22,7 @@ const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default function PhotoCardCreateForm() {
+  const router = useRouter();
   const fileInputRef = useRef(null);
 
   const [form, setForm] = useState(initialForm);
@@ -29,6 +31,21 @@ export default function PhotoCardCreateForm() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+
+  const price = Number(form.price);
+  const totalQuantity = Number(form.totalQuantity);
+
+  const isFormValid =
+    Boolean(image) &&
+    Boolean(form.name.trim()) &&
+    Boolean(form.method) &&
+    Boolean(form.genre) &&
+    Number.isInteger(price) &&
+    price >= 1 &&
+    price <= 1000 &&
+    Number.isInteger(totalQuantity) &&
+    totalQuantity >= 1 &&
+    totalQuantity <= 10;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -105,16 +122,19 @@ export default function PhotoCardCreateForm() {
       nextErrors.genre = "장르를 선택해 주세요.";
     }
 
-    if (!form.price) {
+    if (price === 0) {
       nextErrors.price = "가격을 입력해 주세요.";
-    } else if (Number(form.price) < 1 || Number(form.price) > 1000) {
+    } else if (!Number.isInteger(price) || price < 1 || price > 1000) {
       nextErrors.price = "가격은 1~1000 사이의 정수여야 합니다.";
     }
 
-    if (!form.totalQuantity) {
-      nextErrors.totalQuantity = "총 발행량을 입력해 주세요.";
-    } else if (Number(form.totalQuantity) > 10) {
-      nextErrors.totalQuantity = "총 발행량은 10장 이하로 선택 가능합니다.";
+    if (
+      form.totalQuantity === "" ||
+      !Number.isInteger(totalQuantity) ||
+      totalQuantity < 1 ||
+      totalQuantity > 10
+    ) {
+      nextErrors.totalQuantity = "총 발행량은 1~10사이의 정수여야 합니다.";
     }
 
     setErrors(nextErrors);
@@ -135,9 +155,25 @@ export default function PhotoCardCreateForm() {
 
       const result = await createPhotoCard(formData);
 
+      const cardName = result.name || form.name;
+      const method = result.method || form.method;
+
+      router.push(
+        `/my-gallery/create/success?name=${encodeURIComponent(
+          cardName,
+        )}&method=${encodeURIComponent(method)}`,
+      );
+
       console.log("포토카드 생성 성공", result);
     } catch (error) {
       setSubmitError(error.message);
+
+      if (error.fields) {
+        setErrors((previous) => ({
+          ...previous,
+          ...error.fields,
+        }));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -211,7 +247,7 @@ export default function PhotoCardCreateForm() {
               onChange={handleChange}
               placeholder="포토카드 이름을 입력해 주세요"
               maxLength={15}
-              className={errors.name ? styles.inputError : styles.input}
+              className={errors.name ? styles.selectError : styles.input}
             />
           </Field>
 
@@ -226,7 +262,7 @@ export default function PhotoCardCreateForm() {
                 name="method"
                 value={form.method}
                 onChange={handleChange}
-                className={errors.method ? styles.inputError : styles.select}
+                className={errors.method ? styles.selectError : styles.select}
               >
                 <option value="" disabled hidden>
                   제작방식을 선택해 주세요
@@ -264,7 +300,7 @@ export default function PhotoCardCreateForm() {
               </select>
 
               <span className={styles.selectIcon}>
-                <Icon name="down" size={24} />
+                <Icon name="down" size={28} />
               </span>
             </div>
           </Field>
@@ -328,7 +364,7 @@ export default function PhotoCardCreateForm() {
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isFormValid}
           >
             {isSubmitting ? "생성 중.." : "생성하기"}
           </button>

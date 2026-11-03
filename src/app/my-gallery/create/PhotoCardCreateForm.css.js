@@ -7,7 +7,7 @@ export const page = style({
   padding: "100px 24px 160px",
 
   "@media": {
-    "screen and (max-width: 768px)": {
+    "screen and (max-width: 767px)": {
       padding: "48px 20px 100px",
     },
   },
@@ -70,7 +70,7 @@ export const fileButton = style({
   cursor: "pointer",
 
   "@media": {
-    "screen and (max-width: 768px)": {
+    "screen and (max-width: 767px)": {
       width: "100%",
       minHeight: 60,
     },
@@ -154,6 +154,13 @@ export const inputError = style([
   },
 ]);
 
+export const selectError = style([
+  select,
+  {
+    borderColor: vars.color.red,
+  },
+]);
+
 export const textareaWrapper = style({
   position: "relative",
   width: "100%",
@@ -203,8 +210,16 @@ export const submitButton = style({
   cursor: "pointer",
 
   selectors: {
+    "&:disabled": {
+      cursor: "not-allowed",
+      color: vars.color.gray300,
+      backgroundColor: vars.color.gray400,
+    },
     "&:hover": {
       opacity: 0.85,
+    },
+    "&:not(:disabled):hover": {
+      opacity: 0.5,
     },
   },
 });
