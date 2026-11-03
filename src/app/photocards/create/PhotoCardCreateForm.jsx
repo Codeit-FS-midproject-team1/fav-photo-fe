@@ -10,8 +10,8 @@ const initialForm = {
   name: "",
   method: "",
   genre: "",
-  price: "",
-  quantity: "1",
+  price: "1",
+  totalQuantity: "1",
   description: "",
 };
 
@@ -73,19 +73,20 @@ export default function PhotoCardCreateForm() {
 
     if (!form.price) {
       nextErrors.price = "가격을 입력해 주세요.";
-    } else if (Number(form.price) < 0) {
-      nextErrors.price = "가격은 0원 이상이어야 합니다.";
+    } else if (Number(form.price) < 1 || Number(form.price) > 1000) {
+      nextErrors.price = "가격은 1~1000 사이의 정수여야 합니다.";
     }
 
-    if (!form.quantity) {
-      nextErrors.quantity = "총 발행량을 입력해 주세요.";
-    } else if (Number(form.quantity) > 10) {
-      nextErrors.quantity = "총 발행량은 10장 이하로 선택 가능합니다.";
+    if (!form.totalQuantity) {
+      nextErrors.totalQuantity = "총 발행량을 입력해 주세요.";
+    } else if (Number(form.totalQuantity) > 10) {
+      nextErrors.totalQuantity = "총 발행량은 10장 이하로 선택 가능합니다.";
     }
 
-    if (!form.description.trim()) {
-      nextErrors.description = "포토카드 설명을 입력해 주세요.";
-    }
+    // 설명 필수항목 아니라 제거.
+    // if (!form.description.trim()) {
+    //   nextErrors.description = "포토카드 설명을 입력해 주세요.";
+    // }
 
     setErrors(nextErrors);
 
@@ -104,14 +105,19 @@ export default function PhotoCardCreateForm() {
     formData.append("method", form.method);
     formData.append("genre", form.genre);
     formData.append("price", form.price);
-    formData.append("quantity", form.quantity);
+    formData.append("totalQuantity", form.totalQuantity);
     formData.append("description", form.description);
 
-    // TODO: 백엔드 API 연결
-    // await fetch("/api/photocards", {
+    // todo: 백엔드 API 연결
+    // const response = await fetch("/api/photo-cards", {
     //   method: "POST",
     //   body: formData,
+    //   credentials: "include",
     // });
+    // const result = await response.json();
+    // if (!response.ok) {
+    //   throw new Error(result.message);
+    // }
 
     console.log("포토카드 생성 데이터", Object.fromEntries(formData));
   };
@@ -155,6 +161,9 @@ export default function PhotoCardCreateForm() {
               <Image
                 src={imagePreview}
                 alt="포토카드 이미지 미리보기"
+                width={180}
+                height={135}
+                unoptimized
                 className={styles.previewImage}
               />
             ) : (
@@ -194,10 +203,10 @@ export default function PhotoCardCreateForm() {
                 <option value="" disabled hidden>
                   제작방식을 선택해 주세요
                 </option>
-                <option value="photo">PHOTO</option>
-                <option value="craft">CRAFT</option>
-                <option value="ai">AI</option>
-                <option value="etc">ETC</option>
+                <option value="PHOTO">PHOTO</option>
+                <option value="CRAFT">CRAFT</option>
+                <option value="AI">AI</option>
+                <option value="ETC">ETC</option>
               </select>
 
               <span className={styles.selectIcon}>
@@ -218,11 +227,12 @@ export default function PhotoCardCreateForm() {
                 <option value="" disabled hidden>
                   장르를 선택해 주세요
                 </option>
-                <option value="landscape">LANDSCAPE</option>
-                <option value="portrait">PORTRAIT</option>
-                <option value="animal">ANIMAL</option>
-                <option value="plant">PLANT</option>
-                <option value="etc">ETC</option>
+                <option value="LANDSCAPE">LANDSCAPE</option>
+                <option value="PORTRAIT">PORTRAIT</option>
+                <option value="ANIMAL">ANIMAL</option>
+                <option value="PLANT">PLANT</option>
+                <option value="OBJECT">OBJECT</option>
+                <option value="ETC">ETC</option>
               </select>
 
               <span className={styles.selectIcon}>
@@ -236,7 +246,8 @@ export default function PhotoCardCreateForm() {
               id="photo-card-price"
               name="price"
               type="number"
-              min="0"
+              min="1"
+              max="1000"
               value={form.price}
               onChange={handleChange}
               placeholder="가격을 입력해 주세요"
@@ -251,11 +262,11 @@ export default function PhotoCardCreateForm() {
           >
             <input
               id="photo-card-quantity"
-              name="quantity"
+              name="totalQuantity"
               type="number"
               min="1"
               max="10"
-              value={form.quantity}
+              value={form.totalQuantity}
               onChange={handleChange}
               className={errors.quantity ? styles.inputError : styles.input}
             />

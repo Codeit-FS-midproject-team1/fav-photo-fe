@@ -82,16 +82,16 @@ export const hiddenInput = style({
 });
 
 export const previewBox = style({
-  minHeight: 260,
+  minHeight: 180,
   display: "flex",
   alignItems: "center",
-  padding: 8,
+  padding: 0,
   border: `1px solid ${vars.color.gray200}`,
 });
 
 export const emptyPreview = style({
   width: 180,
-  height: 220,
+  height: 135,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -101,8 +101,8 @@ export const emptyPreview = style({
 
 export const previewImage = style({
   width: 180,
-  height: 220,
-  objectFit: "cover",
+  height: 135,
+  objectFit: "contain",
 });
 
 export const input = style({
