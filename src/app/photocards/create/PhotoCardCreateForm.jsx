@@ -5,6 +5,7 @@ import Image from "next/image.js";
 import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
 import * as styles from "./PhotoCardCreateForm.css.js";
+import { createPhotoCard } from "@/lib/api/photoCards.js";
 
 const initialForm = {
   name: "",
@@ -22,6 +23,8 @@ export default function PhotoCardCreateForm() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -83,11 +86,6 @@ export default function PhotoCardCreateForm() {
       nextErrors.totalQuantity = "총 발행량은 10장 이하로 선택 가능합니다.";
     }
 
-    // 설명 필수항목 아니라 제거.
-    // if (!form.description.trim()) {
-    //   nextErrors.description = "포토카드 설명을 입력해 주세요.";
-    // }
-
     setErrors(nextErrors);
 
     return Object.keys(nextErrors).length === 0;
@@ -98,28 +96,20 @@ export default function PhotoCardCreateForm() {
 
     if (!validate()) return;
 
-    const formData = new FormData();
+    setIsSubmitting(true);
+    setSubmitError("");
 
-    formData.append("image", image);
-    formData.append("name", form.name);
-    formData.append("method", form.method);
-    formData.append("genre", form.genre);
-    formData.append("price", form.price);
-    formData.append("totalQuantity", form.totalQuantity);
-    formData.append("description", form.description);
+    try {
+      const formData = new FormData(event.currentTarget);
 
-    // todo: 백엔드 API 연결
-    // const response = await fetch("/api/photo-cards", {
-    //   method: "POST",
-    //   body: formData,
-    //   credentials: "include",
-    // });
-    // const result = await response.json();
-    // if (!response.ok) {
-    //   throw new Error(result.message);
-    // }
+      const result = await createPhotoCard(formData);
 
-    console.log("포토카드 생성 데이터", Object.fromEntries(formData));
+      console.log("포토카드 생성 성공", result);
+    } catch (error) {
+      setSubmitError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -148,6 +138,7 @@ export default function PhotoCardCreateForm() {
               <input
                 ref={fileInputRef}
                 id="photo-card-image"
+                name="image"
                 type="file"
                 accept="image/*"
                 className={styles.hiddenInput}
@@ -156,7 +147,7 @@ export default function PhotoCardCreateForm() {
             </div>
           </Field>
 
-          <div className={styles.previewBox}>
+          {/* <div className={styles.previewBox}>
             {imagePreview ? (
               <Image
                 src={imagePreview}
@@ -169,7 +160,19 @@ export default function PhotoCardCreateForm() {
             ) : (
               <div className={styles.emptyPreview}>사진 미리보기</div>
             )}
-          </div>
+          </div> */}
+          {imagePreview && (
+            <div className={styles.previewBox}>
+              <Image
+                src={imagePreview}
+                alt="포토카드 이미지 미리보기"
+                width={180}
+                height={135}
+                unoptimized
+                className={styles.previewImage}
+              />
+            </div>
+          )}
 
           <Field
             label="포토카드 이름"
@@ -257,18 +260,20 @@ export default function PhotoCardCreateForm() {
 
           <Field
             label="총 발행량"
-            htmlFor="photo-card-quantity"
-            error={errors.quantity}
+            htmlFor="photo-card-totalQuantity"
+            error={errors.totalQuantity}
           >
             <input
-              id="photo-card-quantity"
+              id="photo-card-totalQuantity"
               name="totalQuantity"
               type="number"
               min="1"
               max="10"
               value={form.totalQuantity}
               onChange={handleChange}
-              className={errors.quantity ? styles.inputError : styles.input}
+              className={
+                errors.totalQuantity ? styles.inputError : styles.input
+              }
             />
           </Field>
 
@@ -277,22 +282,30 @@ export default function PhotoCardCreateForm() {
             htmlFor="photo-card-description"
             error={errors.description}
           >
-            <textarea
-              id="photo-card-description"
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="카드 설명을 입력해 주세요"
-              maxLength={200}
-              className={
-                errors.description ? styles.textareaError : styles.textarea
-              }
-            />
-            <p className={styles.counter}>{form.description.length}/200</p>
-          </Field>
+            <div className={styles.textareaWrapper}>
+              <textarea
+                id="photo-card-description"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="카드 설명을 입력해 주세요"
+                maxLength={200}
+                className={
+                  errors.description ? styles.textareaError : styles.textarea
+                }
+              />
 
-          <button type="submit" className={styles.submitButton}>
-            생성하기
+              <p className={styles.counter}>{form.description.length}/200</p>
+            </div>
+          </Field>
+          {submitError && <p>{submitError}</p>}
+
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "생성 중.." : "생성하기"}
           </button>
         </form>
       </section>

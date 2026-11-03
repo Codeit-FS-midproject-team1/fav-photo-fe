@@ -85,7 +85,7 @@ export const previewBox = style({
   minHeight: 180,
   display: "flex",
   alignItems: "center",
-  padding: 0,
+  padding: 10,
   border: `1px solid ${vars.color.gray200}`,
 });
 
@@ -154,10 +154,15 @@ export const inputError = style([
   },
 ]);
 
+export const textareaWrapper = style({
+  position: "relative",
+  width: "100%",
+});
+
 export const textarea = style({
   width: "100%",
   minHeight: 220,
-  padding: 18,
+  padding: "18px 18px 42px",
   resize: "vertical",
   outline: "none",
   border: `1px solid ${vars.color.gray200}`,
@@ -166,12 +171,6 @@ export const textarea = style({
   color: vars.color.white,
   fontSize: 16,
   fontFamily: "inherit",
-
-  selectors: {
-    "&::placeholder": {
-      color: vars.color.gray300,
-    },
-  },
 });
 
 export const textareaError = style([
@@ -182,10 +181,13 @@ export const textareaError = style([
 ]);
 
 export const counter = style({
-  alignSelf: "flex-end",
-  margin: "-22px 12px 0 0",
+  position: "absolute",
+  right: 12,
+  bottom: 10,
+  margin: 0,
   color: vars.color.gray300,
   fontSize: 14,
+  pointerEvents: "none",
 });
 
 export const submitButton = style({
