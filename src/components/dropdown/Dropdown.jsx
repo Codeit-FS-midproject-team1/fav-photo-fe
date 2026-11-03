@@ -17,6 +17,7 @@ export default function Dropdown({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const triggerRef = useRef(null);
   const id = useId();
   const selected = options.find((option) => option.value === value);
 
@@ -27,7 +28,10 @@ export default function Dropdown({
       if (!ref.current.contains(e.target)) setOpen(false);
     };
     const handleKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      if (ref.current.contains(document.activeElement))
+        triggerRef.current.focus();
     };
 
     document.addEventListener("mousedown", handleClick);
@@ -41,14 +45,17 @@ export default function Dropdown({
   const select = (nextValue) => {
     onChange(nextValue);
     setOpen(false);
+    triggerRef.current.focus();
   };
 
   const dropdown = (
     <div ref={ref} className={styles.root[variant]}>
       <button
+        ref={triggerRef}
         id={id}
         type="button"
         aria-expanded={open}
+        aria-invalid={!!error}
         className={clsx(styles.trigger[variant], error && styles.triggerError)}
         onClick={() => setOpen(!open)}
       >
@@ -57,10 +64,9 @@ export default function Dropdown({
             !selected && variant === "box" ? styles.placeholder : undefined
           }
         >
-          {" "}
           {selected?.label ?? placeholder}
         </span>
-        <Icon nmae={open ? "up" : "down"} size={variant === "box" ? 28 : 24} />
+        <Icon name={open ? "up" : "down"} size={variant === "box" ? 28 : 24} />
       </button>
 
       {open && (
