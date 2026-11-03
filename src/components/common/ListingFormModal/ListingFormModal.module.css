@@ -1,83 +1,144 @@
-"use client";
+.page {
+  box-sizing: border-box;
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  background: #0f0f0f;
+  color: #f5f5f5;
+}
 
-import { useEffect } from "react";
-import styles from "./QuantityStepper.module.css";
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px;
+}
 
-/**
- * 숫자만 관리하는 제어형 공통 컴포넌트.
- * max=0이면 품절 상태로 0을 보여주고 버튼을 비활성화합니다.
- */
-export default function QuantityStepper({
-  value,
-  min = 1,
-  max = Infinity,
-  onChange,
-  disabled = false,
-  label = "수량",
-}) {
-  const minValue = Math.max(0, Math.floor(Number(min) || 0));
+.imageFrame {
+  display: grid;
+  min-height: 360px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1e1e1e;
+}
 
-  const maxValue = Number.isFinite(Number(max))
-    ? Math.max(0, Math.floor(Number(max)))
-    : Infinity;
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 560px;
+  object-fit: contain;
+}
 
-  const unavailable = maxValue < minValue;
-  const valueNumber = Number(value);
+.imagePlaceholder {
+  color: #b3b3b3;
+}
 
-  const safeValue = unavailable
-    ? 0
-    : Math.min(
-        maxValue,
-        Math.max(
-          minValue,
-          Number.isFinite(valueNumber) ? Math.floor(valueNumber) : minValue,
-        ),
-      );
+.information {
+  min-width: 0;
+}
 
-  const isDisabled = disabled || unavailable;
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #303030;
+  color: #f5f5f5;
+  font-size: 13px;
+}
 
-  // 추가: 보정된 수량을 부모 상태와 동기화
-  useEffect(() => {
-    if (typeof onChange === "function" && !Object.is(valueNumber, safeValue)) {
-      onChange(safeValue);
-    }
-  }, [valueNumber, safeValue, onChange]);
+.name {
+  margin: 16px 0 8px;
+  color: #fff;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
 
-  function changeBy(delta) {
-    if (isDisabled || typeof onChange !== "function") return;
+.meta {
+  margin: 0;
+  color: #b3b3b3;
+}
 
-    const nextValue = Math.min(maxValue, Math.max(minValue, safeValue + delta));
+.details {
+  display: grid;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px solid #404040;
+}
 
-    if (nextValue !== safeValue) {
-      onChange(nextValue);
-    }
+.details > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.details dt {
+  color: #bdbdbd;
+}
+
+.details dd {
+  min-width: 0;
+  margin: 0;
+  color: #fff;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  color: #e5e5e5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.exchangeInfo,
+.extra {
+  min-width: 0;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid #404040;
+}
+
+.sectionTitle {
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: 20px;
+}
+
+.exchangeInfo p {
+  margin: 10px 0;
+  color: #e5e5e5;
+  line-height: 1.6;
+}
+
+/* 레빗 Minor 리뷰 반영 */
+.exchangeDescription {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 720px) {
+  .page {
+    padding: 20px 16px 64px;
   }
 
-  return (
-    <div className={styles.root} role="group" aria-label={label}>
-      <button
-        className={styles.button}
-        type="button"
-        aria-label={`${label} 감소`}
-        disabled={isDisabled || safeValue <= minValue}
-        onClick={() => changeBy(-1)}
-      >
-        −
-      </button>
+  .main {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 
-      <output className={styles.value} aria-live="polite" aria-atomic="true">
-        {safeValue}
-      </output>
-
-      <button
-        className={styles.button}
-        type="button"
-        aria-label={`${label} 증가`}
-        disabled={isDisabled || safeValue >= maxValue}
-        onClick={() => changeBy(1)}
-      >
-        +
-      </button>
-    </div>
-  );
+  .imageFrame {
+    min-height: 260px;
+  }
 }
