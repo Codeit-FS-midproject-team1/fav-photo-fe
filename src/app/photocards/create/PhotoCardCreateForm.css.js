@@ -27,8 +27,8 @@ export const title = style({
   fontFamily: "var(--font-br-b)",
 
   "@media": {
-    "screen and (max-width: 768px)": {
-      margin: "0 0 3rem",
+    "screen and (max-width: 767px)": {
+      margin: "0 20px 3rem",
       fontSize: "2.25rem",
     },
   },

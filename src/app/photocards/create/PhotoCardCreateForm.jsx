@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image.js";
 import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
@@ -15,6 +15,10 @@ const initialForm = {
   totalQuantity: "1",
   description: "",
 };
+
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default function PhotoCardCreateForm() {
   const fileInputRef = useRef(null);
@@ -44,6 +48,33 @@ export default function PhotoCardCreateForm() {
     const file = event.target.files?.[0];
 
     if (!file) return;
+
+    // 이미지 type 확인
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      setImage(null);
+      setImagePreview("");
+      setErrors((previous) => ({
+        ...previous,
+        image: "JPEG, PNG, WebP 형식의 이미지만 등록할 수 있습니다.",
+      }));
+
+      // 초기화
+      event.target.value = "";
+      return;
+    }
+
+    // 이미지 크기 확인
+    if (file.size > MAX_IMAGE_SIZE) {
+      setImage(null);
+      setImagePreview("");
+      setErrors((previous) => ({
+        ...previous,
+        image: "이미지 크기는 10MB 이하여야 합니다.",
+      }));
+
+      event.target.value = "";
+      return;
+    }
 
     setImage(file);
     setImagePreview(URL.createObjectURL(file));
@@ -112,6 +143,14 @@ export default function PhotoCardCreateForm() {
     }
   };
 
+  useEffect(() => {
+    if (!imagePreview) return;
+
+    return () => {
+      URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
   return (
     <main className={styles.page}>
       <h1 className={styles.title}>포토카드 생성</h1>
@@ -140,7 +179,7 @@ export default function PhotoCardCreateForm() {
                 id="photo-card-image"
                 name="image"
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 className={styles.hiddenInput}
                 onChange={handleImageChange}
               />
