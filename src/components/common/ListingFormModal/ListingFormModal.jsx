@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
@@ -45,36 +46,49 @@ export default function ListingFormModal({
   const closeRef = useRef(null);
 
   const initialQuantity = editMode
-    ? (listing?.remainingQuantity ?? listing?.remaining_quantity ?? 1)
+    ? (listing?.remainingQuantity ??
+        listing?.remaining_quantity ??
+        1)
     : 1;
 
-  const [quantity, setQuantity] = useState(Number(initialQuantity));
+  const [quantity, setQuantity] = useState(
+    Number(initialQuantity),
+  );
 
   const [price, setPrice] = useState(
     String(listing?.price ?? card?.price ?? 1),
   );
 
   const [exchangeMethod, setExchangeMethod] = useState(
-    listing?.exchangeMethod ?? listing?.exchange_method ?? "",
+    listing?.exchangeMethod ??
+      listing?.exchange_method ??
+      "",
   );
 
   const [exchangeGenre, setExchangeGenre] = useState(
-    listing?.exchangeGenre ?? listing?.exchange_genre ?? "",
+    listing?.exchangeGenre ??
+      listing?.exchange_genre ??
+      "",
   );
 
-  const [exchangeDescription, setExchangeDescription] = useState(
-    listing?.exchangeDescription ?? listing?.exchange_description ?? "",
-  );
+  const [exchangeDescription, setExchangeDescription] =
+    useState(
+      listing?.exchangeDescription ??
+        listing?.exchange_description ??
+        "",
+    );
 
   const [error, setError] = useState("");
-  const [localSubmitting, setLocalSubmitting] = useState(false);
+  const [localSubmitting, setLocalSubmitting] =
+    useState(false);
 
   const busy = isSubmitting || localSubmitting;
 
   // 최대 판매 가능 수량
   const limit = Number(maxQuantity);
 
-  const available = Number.isInteger(limit) && limit >= 1;
+  const available =
+    Number.isInteger(limit) && limit >= 1;
 
   /**
    * 수정 1: 표시 수량과 제출 수량 통일
@@ -86,7 +100,12 @@ export default function ListingFormModal({
   const safeQuantity = available
     ? Math.min(
         limit,
-        Math.max(1, Number.isFinite(quantity) ? Math.floor(quantity) : 1),
+        Math.max(
+          1,
+          Number.isFinite(quantity)
+            ? Math.floor(quantity)
+            : 1,
+        ),
       )
     : 0;
 
@@ -102,7 +121,10 @@ export default function ListingFormModal({
     closeRef.current?.focus();
 
     return () => {
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+      if (
+        previousFocus instanceof HTMLElement &&
+        previousFocus.isConnected
+      ) {
         previousFocus.focus();
       }
     };
@@ -136,7 +158,9 @@ export default function ListingFormModal({
         modal.querySelectorAll(
           'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
-      ).filter((element) => element.getClientRects().length > 0);
+      ).filter(
+        (element) => element.getClientRects().length > 0,
+      );
 
       event.preventDefault();
 
@@ -145,21 +169,32 @@ export default function ListingFormModal({
         return;
       }
 
-      const currentIndex = elements.indexOf(document.activeElement);
+      const currentIndex = elements.indexOf(
+        document.activeElement,
+      );
 
       const nextIndex = event.shiftKey
         ? currentIndex === -1
           ? elements.length - 1
-          : (currentIndex - 1 + elements.length) % elements.length
+          : (currentIndex - 1 + elements.length) %
+            elements.length
         : (currentIndex + 1) % elements.length;
 
       elements[nextIndex].focus();
     }
 
-    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener(
+      "keydown",
+      handleKeyDown,
+      true,
+    );
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown,
+        true,
+      );
     };
   }, [isOpen, busy, onClose]);
 
@@ -175,7 +210,9 @@ export default function ListingFormModal({
     const priceNumber = Number(price);
 
     if (!available) {
-      setError("판매할 수 있는 카드가 없습니다. 보유 수량을 확인해 주세요.");
+      setError(
+        "판매할 수 있는 카드가 없습니다. 보유 수량을 확인해 주세요.",
+      );
       return;
     }
 
@@ -185,7 +222,9 @@ export default function ListingFormModal({
       safeQuantity < 1 ||
       safeQuantity > limit
     ) {
-      setError(`수량을 1장부터 ${limit}장 사이로 선택해 주세요.`);
+      setError(
+        `수량을 1장부터 ${limit}장 사이로 선택해 주세요.`,
+      );
       return;
     }
 
@@ -194,7 +233,9 @@ export default function ListingFormModal({
       priceNumber < 1 ||
       priceNumber > 1000
     ) {
-      setError("가격은 1P부터 1,000P까지 정수로 입력해 주세요.");
+      setError(
+        "가격은 1P부터 1,000P까지 정수로 입력해 주세요.",
+      );
       return;
     }
 
@@ -216,7 +257,8 @@ export default function ListingFormModal({
       });
     } catch (submitError) {
       setError(
-        submitError?.message || "저장에 실패했습니다. 다시 시도해 주세요.",
+        submitError?.message ||
+          "저장에 실패했습니다. 다시 시도해 주세요.",
       );
     } finally {
       setLocalSubmitting(false);
@@ -235,12 +277,19 @@ export default function ListingFormModal({
       >
         <header className={styles.header}>
           <div>
-            <h2 id={titleId} className={styles.title}>
-              {editMode ? "판매글 수정" : "포토카드 판매 등록"}
+            <h2
+              id={titleId}
+              className={styles.title}
+            >
+              {editMode
+                ? "판매글 수정"
+                : "포토카드 판매 등록"}
             </h2>
 
             <p className={styles.subtitle}>
-              {card?.name ?? card?.photoCard?.name ?? "선택한 포토카드"}
+              {card?.name ??
+                card?.photoCard?.name ??
+                "선택한 포토카드"}
             </p>
           </div>
 
@@ -256,10 +305,15 @@ export default function ListingFormModal({
           </button>
         </header>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form
+          onSubmit={handleSubmit}
+          className={styles.form}
+        >
           {/* 판매 수량 */}
           <div className={styles.field}>
-            <label className={styles.label}>판매 수량</label>
+            <label className={styles.label}>
+              판매 수량
+            </label>
 
             <QuantityStepper
               value={safeQuantity}
@@ -271,7 +325,9 @@ export default function ListingFormModal({
             />
 
             <p className={styles.help}>
-              {editMode ? "수정 후 남은 판매 수량" : "판매 등록 수량"}
+              {editMode
+                ? "수정 후 남은 판매 수량"
+                : "판매 등록 수량"}
               {" · 최대 "}
               {available ? limit : 0}장
             </p>
@@ -279,7 +335,10 @@ export default function ListingFormModal({
 
           {/* 판매 가격 */}
           <div className={styles.field}>
-            <label className={styles.label} htmlFor={`${titleId}-price`}>
+            <label
+              className={styles.label}
+              htmlFor={`${titleId}-price`}
+            >
               판매 가격 (P)
             </label>
 
@@ -292,7 +351,9 @@ export default function ListingFormModal({
               max="1000"
               step="1"
               value={price}
-              onChange={(event) => setPrice(event.target.value)}
+              onChange={(event) =>
+                setPrice(event.target.value)
+              }
               disabled={busy}
               required
             />
@@ -301,7 +362,10 @@ export default function ListingFormModal({
           {/* 교환 희망 조건 */}
           <div className={styles.columns}>
             <div className={styles.field}>
-              <label className={styles.label} htmlFor={`${titleId}-method`}>
+              <label
+                className={styles.label}
+                htmlFor={`${titleId}-method`}
+              >
                 희망 제작 방식
               </label>
 
@@ -309,13 +373,20 @@ export default function ListingFormModal({
                 id={`${titleId}-method`}
                 className={styles.input}
                 value={exchangeMethod}
-                onChange={(event) => setExchangeMethod(event.target.value)}
+                onChange={(event) =>
+                  setExchangeMethod(event.target.value)
+                }
                 disabled={busy}
               >
-                <option value="">선택 안 함</option>
+                <option value="">
+                  선택 안 함
+                </option>
 
                 {METHOD_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option
+                    key={option.value}
+                    value={option.value}
+                  >
                     {option.label}
                   </option>
                 ))}
@@ -323,7 +394,10 @@ export default function ListingFormModal({
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label} htmlFor={`${titleId}-genre`}>
+              <label
+                className={styles.label}
+                htmlFor={`${titleId}-genre`}
+              >
                 희망 장르
               </label>
 
@@ -331,13 +405,20 @@ export default function ListingFormModal({
                 id={`${titleId}-genre`}
                 className={styles.input}
                 value={exchangeGenre}
-                onChange={(event) => setExchangeGenre(event.target.value)}
+                onChange={(event) =>
+                  setExchangeGenre(event.target.value)
+                }
                 disabled={busy}
               >
-                <option value="">선택 안 함</option>
+                <option value="">
+                  선택 안 함
+                </option>
 
                 {GENRE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option
+                    key={option.value}
+                    value={option.value}
+                  >
                     {option.label}
                   </option>
                 ))}
@@ -347,7 +428,10 @@ export default function ListingFormModal({
 
           {/* 교환 희망 설명 */}
           <div className={styles.field}>
-            <label className={styles.label} htmlFor={`${titleId}-description`}>
+            <label
+              className={styles.label}
+              htmlFor={`${titleId}-description`}
+            >
               교환 희망 내용
             </label>
 
@@ -358,15 +442,22 @@ export default function ListingFormModal({
               maxLength={200}
               placeholder="원하는 교환 조건을 입력해 주세요."
               value={exchangeDescription}
-              onChange={(event) => setExchangeDescription(event.target.value)}
+              onChange={(event) =>
+                setExchangeDescription(event.target.value)
+              }
               disabled={busy}
             />
 
-            <p className={styles.count}>{exchangeDescription.length}/200</p>
+            <p className={styles.count}>
+              {exchangeDescription.length}/200
+            </p>
           </div>
 
           {error && (
-            <p className={styles.error} role="alert">
+            <p
+              className={styles.error}
+              role="alert"
+            >
               {error}
             </p>
           )}
@@ -386,7 +477,11 @@ export default function ListingFormModal({
               className={styles.submit}
               disabled={busy || !available}
             >
-              {busy ? "저장 중…" : editMode ? "수정하기" : "판매 등록하기"}
+              {busy
+                ? "저장 중…"
+                : editMode
+                  ? "수정하기"
+                  : "판매 등록하기"}
             </button>
           </div>
         </form>
