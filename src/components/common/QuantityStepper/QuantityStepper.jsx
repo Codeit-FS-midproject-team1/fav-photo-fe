@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import styles from "./QuantityStepper.module.css";
 
 /**
@@ -15,23 +16,41 @@ export default function QuantityStepper({
   label = "수량",
 }) {
   const minValue = Math.max(0, Math.floor(Number(min) || 0));
+
   const maxValue = Number.isFinite(Number(max))
     ? Math.max(0, Math.floor(Number(max)))
     : Infinity;
+
   const unavailable = maxValue < minValue;
   const valueNumber = Number(value);
+
   const safeValue = unavailable
     ? 0
     : Math.min(
         maxValue,
-        Math.max(minValue, Number.isFinite(valueNumber) ? Math.floor(valueNumber) : minValue),
+        Math.max(
+          minValue,
+          Number.isFinite(valueNumber) ? Math.floor(valueNumber) : minValue,
+        ),
       );
+
   const isDisabled = disabled || unavailable;
+
+  // 추가: 보정된 수량을 부모 상태와 동기화
+  useEffect(() => {
+    if (typeof onChange === "function" && !Object.is(valueNumber, safeValue)) {
+      onChange(safeValue);
+    }
+  }, [valueNumber, safeValue, onChange]);
 
   function changeBy(delta) {
     if (isDisabled || typeof onChange !== "function") return;
+
     const nextValue = Math.min(maxValue, Math.max(minValue, safeValue + delta));
-    if (nextValue !== safeValue) onChange(nextValue);
+
+    if (nextValue !== safeValue) {
+      onChange(nextValue);
+    }
   }
 
   return (
@@ -45,9 +64,11 @@ export default function QuantityStepper({
       >
         −
       </button>
+
       <output className={styles.value} aria-live="polite" aria-atomic="true">
         {safeValue}
       </output>
+
       <button
         className={styles.button}
         type="button"
