@@ -28,8 +28,8 @@ export const title = style({
 
   "@media": {
     "screen and (max-width: 768px)": {
-      marginBottom: "3rem",
-      fontSize: 36,
+      margin: "0 0 3rem",
+      fontSize: "2.25rem",
     },
   },
 });
