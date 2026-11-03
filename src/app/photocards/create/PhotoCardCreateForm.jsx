@@ -147,20 +147,6 @@ export default function PhotoCardCreateForm() {
             </div>
           </Field>
 
-          {/* <div className={styles.previewBox}>
-            {imagePreview ? (
-              <Image
-                src={imagePreview}
-                alt="포토카드 이미지 미리보기"
-                width={180}
-                height={135}
-                unoptimized
-                className={styles.previewImage}
-              />
-            ) : (
-              <div className={styles.emptyPreview}>사진 미리보기</div>
-            )}
-          </div> */}
           {imagePreview && (
             <div className={styles.previewBox}>
               <Image
@@ -206,10 +192,10 @@ export default function PhotoCardCreateForm() {
                 <option value="" disabled hidden>
                   제작방식을 선택해 주세요
                 </option>
-                <option value="PHOTO">PHOTO</option>
-                <option value="CRAFT">CRAFT</option>
-                <option value="AI">AI</option>
-                <option value="ETC">ETC</option>
+                <option value="PHOTO">촬영</option>
+                <option value="CRAFT">제작</option>
+                <option value="AI">AI생성</option>
+                <option value="ETC">기타</option>
               </select>
 
               <span className={styles.selectIcon}>
@@ -230,12 +216,12 @@ export default function PhotoCardCreateForm() {
                 <option value="" disabled hidden>
                   장르를 선택해 주세요
                 </option>
-                <option value="LANDSCAPE">LANDSCAPE</option>
-                <option value="PORTRAIT">PORTRAIT</option>
-                <option value="ANIMAL">ANIMAL</option>
-                <option value="PLANT">PLANT</option>
-                <option value="OBJECT">OBJECT</option>
-                <option value="ETC">ETC</option>
+                <option value="LANDSCAPE">풍경</option>
+                <option value="PORTRAIT">인물</option>
+                <option value="ANIMAL">동물</option>
+                <option value="PLANT">식물</option>
+                <option value="OBJECT">사물</option>
+                <option value="ETC">기타</option>
               </select>
 
               <span className={styles.selectIcon}>
