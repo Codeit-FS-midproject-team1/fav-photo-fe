@@ -5,7 +5,7 @@ export const screen = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  minHeight: "calc(100vh - 81px)", 
+  minHeight: "calc(100vh - 81px)",
   backgroundColor: vars.color.black,
 });
 
@@ -14,6 +14,8 @@ export const content = style({
   flexDirection: "column",
   alignItems: "center",
   gap: 40,
+  width: "calc(100% - 32px)",
+  maxWidth: "100%",
   color: vars.color.white,
   textAlign: "center",
 });
@@ -40,7 +42,14 @@ export const message = style({
   wordBreak: "keep-all",
 });
 
+export const actions = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 4,
+});
+
 export const actionButton = style({
-  marginTop: 12,
   fontSize: 18,
+  maxWidth: "100%",
 });

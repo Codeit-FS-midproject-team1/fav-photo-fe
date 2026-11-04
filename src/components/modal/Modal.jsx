@@ -1,45 +1,78 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import * as styles from './Modal.css';
-
-/**
- * @param {boolean} open - 열림 여부
- * @param {() => void} onClose - 닫기 핸들러 (X, Esc, 바깥 클릭)
- * @param {'sm'|'md'|'lg'} size - PC 가로 크기 (기본 md)
- * @param {'sheet'|'full'} mobileType - 모바일 형태: 바텀시트 | 전체 화면 (기본 sheet)
- */
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import * as styles from "./Modal.css";
 
 export default function Modal({
   open,
   onClose,
-  size = 'md',
-  mobileType = 'sheet',
+  size = "md",
+  mobileType = "sheet",
   children,
 }) {
   const panelRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !open) return;
+
+    const previousFocus = document.activeElement;
+    const panel = panelRef.current;
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    panel?.focus();
+
+    const getFocusable = () =>
+      panel?.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ) ?? [];
+
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') onClose?.();
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [open, onClose]);
+      if (e.key === "Escape") {
+        onClose?.();
+        return;
+      }
 
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    panelRef.current?.focus();
+      if (e.key !== "Tab") return;
+
+      const focusable = getFocusable();
+      if (!focusable.length) {
+        e.preventDefault();
+        panel?.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (
+        e.shiftKey &&
+        (document.activeElement === first || document.activeElement === panel)
+      ) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
     return () => {
-      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus?.();
     };
-  }, [open]);
+  }, [mounted, open, onClose]);
 
-  if (!open) return null;
+  if (!mounted || !open) return null;
 
   const handleOverlayMouseDown = (e) => {
     if (e.target === e.currentTarget) onClose?.();
@@ -49,6 +82,8 @@ export default function Modal({
     <div className={styles.overlay} onMouseDown={handleOverlayMouseDown}>
       <div
         ref={panelRef}
+        role="dialog"
+        aria-modal="true"
         tabIndex={-1}
         className={`${styles.panel} ${styles.size[size]} ${styles.mobileType[mobileType]}`}
       >
@@ -56,8 +91,9 @@ export default function Modal({
           type="button"
           className={styles.closeButton}
           onClick={onClose}
+          aria-label="모달 닫기"
         >
-          × 
+          ×
         </button>
         {children}
       </div>

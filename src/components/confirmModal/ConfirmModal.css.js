@@ -10,7 +10,7 @@ export const content = style({
 
 export const title = style({
   fontSize: 20,
-  fontWeight: 700,
+  fontWeight: vars.fontWeight.bold,
   textAlign: "center",
   color: vars.color.white,
 });
@@ -34,6 +34,6 @@ export const confirmButton = style({
   background: vars.color.main,
   color: vars.color.black,
   fontSize: 16,
-  fontWeight: fontWeight.bold,
+  fontWeight: vars.fontWeight.bold,
   cursor: "pointer",
 });

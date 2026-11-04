@@ -7,7 +7,7 @@ import Icon from "@/components/icon/Icon.jsx";
 function LoggedInActions({ points, username, unreadCount }) {
   return (
     <nav className={styles.actions}>
-      <span className={styles.points}>{points.toLocaleString()} P</span>
+      <span className={styles.points}>{(points ?? 0).toLocaleString()} P</span>
       <button type="button" className={styles.iconButton}>
         <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
       </button>
@@ -31,6 +31,33 @@ function LoggedOutActions() {
   );
 }
 
+function MobileHeader({ isLoggedIn, unreadCount }) {
+  return (
+    <div className={styles.mobileHeader}>
+      <button
+        type="button"
+        className={styles.menuButton}
+      >
+        <Icon name="menu" size={18} />
+      </button>
+
+      <Link href="/" className={styles.logo}>
+        <Image src={logoImage} alt="최애의 포토 로고" width={76} height={14} />
+      </Link>
+
+      {isLoggedIn ? (
+        <button type="button" className={styles.iconButton}>
+          <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+        </button>
+      ) : (
+        <Link href="/login" className={styles.login}>
+          로그인
+        </Link>
+      )}
+    </div>
+  );
+}
+
 export default function Header({
   isLoggedIn,
   points,
@@ -39,25 +66,30 @@ export default function Header({
 }) {
   return (
     <header className={styles.header}>
-      <div className={styles.inner}>
-        <Link href={"/"}>
-          <Image
-            src={logoImage}
-            alt="최애의 포토 로고"
-            width={140}
-            height={25}
-          />
-        </Link>
-        {isLoggedIn ? (
-          <LoggedInActions
-            points={points}
-            username={username}
-            unreadCount={unreadCount}
-          />
-        ) : (
-          <LoggedOutActions />
-        )}
+      <div className={styles.desktopHeader}>
+        <div className={styles.inner}>
+          <Link href="/">
+            <Image
+              src={logoImage}
+              alt="최애의 포토 로고"
+              width={140}
+              height={25}
+            />
+          </Link>
+
+          {isLoggedIn ? (
+            <LoggedInActions
+              points={points}
+              username={username}
+              unreadCount={unreadCount}
+            />
+          ) : (
+            <LoggedOutActions />
+          )}
+        </div>
       </div>
+
+      <MobileHeader isLoggedIn={isLoggedIn} unreadCount={unreadCount} />
     </header>
   );
 }

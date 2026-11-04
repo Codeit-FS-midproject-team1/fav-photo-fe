@@ -1,49 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import ResultScreen from "@/components/resultScreen/ResultScreen";
+import ConfirmModal from "@/components/confirmModal/ConfirmModal";
 
-export default function ResultScreenTest() {
-  const [result, setResult] = useState(null);
+export default function ConfirmModalTest() {
+  const [open, setOpen] = useState(false);
+  const [result, setResult] = useState("");
+
+  const handleConfirm = () => {
+    setResult("확인 버튼 동작");
+    setOpen(false);
+  };
+
+  const handleClose = () => {
+    setResult("닫기 동작");
+    setOpen(false);
+  };
 
   return (
-    <main>
-      <button
-        type="button"
-        onClick={() =>
-          setResult({
-            success: true,
-            title: "판매 등록",
-            message: "2장 판매 등록에 성공했습니다.",
-            actionText: "마켓플레이스로 돌아가기",
-            actionHref: "/marketplace",
-          })
-        }
-      >
-        성공 화면 테스트
+    <main style={{ padding: 24 }}>
+      <button type="button" onClick={() => setOpen(true)}>
+        모달 열기
       </button>
 
-      <button
-        type="button"
-        onClick={() =>
-          setResult({
-            success: false,
-            title: "판매 등록",
-            message: "2장 판매 등록에 실패했습니다.",
-            actionText: "다시 시도하기",
-            actionHref: "/marketplace",
-          })
-        }
-      >
-        실패 화면 테스트
-      </button>
+      <p aria-live="polite">{result}</p>
 
-      {result && (
-        <ResultScreen
-          {...result}
-          onClose={() => setResult(null)}
-        />
-      )}
+      <ConfirmModal
+        open={open}
+        title="확인 모달 테스트"
+        message={"메시지 표시와 줄바꿈을 확인합니다.\n두 번째 줄입니다."}
+        confirmText="확인"
+        onConfirm={handleConfirm}
+        onClose={handleClose}
+      />
     </main>
   );
 }
