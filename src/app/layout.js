@@ -16,6 +16,7 @@ const brB = localfont({
   display: "swap",
   variable: "--font-br-b",
 });
+
 export const metadata = {
   title: "최애의 포토",
   description: "최애의 포토",
