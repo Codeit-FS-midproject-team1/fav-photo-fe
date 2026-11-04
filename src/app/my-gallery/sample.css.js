@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const page = style({
   minHeight: "calc(100vh - 81px)",
