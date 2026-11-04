@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const card = style({
   display: "flex",
@@ -52,7 +52,7 @@ export const info = style({
 
 export const name = style({
   fontSize: 22,
-  fontWeight: fontWeight.bold,
+  fontWeight: vars.fontWeight.bold,
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -62,22 +62,22 @@ export const meta = style({
   display: "flex",
   justifyContent: "space-between",
   fontSize: 16,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
 });
 export const tags = style({ display: "flex", gap: 10 });
 
 export const bar = style({
   color: vars.color.gray400,
-  fontWeight: fontWeight.regular,
+  fontWeight: vars.fontWeight.regular,
 });
 
 export const genre = style({
   color: vars.color.gray300,
-  fontWeight: fontWeight.regular,
+  fontWeight: vars.fontWeight.regular,
 });
 
 export const nickname = style({
-  fontWeight: fontWeight.regular,
+  fontWeight: vars.fontWeight.regular,
   textDecoration: "underline",
 });
 
@@ -102,7 +102,7 @@ export const row = style({
 
 export const label = style({
   fontSize: 16,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
   color: vars.color.gray300,
 });
 
@@ -110,7 +110,7 @@ export const value = style({ margin: 0, fontSize: 18 });
 
 export const total = style({
   marginLeft: 5,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
   color: vars.color.gray300,
 });
 
