@@ -209,17 +209,16 @@ export const submitButton = style({
   fontWeight: fontWeight.bold,
   cursor: "pointer",
 
+  "@media": {},
+
   selectors: {
     "&:disabled": {
       cursor: "not-allowed",
       color: vars.color.gray300,
       backgroundColor: vars.color.gray400,
     },
-    "&:hover": {
-      opacity: 0.85,
-    },
     "&:not(:disabled):hover": {
-      opacity: 0.5,
+      opacity: 0.6,
     },
   },
 });

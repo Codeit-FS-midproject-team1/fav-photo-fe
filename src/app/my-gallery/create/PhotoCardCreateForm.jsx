@@ -55,10 +55,37 @@ export default function PhotoCardCreateForm() {
       [name]: value,
     }));
 
-    setErrors((previous) => ({
-      ...previous,
-      [name]: "",
-    }));
+    setErrors((previous) => {
+      const nextErrors = {
+        ...previous,
+        [name]: "",
+      };
+
+      // 입력 중 검증
+      if (name === "price") {
+        const price = Number(value);
+
+        if (value === "") {
+          nextErrors.price = "가격을 입력해주세요.";
+        } else if (!Number.isInteger(price) || price < 1 || price > 1000) {
+          nextErrors.price = "가격은 1~1000 사이의 정수여야 합니다.";
+        }
+      }
+      if (name === "totalQuantity") {
+        const totalQuantity = Number(value);
+
+        if (value === "") {
+          nextErrors.totalQuantity = "총 발행량을 입력해 주세요";
+        } else if (
+          !Number.isInteger(totalQuantity) ||
+          totalQuantity < 1 ||
+          totalQuantity > 10
+        ) {
+          nextErrors.totalQuantity = "총 발행량은 1~10 사이의 정수여야 합니다.";
+        }
+      }
+      return nextErrors;
+    });
   };
 
   const handleImageChange = (event) => {
@@ -109,8 +136,8 @@ export default function PhotoCardCreateForm() {
     }
 
     if (!form.name.trim()) {
-      nextErrors.name = "포토카드 이름을 입력해 주세요.";
-    } else if (form.name.length > 15) {
+      nextErrors.name = "포토카드 이름을 입력해주세요.";
+    } else if (form.name.trim().length > 15) {
       nextErrors.name = "포토카드 이름은 최대 15자까지 입력 가능합니다.";
     }
 
@@ -122,7 +149,7 @@ export default function PhotoCardCreateForm() {
       nextErrors.genre = "장르를 선택해 주세요.";
     }
 
-    if (price === 0) {
+    if (price === "") {
       nextErrors.price = "가격을 입력해 주세요.";
     } else if (!Number.isInteger(price) || price < 1 || price > 1000) {
       nextErrors.price = "가격은 1~1000 사이의 정수여야 합니다.";
@@ -151,8 +178,31 @@ export default function PhotoCardCreateForm() {
     setSubmitError("");
 
     try {
+      // 페이지 이동 확인용 -- 임시
+      const isMockMode =
+        process.env.NEXT_PUBLIC_MOCK_PHOTO_CARD_CREATE === "true";
+
+      if (isMockMode) {
+        const cardName = form.name;
+        const method = form.method;
+
+        router.push(
+          `/my-gallery/create/success?name=${encodeURIComponent(
+            cardName,
+          )}&method=${encodeURIComponent(method)}`,
+        );
+
+        return;
+      }
+
       const formData = new FormData(event.currentTarget);
 
+      if (image) {
+        formData.set("image", image);
+      } else {
+        formData.delete("image");
+      }
+      // console.log(formData.get("image"));
       const result = await createPhotoCard(formData);
 
       const cardName = result.name || form.name;
@@ -167,14 +217,6 @@ export default function PhotoCardCreateForm() {
       console.log("포토카드 생성 성공", result);
     } catch (error) {
       setSubmitError(error.message);
-
-      if (error.fields) {
-        setErrors((previous) => ({
-          ...previous,
-          ...error.fields,
-        }));
-      }
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -247,8 +289,9 @@ export default function PhotoCardCreateForm() {
               onChange={handleChange}
               placeholder="포토카드 이름을 입력해 주세요"
               maxLength={15}
-              className={errors.name ? styles.selectError : styles.input}
+              className={errors.name ? styles.inputError : styles.input}
             />
+            form.price
           </Field>
 
           <Field
@@ -286,7 +329,7 @@ export default function PhotoCardCreateForm() {
                 name="genre"
                 value={form.genre}
                 onChange={handleChange}
-                className={errors.genre ? styles.inputError : styles.select}
+                className={errors.genre ? styles.selectError : styles.select}
               >
                 <option value="" disabled hidden>
                   장르를 선택해 주세요

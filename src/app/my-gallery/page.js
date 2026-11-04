@@ -8,7 +8,9 @@ export default function PhotocardsPage() {
   return (
     <main className={styles.page}>
       <section className={styles.container}>
-        <h1 className={styles.title}>컴포넌트 예시</h1>
+        <h1 className={styles.title}>
+          마이갤러리 <br />- 임시 컴포넌트 예시
+        </h1>
 
         <div className={styles.form}>
           <Field label="Field">

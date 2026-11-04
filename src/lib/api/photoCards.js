@@ -15,7 +15,6 @@ export async function createPhotoCard(formData) {
 
     error.status = response.status;
     error.code = result.code;
-    error.fields = result.fields;
 
     throw error;
   }
