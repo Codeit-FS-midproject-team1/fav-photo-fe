@@ -1,10 +1,22 @@
 import * as theme from "@/styles/theme.css";
+import { useEffect } from "react";
+
+function ThemeWrapper({ children }) {
+  useEffect(() => {
+    document.body.classList.add(theme.themeClass);
+    return () => document.body.classList.remove(theme.themeClass);
+  }, []);
+
+  return <div className={theme.themeClass}>{children}</div>;
+}
 
 const preview = {
   decorators: [
     (Story) => (
       <div className={theme.themeClass}>
-        <Story />
+        <ThemeWrapper>
+          <Story />
+        </ThemeWrapper>
       </div>
     ),
   ],
