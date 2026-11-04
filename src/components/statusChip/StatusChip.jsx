@@ -13,5 +13,10 @@ const STATUS_CONFIG = {
 
 export default function StatusChip({ status }) {
   const current = STATUS_CONFIG[status];
+
+  if (!current) {
+    return null;
+  }
+
   return <div className={styles[current.color]}>{current.label}</div>;
 }

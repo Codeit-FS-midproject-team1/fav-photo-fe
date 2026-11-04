@@ -23,8 +23,17 @@ export default function PhotocardsPage() {
     <main className={styles.page}>
       <section className={styles.container}>
         <h1 className={styles.title}>마이갤러리</h1>
-        <CardTile card={sampleCard} badge={<StatusChip status="ON_SALE" />} />
-        <CardTile card={sampleCard2} badge={<StatusChip status="OFFERED" />} />
+        <div className={styles.cardWrapper}>
+          <CardTile card={sampleCard} badge={<StatusChip status="ON_SALE" />} />
+          <CardTile
+            card={sampleCard2}
+            badge={<StatusChip status="OFFERED" />}
+          />
+          <CardTile
+            card={sampleCard2}
+            badge={<StatusChip status="SOLD_OUT" />}
+          />
+        </div>
       </section>
     </main>
   );

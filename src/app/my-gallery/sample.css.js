@@ -15,7 +15,7 @@ export const page = style({
 
 export const container = style({
   width: "100%",
-  maxWidth: 520,
+  maxWidth: 1200,
   margin: "0 auto",
 });
 
@@ -48,4 +48,10 @@ export const fieldContent = style({
   borderRadius: 2,
   color: vars.color.white,
   fontWeight: vars.fontWeight.light,
+});
+
+export const cardWrapper = style({
+  display: "flex",
+  flexDirection: "row",
+  gap: "20px",
 });
