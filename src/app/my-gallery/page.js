@@ -31,7 +31,7 @@ export default function PhotocardsPage() {
           />
           <CardTile
             card={sampleCard2}
-            badge={<StatusChip status="SOLD_OUT" />}
+            badge={<StatusChip status="toString" />}
           />
         </div>
       </section>

@@ -12,7 +12,9 @@ const STATUS_CONFIG = {
 };
 
 export default function StatusChip({ status }) {
-  const current = STATUS_CONFIG[status];
+  const current = Object.hasOwn(STATUS_CONFIG, status)
+    ? STATUS_CONFIG[status]
+    : undefined;
 
   if (!current) {
     return null;
