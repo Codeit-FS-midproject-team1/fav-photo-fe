@@ -54,4 +54,9 @@ export const cardWrapper = style({
   display: "flex",
   flexDirection: "row",
   gap: "20px",
+  "@media": {
+    "screen and (max-width: 768px)": {
+      flexDirection: "column",
+    },
+  },
 });
