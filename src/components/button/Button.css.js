@@ -1,26 +1,19 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
-import { media } from "@/styles/breakpoint.css";
-
-const buttonWidths = {
-  L: 520,
-  M: 440,
-  S: 345,
-  XS: 150,
-};
+import { media, responsiveWidths } from "@/styles/responsive.css";
 
 export const widths = {
   L: style({
-    width: buttonWidths.L,
+    width: responsiveWidths.desktop,
     "@media": {
-      [media.tabletOnly]: { width: buttonWidths.M },
-      [media.mobile]: { width: buttonWidths.S },
+      [media.tabletOnly]: { width: responsiveWidths.tablet },
+      [media.mobile]: { width: responsiveWidths.mobile },
     },
-  }), 
+  }),
 
   XS: style({
-    width: buttonWidths.XS,
-  })
+    width: 150,
+  }),
 };
 
 export const heights = {
@@ -28,12 +21,11 @@ export const heights = {
   thin: style({ height: 60 }),
 };
 
-
 export const button = style({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  border: "1px solid transparent", 
+  border: "1px solid transparent",
   fontFamily: "inherit",
   fontWeight: vars.fontWeight.bold,
   whiteSpace: "nowrap",

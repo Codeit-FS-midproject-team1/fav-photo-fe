@@ -10,3 +10,9 @@ export const media = {
   tabletOnly: `screen and (min-width: ${breakpoints.tablet}px) and (max-width: ${breakpoints.desktop - 1}px)`,
   desktop: `screen and (min-width: ${breakpoints.desktop}px)`,
 };
+
+export const responsiveWidths = {
+  desktop: 520,
+  tablet: 440,
+  mobile: 345,
+};
