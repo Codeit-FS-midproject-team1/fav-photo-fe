@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { vars, fontWeight } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const header = style({
   background: vars.color.black,
@@ -20,7 +20,7 @@ export const actions = style({
 
 export const points = style({
   color: vars.color.gray200,
-  fontWeight: fontWeight.bold,
+  fontWeight: vars.fontWeight.bold,
 });
 
 export const iconButton = style({});

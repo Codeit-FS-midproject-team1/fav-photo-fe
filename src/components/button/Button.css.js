@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const widths = {
   L: style({ width: 520 }),
@@ -19,9 +19,10 @@ export const button = style({
   justifyContent: "center",
   border: "1px solid transparent",
   fontFamily: "inherit",
-  fontWeight: fontWeight.bold,
+  fontWeight: vars.fontWeight.bold,
   whiteSpace: "nowrap",
   cursor: "pointer",
+  fontSize: "1rem",
   selectors: {
     "&:disabled": {
       backgroundColor: vars.color.gray200,

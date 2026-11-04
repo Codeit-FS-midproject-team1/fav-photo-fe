@@ -15,6 +15,17 @@ export const vars = createThemeContract({
     pink: null,
     main: null,
   },
+
+  font: {
+    notoSans: null,
+    br: null,
+  },
+
+  fontWeight: {
+    light: null,
+    regular: null,
+    bold: null,
+  },
 });
 
 export const themeClass = createTheme(vars, {
@@ -32,10 +43,15 @@ export const themeClass = createTheme(vars, {
     pink: "#FF2A6A",
     main: "#EFFF04",
   },
-});
 
-export const fontWeight = {
-  light: 300,
-  regular: 400,
-  bold: 700,
-};
+  font: {
+    notoSans: "var(--font-noto-sans), sans-serif",
+    br: "var(--font-br-b), sans-serif",
+  },
+
+  fontWeight: {
+    light: "300",
+    regular: "400",
+    bold: "700",
+  },
+});
