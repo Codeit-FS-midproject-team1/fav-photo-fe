@@ -121,6 +121,10 @@ export const input = style({
     "&::placeholder": {
       color: vars.color.gray300,
     },
+    "&:focus-visible": {
+      outline: `1px solid ${vars.color.main}`,
+      outlineOffset: 2,
+    },
   },
 });
 
@@ -178,6 +182,17 @@ export const textarea = style({
   color: vars.color.white,
   fontSize: 16,
   fontFamily: "inherit",
+
+  selectors: {
+    "&::placeholder": {
+      color: vars.color.gray300,
+    },
+
+    "&:focus-visible": {
+      outline: `1px solid ${vars.color.main}`,
+      outlineOffset: 2,
+    },
+  },
 });
 
 export const textareaError = style([
