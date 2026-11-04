@@ -8,7 +8,10 @@ function LoggedInActions({ points, username, unreadCount }) {
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{(points ?? 0).toLocaleString()} P</span>
-      <button type="button" className={styles.iconButton}>
+      <button type="button">
+        <Icon name="randomBox" />
+      </button>
+      <button type="button">
         <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
       </button>
       <button className={styles.userButton} type="button">
@@ -34,10 +37,7 @@ function LoggedOutActions() {
 function MobileHeader({ isLoggedIn, unreadCount }) {
   return (
     <div className={styles.mobileHeader}>
-      <button
-        type="button"
-        className={styles.menuButton}
-      >
+      <button type="button" className={styles.menuButton}>
         <Icon name="menu" size={18} />
       </button>
 
@@ -46,9 +46,14 @@ function MobileHeader({ isLoggedIn, unreadCount }) {
       </Link>
 
       {isLoggedIn ? (
-        <button type="button" className={styles.iconButton}>
-          <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
-        </button>
+        <div className={styles.mobileActions}>
+          <Link href="/random-box">
+            <Icon name="randomBox" />
+          </Link>
+          <button type="button">
+            <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+          </button>
+        </div>
       ) : (
         <Link href="/login" className={styles.login}>
           로그인
