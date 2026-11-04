@@ -5,12 +5,19 @@ export const form = style({
   display: "flex",
   alignItems: "center",
   gap: 10,
-  width: 320,
+  width: "100%",
+  maxWidth: 320,
   height: 50,
   padding: "0 20px",
   background: vars.color.black,
   border: `1px solid ${vars.color.gray200}`,
   borderRadius: 2,
+  selectors: {
+    // 입력 중일 때 테두리를 흰색으로 바꿔 포커스 위치를 보여준다
+    "&:focus-within": {
+      borderColor: vars.color.white,
+    },
+  },
 });
 
 export const input = style({
