@@ -10,15 +10,16 @@ export default function TextArea({
   id,
   maxLength = 200,
   placeholder,
+  value,
+  defaultValue = "",
+  onChange,
   ...textAreaProps
 }) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
-  const [currentValue, setCurrentValue] = useState("");
-  const isAtLimit = currentValue.length >= maxLength;
-  const displayError =
-    error ||
-    (isAtLimit ? `최대 ${maxLength}자까지 입력할 수 있습니다.` : undefined);
+  const [internalValue, setInternalValue] = useState(defaultValue);
+  const currentValue = value !== undefined ? value ?? "" : internalValue;
+  const displayError = error;
 
   return (
     <Field label={label} htmlFor={inputId}>
@@ -27,7 +28,10 @@ export default function TextArea({
         id={inputId}
         maxLength={maxLength}
         value={currentValue}
-        onChange={(event) => setCurrentValue(event.target.value)}
+        onChange={(event) => {
+          if (value === undefined) setInternalValue(event.target.value);
+          onChange?.(event);
+        }}
         placeholder={placeholder}
         className={displayError ? styles.textareaError : styles.textarea}
       />
