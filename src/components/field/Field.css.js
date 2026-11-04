@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const field = style({
   display: "flex",
@@ -15,5 +15,5 @@ export const label = style({
 export const error = style({
   marginTop: -5, // 간격 5px로 조정
   color: vars.color.red,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
 });

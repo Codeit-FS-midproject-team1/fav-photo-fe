@@ -178,7 +178,7 @@ export default function PhotoCardCreateForm() {
     setSubmitError("");
 
     try {
-      // 페이지 이동 확인용 -- 임시
+      // 페이지 이동 확인용
       const isMockMode =
         process.env.NEXT_PUBLIC_MOCK_PHOTO_CARD_CREATE === "true";
 
@@ -291,7 +291,6 @@ export default function PhotoCardCreateForm() {
               maxLength={15}
               className={errors.name ? styles.inputError : styles.input}
             />
-            form.price
           </Field>
 
           <Field

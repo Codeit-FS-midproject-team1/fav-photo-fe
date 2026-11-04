@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const page = style({
   minHeight: "calc(100vh - 81px)",
@@ -23,7 +23,7 @@ export const title = style({
   margin: "0 220px 80px",
   color: vars.color.white,
   fontSize: "3.875rem",
-  fontWeight: fontWeight.regular,
+  fontWeight: vars.fontWeight.regular,
   fontFamily: "var(--font-br-b)",
 
   "@media": {
@@ -206,7 +206,7 @@ export const submitButton = style({
   backgroundColor: vars.color.main,
   color: vars.color.black,
   fontSize: 20,
-  fontWeight: fontWeight.bold,
+  fontWeight: vars.fontWeight.bold,
   cursor: "pointer",
 
   "@media": {},

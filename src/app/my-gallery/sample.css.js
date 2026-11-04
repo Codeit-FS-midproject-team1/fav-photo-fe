@@ -23,7 +23,7 @@ export const title = style({
   margin: "0 0 60px",
   color: vars.color.white,
   fontSize: 40,
-  fontWeight: fontWeight.bold,
+  fontWeight: vars.fontWeight.bold,
 
   "@media": {
     "screen and (max-width: 768px)": {
@@ -47,5 +47,5 @@ export const fieldContent = style({
   border: `1px solid ${vars.color.gray200}`,
   borderRadius: 2,
   color: vars.color.white,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
 });
