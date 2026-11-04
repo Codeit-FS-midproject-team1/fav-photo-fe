@@ -30,6 +30,7 @@ export const button = style({
   fontWeight: vars.fontWeight.bold,
   whiteSpace: "nowrap",
   cursor: "pointer",
+  fontSize: "1rem",
   selectors: {
     "&:disabled": {
       backgroundColor: vars.color.gray200,
