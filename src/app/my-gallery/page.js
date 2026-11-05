@@ -1,8 +1,14 @@
+"use client";
+
 import CardTile from "@/components/cardTile/CardTile.jsx";
 import * as styles from "./sample.css.js";
 import StatusChip from "@/components/statusChip/StatusChip.jsx";
+import Pagination from "@/components/pagination/Pagination.jsx";
+import { useState } from "react";
 
-export default function PhotocardsPage() {
+export default function MyGalleryPage() {
+  const [page, setPage] = useState(1);
+
   const sampleCard = {
     imageUrl: "/globe.svg",
     name: "테스트 포토카드",
@@ -49,6 +55,8 @@ export default function PhotocardsPage() {
             badge={<StatusChip status="toString" />}
           />
         </div>
+        <p className={styles.currentPageSample}>현재 페이지: {page}</p>
+        <Pagination page={page} totalPages={40} onChange={setPage} />
       </section>
     </main>
   );
