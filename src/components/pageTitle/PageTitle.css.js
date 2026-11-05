@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
-import { media } from "@/styles/breakpoint.css";
+import { media } from "@/styles/responsive.css";
 
 
 export const wrapper = style({
@@ -23,7 +23,7 @@ export const title = style({
   fontFamily: vars.font.br,
   color: vars.color.white,
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       fontSize: 24,
     },
   },

@@ -17,8 +17,8 @@ export default function TextArea({
 }) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
-  const [internalValue, setInternalValue] = useState(defaultValue);
-  const currentValue = value !== undefined ? value ?? "" : internalValue;
+  const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+  const currentValue = value !== undefined ? (value ?? "") : internalValue;
   const displayError = error;
 
   return (

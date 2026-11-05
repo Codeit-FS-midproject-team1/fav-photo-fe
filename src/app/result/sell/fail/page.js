@@ -11,8 +11,7 @@ export default async function SellFailPage({ searchParams }) {
       success={false}
       title="판매 등록"
       message={`[${grade} | ${name}] ${count}장 판매 등록에 실패했습니다.`}
-      actionText="마켓플레이스로 돌아가기"
-      actionHref="/market"
+      actions={[{ text: "마켓플레이스로 돌아가기", href: "/marketplace" }]}
     />
   );
 }

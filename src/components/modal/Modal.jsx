@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import * as styles from "./Modal.css";
 
@@ -12,11 +12,16 @@ export default function Modal({
   children,
 }) {
   const panelRef = useRef(null);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const emptySubscribe = () => () => {};
+  const getClientSnapshot = () => true;
+  const getServerSnapshot = () => false;
+
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 
   useEffect(() => {
     if (!mounted || !open) return;
@@ -82,17 +87,10 @@ export default function Modal({
     <div className={styles.overlay} onMouseDown={handleOverlayMouseDown}>
       <div
         ref={panelRef}
-        role="dialog"
-        aria-modal="true"
         tabIndex={-1}
         className={`${styles.panel} ${styles.size[size]} ${styles.mobileType[mobileType]}`}
       >
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label="모달 닫기"
-        >
+        <button type="button" className={styles.closeButton} onClick={onClose}>
           ×
         </button>
         {children}

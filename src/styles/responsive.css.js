@@ -12,7 +12,7 @@ export const media = {
 };
 
 export const responsiveWidths = {
-  desktop: 520,
-  tablet: 440,
-  mobile: 345,
+  desktop: { width: 520, maxWidth: "100%" },
+  tablet: { width: 440, maxWidth: "100%" },
+  mobile: { width: 345, maxWidth: "100%" },
 };

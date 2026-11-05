@@ -31,7 +31,7 @@ const meta = {
   args: {
     children: "버튼",
     variant: "primary",
-    size: "L",
+    size: "reponsive",
     thickness: "thick",
     disabled: false,
   },
@@ -47,9 +47,9 @@ export const Secondary = {
   },
 };
 
-export const Small = {
+export const XS = {
   args: {
-    size: "S",
+    size: "XS",
   },
 };
 
