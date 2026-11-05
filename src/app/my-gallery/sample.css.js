@@ -7,7 +7,7 @@ export const page = style({
   backgroundColor: vars.color.black,
 
   "@media": {
-    "screen and (max-width: 768px)": {
+    "screen and (max-width: 767px)": {
       padding: "48px 20px 100px",
     },
   },
@@ -26,7 +26,7 @@ export const title = style({
   fontWeight: vars.fontWeight.bold,
 
   "@media": {
-    "screen and (max-width: 768px)": {
+    "screen and (max-width: 767px)": {
       marginBottom: 40,
       fontSize: 32,
     },
@@ -55,8 +55,12 @@ export const cardWrapper = style({
   flexDirection: "row",
   gap: "20px",
   "@media": {
-    "screen and (max-width: 768px)": {
+    "screen and (max-width: 767px)": {
       flexDirection: "column",
     },
   },
+});
+
+export const currentPageSample = style({
+  color: vars.color.white,
 });
