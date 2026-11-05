@@ -7,17 +7,17 @@ const meta = {
     variant: {
       description: "버튼 색상 스타일",
       control: "select",
-      options: ["primary", "secondary", "ghost"],
+      options: ["primary", "secondary"],
     },
     size: {
       description: "버튼 너비",
       control: "select",
-      options: ["responsive", "XS", "fit"],
+      options: ["responsive", "XS"],
     },
     thickness: {
       description: "버튼 높이 스타일",
       control: "select",
-      options: ["thick", "thin", "auto"],
+      options: ["thick", "thin"],
     },
     disabled: {
       description: "버튼 비활성화 여부",

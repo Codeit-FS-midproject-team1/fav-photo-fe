@@ -18,7 +18,7 @@ import rightIcon from "@/assets/images/right.svg";
 import searchIcon from "@/assets/images/search.svg";
 import upIcon from "@/assets/images/up.svg";
 import visibleIcon from "@/assets/images/visible.svg";
-import randomBox from "@/assets/images/random_box.png"
+import randomBox from "@/assets/images/random_box.webp"
 
 const iconSources = {
   minus: minusIcon,
