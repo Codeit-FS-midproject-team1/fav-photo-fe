@@ -24,13 +24,28 @@ export default function PhotocardsPage() {
       <section className={styles.container}>
         <h1 className={styles.title}>마이갤러리</h1>
         <div className={styles.cardWrapper}>
-          <CardTile card={sampleCard} badge={<StatusChip status="ON_SALE" />} />
+          <CardTile
+            card={sampleCard}
+            rows={[
+              { label: "가격", value: "4 P" },
+              { label: "잔여", value: 5 },
+            ]}
+            badge={<StatusChip status="ON_SALE" />}
+          />
           <CardTile
             card={sampleCard2}
+            rows={[
+              { label: "가격", value: "100 P" },
+              { label: "잔여", value: 1 },
+            ]}
             badge={<StatusChip status="OFFERED" />}
           />
           <CardTile
             card={sampleCard2}
+            rows={[
+              { label: "가격", value: "120 P" },
+              { label: "잔여", value: 1 },
+            ]}
             badge={<StatusChip status="toString" />}
           />
         </div>
