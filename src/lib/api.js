@@ -17,7 +17,7 @@ export class ApiError extends Error {
 
 async function request(path, { method = "GET", body, headers, ...rest } = {}) {
   let res;
-  let text;
+
   try {
     res = await fetch(`${BASE_URL}${path}`, {
       method,
@@ -29,10 +29,15 @@ async function request(path, { method = "GET", body, headers, ...rest } = {}) {
       body: body !== undefined ? JSON.stringify(body) : undefined,
       ...rest,
     });
-
-    text = await res.text();
   } catch {
     throw new ApiError(0, "네트워크 오류가 발생했습니다.");
+  }
+
+  let text;
+  try {
+    text = await res.text();
+  } catch {
+    throw new ApiError(res.status, "응답 본문을 읽을 수 없습니다.");
   }
 
   let data = null;

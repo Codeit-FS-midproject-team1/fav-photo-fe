@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import * as styles from "./TextArea.css.js";
 import Field from "@/components/field/Field";
 
@@ -17,19 +17,39 @@ export default function TextArea({
 }) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
-  const [internalValue, setInternalValue] = useState(defaultValue ?? "");
-  const currentValue = value !== undefined ? (value ?? "") : internalValue;
+  const initialValue = defaultValue ?? "";
+  const [internalLength, setInternalLength] = useState(initialValue.length);
+  const controlled = value !== undefined;
+  const textareaRef = useRef(null);
   const displayError = error;
+
+  useEffect(() => {
+    const form = textareaRef.current?.form;
+    if (!form || controlled) return;
+
+    const handleReset = () => {
+      window.requestAnimationFrame(() => {
+        if (!textareaRef.current) return;
+        textareaRef.current.value = initialValue;
+        setInternalLength(initialValue.length);
+      });
+    };
+
+    form.addEventListener("reset", handleReset);
+    return () => form.removeEventListener("reset", handleReset);
+  }, [controlled, initialValue]);
 
   return (
     <Field label={label} htmlFor={inputId}>
       <textarea
         {...textAreaProps}
+        ref={textareaRef}
         id={inputId}
         maxLength={maxLength}
-        value={currentValue}
+        value={controlled ? (value ?? "") : undefined}
+        defaultValue={controlled ? undefined : initialValue}
         onChange={(event) => {
-          if (value === undefined) setInternalValue(event.target.value);
+          if (!controlled) setInternalLength(event.target.value.length);
           onChange?.(event);
         }}
         placeholder={placeholder}
@@ -39,7 +59,7 @@ export default function TextArea({
       <div className={styles.metaRow}>
         {displayError && <p className={styles.errorMessage}>{displayError}</p>}
         <p className={styles.counter}>
-          {currentValue.length}/{maxLength}
+          {controlled ? (value ?? "").length : internalLength}/{maxLength}
         </p>
       </div>
     </Field>

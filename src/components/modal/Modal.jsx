@@ -12,16 +12,20 @@ export default function Modal({
   children,
 }) {
   const panelRef = useRef(null);
-
+  const onCloseRef = useRef(onClose);
   const emptySubscribe = () => () => {};
   const getClientSnapshot = () => true;
   const getServerSnapshot = () => false;
-
   const mounted = useSyncExternalStore(
     emptySubscribe,
     getClientSnapshot,
     getServerSnapshot,
   );
+
+  useEffect(() => {
+  onCloseRef.current = onClose;
+}, [onClose]);
+
 
   useEffect(() => {
     if (!mounted || !open) return;

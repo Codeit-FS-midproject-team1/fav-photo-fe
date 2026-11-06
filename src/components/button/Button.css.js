@@ -4,10 +4,10 @@ import { media, responsiveWidths } from "@/styles/responsive.css";
 
 export const widths = {
   responsive: style({
-    width: responsiveWidths.desktop,
+    ...responsiveWidths.desktop,
     "@media": {
-      [media.tabletOnly]: { width: responsiveWidths.tablet },
-      [media.mobile]: { width: responsiveWidths.mobile },
+      [media.tabletOnly]: responsiveWidths.tablet,
+      [media.mobile]: responsiveWidths.mobile,
     },
   }),
 
