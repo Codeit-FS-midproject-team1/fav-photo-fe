@@ -1,16 +1,26 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { media, responsiveWidths } from "@/styles/responsive.css";
 
 export const widths = {
-  L: style({ width: 520 }),
-  M: style({ width: 440 }),
-  S: style({ width: 345 }),
-  XS: style({ width: 150 }),
+  responsive: style({
+    ...responsiveWidths.desktop,
+    "@media": {
+      [media.tabletOnly]: responsiveWidths.tablet,
+      [media.mobile]: responsiveWidths.mobile,
+    },
+  }),
+
+  XS: style({
+    width: 150,
+  }),
+  fit: style({ width: "fit-content" }),
 };
 
 export const heights = {
   thick: style({ height: 80 }),
   thin: style({ height: 60 }),
+  auto: style({ height: "auto", minHeight: 0 }),
 };
 
 export const button = style({
@@ -44,4 +54,12 @@ export const secondary = style({
   borderColor: vars.color.gray100,
   color: vars.color.white,
   borderRadius: 2,
+});
+
+export const ghost = style({
+  padding: 0,
+  background: "transparent",
+  border: 0,
+  color: "inherit",
+  borderRadius: 0,
 });

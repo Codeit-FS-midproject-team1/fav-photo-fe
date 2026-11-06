@@ -1,21 +1,84 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { media } from "@/styles/responsive.css.js";
+
+export const desktopHeader = style({
+  background: vars.color.black,
+  display: "block",
+
+  "@media": {
+    [media.mobile]: {
+      display: "none",
+    },
+  },
+});
 
 export const header = style({
-  background: vars.color.black,
+  width: "100%",
 });
 
 export const inner = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "28px 220px",
+  width: "100%",
+  maxWidth: 1640,
+  margin: "0 auto",
+  padding: "28px max(32px, calc((100vw - 1480px) / 2))",
+
+  "@media": {
+    [media.tabletOnly]: {
+      padding: "24px 32px",
+    },
+    [media.mobile]: { padding: "20px 16px" },
+  },
+});
+
+export const mobileHeader = style({
+  display: "none",
+
+  "@media": {
+    [media.mobile]: {
+      height: 56,
+      padding: "0 20px",
+      display: "grid",
+      gridTemplateColumns: "1fr auto 1fr",
+      alignItems: "center",
+      background: vars.color.black,
+    },
+  },
+});
+
+export const menuButton = style({
+  justifySelf: "start",
+  display: "flex",
+  alignItems: "center",
+  padding: 0,
+  color: vars.color.gray200,
+  background: "transparent",
+  border: 0,
+  cursor: "pointer",
+});
+
+export const logo = style({
+  justifySelf: "center",
+  display: "flex",
+  alignItems: "center",
+});
+
+export const login = style({
+  justifySelf: "end",
+  color: vars.color.gray200,
+  fontSize: 14,
 });
 
 export const actions = style({
   display: "flex",
   alignItems: "center",
   gap: 30,
+  "@media": {
+    [media.tabletOnly]: { gap: 16 },
+  },
 });
 
 export const points = style({
@@ -23,11 +86,10 @@ export const points = style({
   fontWeight: vars.fontWeight.bold,
 });
 
-export const iconButton = style({});
 
 export const userButton = style({
   color: vars.color.gray200,
-  fontFamily: "var(--font-br-b)",
+  fontFamily: vars.font.br,
 });
 
 export const divider = style({
@@ -49,3 +111,10 @@ export const loggedOutActions = style([
     fontSize: 14,
   },
 ]);
+
+export const mobileActions = style({
+  justifySelf: "end",
+  display: "flex",
+  alignItems: "center",
+  gap: 12,
+});

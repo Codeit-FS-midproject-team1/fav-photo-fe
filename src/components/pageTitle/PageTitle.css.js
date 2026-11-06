@@ -1,7 +1,7 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
+import { media } from "@/styles/responsive.css";
 
-const MOBILE = "screen and (max-width: 767px)";
 
 export const wrapper = style({
   display: "flex",
@@ -11,7 +11,7 @@ export const wrapper = style({
   paddingBottom: 20,
   borderBottom: `1px solid ${vars.color.gray300}`,
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       paddingBottom: 12,
     },
   },
@@ -19,11 +19,11 @@ export const wrapper = style({
 
 export const title = style({
   fontSize: 62,
-  fontWeight: fontWeight.regular,
-  fontFamily: "var(--font-br-b)",
+  fontWeight: vars.fontWeight.regular,
+  fontFamily: vars.font.br,
   color: vars.color.white,
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       fontSize: 24,
     },
   },

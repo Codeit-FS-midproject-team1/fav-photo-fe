@@ -26,6 +26,15 @@ export const vars = createThemeContract({
     regular: null,
     bold: null,
   },
+
+  fontSize: {
+    display: null,
+    heading1: null,
+    heading2: null,
+    heading3: null,
+    bodyLarge: null,
+    body: null,
+  },
 });
 
 export const themeClass = createTheme(vars, {
@@ -53,5 +62,14 @@ export const themeClass = createTheme(vars, {
     light: "300",
     regular: "400",
     bold: "700",
+  },
+
+  fontSize: {
+    display: "62px",
+    heading1: "48px",
+    heading2: "46px",
+    heading3: "40px",
+    bodyLarge: "24px",
+    body: "18px",
   },
 });

@@ -1,45 +1,87 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import * as styles from './Modal.css';
-
-/**
- * @param {boolean} open - 열림 여부
- * @param {() => void} onClose - 닫기 핸들러 (X, Esc, 바깥 클릭)
- * @param {'sm'|'md'|'lg'} size - PC 가로 크기 (기본 md)
- * @param {'sheet'|'full'} mobileType - 모바일 형태: 바텀시트 | 전체 화면 (기본 sheet)
- */
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+import * as styles from "./Modal.css";
 
 export default function Modal({
   open,
   onClose,
-  size = 'md',
-  mobileType = 'sheet',
+  size = "md",
+  mobileType = "sheet",
   children,
 }) {
   const panelRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  const emptySubscribe = () => () => {};
+  const getClientSnapshot = () => true;
+  const getServerSnapshot = () => false;
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 
   useEffect(() => {
-    if (!open) return;
+  onCloseRef.current = onClose;
+}, [onClose]);
+
+
+  useEffect(() => {
+    if (!mounted || !open) return;
+
+    const previousFocus = document.activeElement;
+    const panel = panelRef.current;
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    panel?.focus();
+
+    const getFocusable = () =>
+      panel?.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ) ?? [];
+
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') onClose?.();
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [open, onClose]);
+      if (e.key === "Escape") {
+        onClose?.();
+        return;
+      }
 
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    panelRef.current?.focus();
+      if (e.key !== "Tab") return;
+
+      const focusable = getFocusable();
+      if (!focusable.length) {
+        e.preventDefault();
+        panel?.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (
+        e.shiftKey &&
+        (document.activeElement === first || document.activeElement === panel)
+      ) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
     return () => {
-      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus?.();
     };
-  }, [open]);
+  }, [mounted, open, onClose]);
 
-  if (!open) return null;
+  if (!mounted || !open) return null;
 
   const handleOverlayMouseDown = (e) => {
     if (e.target === e.currentTarget) onClose?.();
@@ -52,12 +94,8 @@ export default function Modal({
         tabIndex={-1}
         className={`${styles.panel} ${styles.size[size]} ${styles.mobileType[mobileType]}`}
       >
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={onClose}
-        >
-          × 
+        <button type="button" className={styles.closeButton} onClick={onClose}>
+          ×
         </button>
         {children}
       </div>
