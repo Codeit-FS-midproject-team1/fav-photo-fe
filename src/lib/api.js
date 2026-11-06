@@ -46,6 +46,13 @@ async function request(path, { method = "GET", body, headers, ...rest } = {}) {
     try {
       data = JSON.parse(text);
     } catch {
+      if (!res.ok) {
+        throw new ApiError(
+          res.status,
+          res.statusText || "요청에 실패했습니다.",
+        );
+      }
+
       throw new ApiError(res.status, "응답 형식이 올바르지 않습니다.");
     }
   }

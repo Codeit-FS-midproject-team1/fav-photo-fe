@@ -24,12 +24,18 @@ export default function TextArea({
   const displayError = error;
 
   useEffect(() => {
+    if (controlled || !textareaRef.current) return;
+
+    setInternalLength(textareaRef.current.value.length);
+  }, [controlled, initialValue]);
+
+  useEffect(() => {
     const form = textareaRef.current?.form;
     if (!form || controlled) return;
 
-    const handleReset = () => {
+    const handleReset = (event) => {
       window.requestAnimationFrame(() => {
-        if (!textareaRef.current) return;
+        if (event.defaultPrevented || !textareaRef.current) return;
         textareaRef.current.value = initialValue;
         setInternalLength(initialValue.length);
       });
