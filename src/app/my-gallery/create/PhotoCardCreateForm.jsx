@@ -40,6 +40,7 @@ export default function PhotoCardCreateForm() {
     Boolean(form.name.trim()) &&
     Boolean(form.method) &&
     Boolean(form.genre) &&
+    Boolean(form.description) &&
     Number.isInteger(price) &&
     price >= 1 &&
     price <= 1000 &&
@@ -162,6 +163,10 @@ export default function PhotoCardCreateForm() {
       totalQuantity > 10
     ) {
       nextErrors.totalQuantity = "총 발행량은 1~10사이의 정수여야 합니다.";
+    }
+
+    if (!form.description) {
+      nextErrors.description = "설명을 입력해 주세요";
     }
 
     setErrors(nextErrors);
