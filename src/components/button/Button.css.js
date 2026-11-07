@@ -14,13 +14,12 @@ export const widths = {
   XS: style({
     width: 150,
   }),
-  fit: style({ width: "fit-content" }),
 };
 
 export const heights = {
   thick: style({ height: 80 }),
   thin: style({ height: 60 }),
-  auto: style({ height: "auto", minHeight: 0 }),
+  compact: style({ height: 40 }),
 };
 
 export const button = style({
@@ -30,6 +29,7 @@ export const button = style({
   border: "1px solid transparent",
   fontFamily: "inherit",
   fontWeight: vars.fontWeight.bold,
+  textDecoration: "none",
   whiteSpace: "nowrap",
   cursor: "pointer",
   fontSize: "1rem",
@@ -54,12 +54,4 @@ export const secondary = style({
   borderColor: vars.color.gray100,
   color: vars.color.white,
   borderRadius: 2,
-});
-
-export const ghost = style({
-  padding: 0,
-  background: "transparent",
-  border: 0,
-  color: "inherit",
-  borderRadius: 0,
 });
