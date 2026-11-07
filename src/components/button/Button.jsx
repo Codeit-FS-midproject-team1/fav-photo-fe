@@ -4,13 +4,14 @@ import clsx from "clsx";
 const variantStyles = {
   primary: styles.primary,
   secondary: styles.secondary,
+  ghost: styles.ghost,
 };
 
 /**
  * @typedef {import("react").ButtonHTMLAttributes<HTMLButtonElement> & {
- *   variant?: "primary" | "secondary";
- *   size?: "L" | "M" | "S" | "XS";
- *   thickness?: "thick" | "thin";
+ *   variant?: "primary" | "secondary" | "ghost";
+ *   size?: "responsive" | "XS" | "fit";
+ *   thickness?: "thick" | "thin" | "auto";
  * }} ButtonProps
  */
 
@@ -19,7 +20,7 @@ const variantStyles = {
 export default function Button({
   children,
   variant = "primary",
-  size = "L",
+  size = "responsive",
   thickness = "thick",
   disabled = false,
   type = "button",
@@ -29,7 +30,7 @@ export default function Button({
   const classNames = clsx(
     styles.button,
     variantStyles[variant] ?? variantStyles.primary,
-    styles.widths[size] ?? styles.widths.L,
+    styles.widths[size] ?? styles.widths.responsive,
     styles.heights[thickness] ?? styles.heights.thick,
     className,
   );

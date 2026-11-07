@@ -1,49 +1,21 @@
-"use client";
+import TextArea from "@/components/textArea/TextArea";
 
-import { useState } from "react";
-import ResultScreen from "@/components/resultScreen/ResultScreen";
-
-export default function ResultScreenTest() {
-  const [result, setResult] = useState(null);
-
+export default function HomePage() {
   return (
-    <main>
-      <button
-        type="button"
-        onClick={() =>
-          setResult({
-            success: true,
-            title: "판매 등록",
-            message: "2장 판매 등록에 성공했습니다.",
-            actionText: "마켓플레이스로 돌아가기",
-            actionHref: "/marketplace",
-          })
-        }
-      >
-        성공 화면 테스트
-      </button>
-
-      <button
-        type="button"
-        onClick={() =>
-          setResult({
-            success: false,
-            title: "판매 등록",
-            message: "2장 판매 등록에 실패했습니다.",
-            actionText: "다시 시도하기",
-            actionHref: "/marketplace",
-          })
-        }
-      >
-        실패 화면 테스트
-      </button>
-
-      {result && (
-        <ResultScreen
-          {...result}
-          onClose={() => setResult(null)}
+    <main style={{ maxWidth: 640, margin: "48px auto", padding: "0 24px" }}>
+      <h1>TextArea 초기화 확인</h1>
+      <form>
+        <TextArea
+          label="내용"
+          name="content"
+          defaultValue="처음 표시되는 내용입니다."
+          maxLength={200}
+          placeholder="내용을 입력하세요"
         />
-      )}
+        <button type="reset" style={{ marginTop: 16 }}>
+          초기화
+        </button>
+      </form>
     </main>
   );
 }

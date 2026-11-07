@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const inputWrapper = style({
   display: "flex",
@@ -13,7 +13,7 @@ export const input = style({
   borderRadius: 2,
   padding: "20px 18px",
   outline: "none",
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
   color: vars.color.white,
   selectors: {
     "&::placeholder": {

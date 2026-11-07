@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { vars, fontWeight } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const textarea = style({
   width: "100%",
@@ -10,7 +10,7 @@ export const textarea = style({
   padding: "20px 18px",
   outline: "none",
   resize: "none",
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
   color: vars.color.white,
   selectors: {
     "&::placeholder": {
@@ -42,5 +42,5 @@ export const metaRow = style({
 export const errorMessage = style({
   margin: 0,
   color: vars.color.red,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
 });

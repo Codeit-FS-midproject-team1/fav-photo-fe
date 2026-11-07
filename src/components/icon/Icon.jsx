@@ -18,6 +18,7 @@ import rightIcon from "@/assets/images/right.svg";
 import searchIcon from "@/assets/images/search.svg";
 import upIcon from "@/assets/images/up.svg";
 import visibleIcon from "@/assets/images/visible.svg";
+import randomBox from "@/assets/images/random_box.webp"
 
 const iconSources = {
   minus: minusIcon,
@@ -39,6 +40,7 @@ const iconSources = {
   search: searchIcon,
   up: upIcon,
   visible: visibleIcon,
+  randomBox: randomBox,
 };
 
 export default function Icon({ name, size = 24 }) {
