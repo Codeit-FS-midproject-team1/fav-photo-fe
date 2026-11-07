@@ -1,0 +1,244 @@
+
+import { style } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css.js";
+
+// 확인되지 않은 토큰은 임시 대체 색상을 사용합니다.
+// 실제 팀 theme.css.js를 확인한 뒤 토큰으로 통일하세요.
+const colors = {
+  white: vars.color.white,
+  text: vars.color.black ?? "#222222",
+  textMuted: vars.color.gray500 ?? "#666666",
+  textSubtle: vars.color.gray400 ?? "#777777",
+  border: vars.color.gray300 ?? "#d6d6d6",
+  buttonBorder: vars.color.gray400 ?? "#cccccc",
+  focus: vars.color.blue ?? "#316df6",
+  error: vars.color.red ?? "#bc2424",
+};
+
+export const backdrop = style({
+  position: "fixed",
+  zIndex: 1000,
+  inset: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "20px",
+  backgroundColor: "rgb(0 0 0 / 65%)",
+
+  "@media": {
+    "screen and (max-width: 480px)": {
+      alignItems: "flex-end",
+      padding: 0,
+    },
+  },
+});
+
+export const modal = style({
+  boxSizing: "border-box",
+  width: "min(100%, 560px)",
+  maxHeight: "min(92dvh, 900px)",
+  overflowY: "auto",
+  overscrollBehavior: "contain",
+  borderRadius: "16px",
+  backgroundColor: colors.white,
+  color: colors.text,
+  boxShadow: "0 16px 64px rgb(0 0 0 / 22%)",
+
+  "@media": {
+    "screen and (max-width: 480px)": {
+      maxHeight: "94dvh",
+      borderRadius: "16px 16px 0 0",
+    },
+  },
+});
+
+export const header = style({
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "20px",
+  padding: "28px 28px 0",
+
+  "@media": {
+    "screen and (max-width: 480px)": {
+      padding: "22px 18px 0",
+    },
+  },
+});
+
+export const title = style({
+  margin: 0,
+  fontSize: "22px",
+  fontWeight: 700,
+});
+
+export const subtitle = style({
+  margin: "8px 0 0",
+  color: colors.textMuted,
+  fontSize: "14px",
+  overflowWrap: "anywhere",
+});
+
+export const close = style({
+  flexShrink: 0,
+  width: "36px",
+  height: "36px",
+  border: 0,
+  backgroundColor: "transparent",
+  color: colors.text,
+  fontSize: "28px",
+  cursor: "pointer",
+
+  selectors: {
+    "&:disabled": {
+      opacity: 0.4,
+      cursor: "not-allowed",
+    },
+    "&:focus-visible": {
+      outline: `2px solid ${colors.focus}`,
+      outlineOffset: "3px",
+    },
+  },
+});
+
+export const form = style({
+  display: "grid",
+  gap: "20px",
+  padding: "24px 28px 28px",
+
+  "@media": {
+    "screen and (max-width: 480px)": {
+      padding: "20px 18px",
+    },
+  },
+});
+
+export const field = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: "8px",
+  minWidth: 0,
+});
+
+export const label = style({
+  fontSize: "14px",
+  fontWeight: 700,
+});
+
+const inputBase = {
+  boxSizing: "border-box",
+  width: "100%",
+  minHeight: "44px",
+  padding: "11px 12px",
+  border: `1px solid ${colors.border}`,
+  borderRadius: "8px",
+  backgroundColor: colors.white,
+  color: colors.text,
+  font: "inherit",
+};
+
+export const input = style({
+  ...inputBase,
+
+  selectors: {
+    "&:focus-visible": {
+      outline: `2px solid ${colors.focus}`,
+      outlineOffset: "1px",
+    },
+  },
+});
+
+export const textarea = style({
+  ...inputBase,
+  minHeight: "104px",
+  resize: "vertical",
+
+  selectors: {
+    "&:focus-visible": {
+      outline: `2px solid ${colors.focus}`,
+      outlineOffset: "1px",
+    },
+  },
+});
+
+export const columns = style({
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: "16px",
+
+  "@media": {
+    "screen and (max-width: 480px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
+});
+
+export const help = style({
+  margin: 0,
+  color: colors.textSubtle,
+  fontSize: "12px",
+});
+
+export const count = style({
+  alignSelf: "flex-end",
+  margin: 0,
+  color: colors.textSubtle,
+  fontSize: "12px",
+});
+
+export const error = style({
+  margin: 0,
+  color: colors.error,
+  fontSize: "13px",
+  overflowWrap: "anywhere",
+});
+
+export const footer = style({
+  display: "flex",
+  gap: "12px",
+});
+
+const buttonBase = {
+  flex: 1,
+  minHeight: "48px",
+  borderRadius: "8px",
+  fontSize: "15px",
+  fontWeight: 700,
+  cursor: "pointer",
+};
+
+export const cancel = style({
+  ...buttonBase,
+  border: `1px solid ${colors.buttonBorder}`,
+  backgroundColor: colors.white,
+  color: colors.text,
+
+  selectors: {
+    "&:disabled": {
+      opacity: 0.45,
+      cursor: "not-allowed",
+    },
+    "&:focus-visible": {
+      outline: `2px solid ${colors.focus}`,
+      outlineOffset: "3px",
+    },
+  },
+});
+
+export const submit = style({
+  ...buttonBase,
+  border: `1px solid ${colors.text}`,
+  backgroundColor: colors.text,
+  color: colors.white,
+
+  selectors: {
+    "&:disabled": {
+      opacity: 0.45,
+      cursor: "not-allowed",
+    },
+    "&:focus-visible": {
+      outline: `2px solid ${colors.focus}`,
+      outlineOffset: "3px",
+    },
+  },
+});
