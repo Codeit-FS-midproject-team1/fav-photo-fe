@@ -29,6 +29,7 @@ export const button = style({
   border: "1px solid transparent",
   fontFamily: "inherit",
   fontWeight: vars.fontWeight.bold,
+  textDecoration: "none",
   whiteSpace: "nowrap",
   cursor: "pointer",
   fontSize: "1rem",

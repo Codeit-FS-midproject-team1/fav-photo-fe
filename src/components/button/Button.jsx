@@ -1,5 +1,6 @@
 import * as styles from "./Button.css.js";
 import clsx from "clsx";
+import Link from "next/link";
 
 const variantStyles = {
   primary: styles.primary,
@@ -8,6 +9,7 @@ const variantStyles = {
 
 /**
  * @typedef {import("react").ButtonHTMLAttributes<HTMLButtonElement> & {
+ *   href?: string;
  *   variant?: "primary" | "secondary" | "ghost";
  *   size?: "responsive" | "XS" | "fit";
  *   thickness?: "thick" | "thin" | "auto";
@@ -18,6 +20,7 @@ const variantStyles = {
 
 export default function Button({
   children,
+  href,
   variant = "primary",
   size = "responsive",
   thickness = "thick",
@@ -33,6 +36,14 @@ export default function Button({
     styles.heights[thickness] ?? styles.heights.thick,
     className,
   );
+
+  if (href) {
+    return (
+      <Link {...props} href={href} className={classNames}>
+        {children}
+      </Link>
+    );
+  }
 
   return (
     <button {...props} type={type} className={classNames} disabled={disabled}>

@@ -47,8 +47,9 @@ export default function LandingPage() {
               구하기 어려웠던 <br />
               <span className={styles.highlight}>나의 최애</span>가 여기에!
             </h1>
-            <Link
+
             <Button
+              href="/marketplace"
               thickness="compact"
               size="XS"
               className={styles.heroButton}
