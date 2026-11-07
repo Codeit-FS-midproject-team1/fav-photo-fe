@@ -4,7 +4,6 @@ import clsx from "clsx";
 const variantStyles = {
   primary: styles.primary,
   secondary: styles.secondary,
-  ghost: styles.ghost,
 };
 
 /**
