@@ -9,6 +9,32 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  async function logout() {
+    await api.logout();
+    setAccessToken(null);
+    setUser(null);
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function restoreSession() {
+      try {
+        const { accessToken: newAccessToken } = await api.refresh();
+        if (!cancelled) setAccessToken(newAccessToken);
+      } catch {
+      } finally {
+        if (!cancelled) setIsAuthLoading(false);
+      }
+    }
+
+    restoreSession();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -36,6 +62,8 @@ export function AuthProvider({ children }) {
         setAccessToken,
         user,
         isAuthenticated: Boolean(accessToken),
+        isAuthLoading,
+        logout,
       }}
     >
       {children}

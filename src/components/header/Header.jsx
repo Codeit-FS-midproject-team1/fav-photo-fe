@@ -4,7 +4,7 @@ import logoImage from "@/assets/images/logo.svg";
 import Link from "next/link";
 import Icon from "@/components/icon/Icon.jsx";
 
-function LoggedInActions({ points, username, unreadCount }) {
+function LoggedInActions({ points, username, unreadCount,onLogout }) {
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{(points ?? 0).toLocaleString()} P</span>
@@ -18,8 +18,8 @@ function LoggedInActions({ points, username, unreadCount }) {
         {username}
       </button>
       <span className={styles.divider} />
-      <button className={styles.logoutButton} type="button">
-        로그아웃 {/* TODO: 로그아웃 기능 연결 */}
+      <button className={styles.logoutButton} type="button" onClick={onLogout}>
+        로그아웃 
       </button>
     </nav>
   );
@@ -68,6 +68,7 @@ export default function Header({
   points,
   username,
   unreadCount = 0,
+  onLogout
 }) {
   return (
     <header className={styles.header}>
@@ -87,6 +88,7 @@ export default function Header({
               points={points}
               username={username}
               unreadCount={unreadCount}
+              onLogout={onLogout}
             />
           ) : (
             <LoggedOutActions />

@@ -1,4 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+let refreshRequest = null;
 
 /**
  * @param {number} status - HTTP 상태 코드 (네트워크 오류는 0)
@@ -79,6 +80,18 @@ function toQuery(params = {}) {
   return query ? `?${query}` : "";
 }
 
+function refresh() {
+  if (!refreshRequest) {
+    refreshRequest = request("/auth/refresh", {
+      method: "POST",
+    }).finally(() => {
+      refreshRequest = null;
+    });
+  }
+
+  return refreshRequest;
+}
+
 /** 화면에서 쓰는 API 목록 (백엔드가 정해지면 경로와 메서드를 맞춰 추가) */
 export const api = {
   login: (credentials) =>
@@ -91,6 +104,13 @@ export const api = {
     request("/auth/signup", {
       method: "POST",
       body: credentials,
+    }),
+
+  refresh,
+
+  logout: () =>
+    request("/auth/logout", {
+      method: "POST",
     }),
 
   getMe: (accessToken) =>
