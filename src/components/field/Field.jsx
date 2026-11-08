@@ -1,4 +1,5 @@
 import * as styles from "./Field.css.js";
+import clsx from "clsx";
 
 export default function Field({ label, error, htmlFor, children }) {
   return (
@@ -9,7 +10,13 @@ export default function Field({ label, error, htmlFor, children }) {
 
       {children}
 
-      {error && <p className={styles.error}>{error}</p>}
+      <p
+        className={clsx(styles.error, {
+          [styles.errorHidden]: !error,
+        })}
+      >
+        {error}
+      </p>
     </div>
   );
 }

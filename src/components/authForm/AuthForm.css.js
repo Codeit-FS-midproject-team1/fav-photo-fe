@@ -22,7 +22,7 @@ export const logo = style({
   display: "block",
   width: 330,
   height: 60,
-  marginBottom: 80,
+  marginBottom: 40,
   "@media": {
     [media.mobile]: {
       width: 190,
@@ -35,7 +35,12 @@ export const form = style({
   display: "flex",
   flexDirection: "column",
   width: "100%",
-  gap: 36,
+  gap: 12,
+});
+
+export const formError = style({
+  color: vars.color.red,
+  textAlign: "center",
 });
 
 export const submitButton = style({

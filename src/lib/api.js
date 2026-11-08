@@ -81,6 +81,13 @@ function toQuery(params = {}) {
 
 /** 화면에서 쓰는 API 목록 (백엔드가 정해지면 경로와 메서드를 맞춰 추가) */
 export const api = {
-  // 예시
-  getListings: (params) => request(`/listings${toQuery(params)}`),
+  login: (credentials) => request("/auth/login", {
+    method: "POST",
+    body: credentials,
+  }),
+
+  signup: (credentials) => request("/auth/signup", {
+    method: "POST",
+    body: credentials,
+  }),
 };
