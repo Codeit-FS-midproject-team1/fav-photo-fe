@@ -40,7 +40,7 @@ export default function PhotoCardCreateForm() {
     Boolean(form.name.trim()) &&
     Boolean(form.method) &&
     Boolean(form.genre) &&
-    Boolean(form.description) &&
+    Boolean(form.description.trim()) &&
     Number.isInteger(price) &&
     price >= 1 &&
     price <= 1000 &&
