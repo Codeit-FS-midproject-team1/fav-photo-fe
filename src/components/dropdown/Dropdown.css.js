@@ -1,5 +1,5 @@
 import { style, styleVariants } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const root = styleVariants({
   box: { position: "relative" },
@@ -35,7 +35,7 @@ export const trigger = styleVariants({
     color: vars.color.gray200,
     font: "inherit",
     fontSize: 16,
-    fontWeight: fontWeight.bold,
+    fontWeight: vars.fontWeight.bold,
     cursor: "pointer",
   },
 });
@@ -44,7 +44,7 @@ export const triggerError = style({ borderColor: vars.color.red });
 
 export const placeholder = style({
   color: vars.color.gray200,
-  fontWeight: fontWeight.light,
+  fontWeight: vars.fontWeight.light,
 });
 
 const menuBase = {
