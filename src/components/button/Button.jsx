@@ -10,9 +10,9 @@ const variantStyles = {
 /**
  * @typedef {import("react").ButtonHTMLAttributes<HTMLButtonElement> & {
  *   href?: string;
- *   variant?: "primary" | "secondary" | "ghost";
- *   size?: "responsive" | "XS" | "fit";
- *   thickness?: "thick" | "thin" | "auto";
+ *   variant?: "primary" | "secondary";
+ *   size?: "responsive" | "XS" ;
+ *   thickness?: "thick" | "thin";
  * }} ButtonProps
  */
 
@@ -36,6 +36,10 @@ export default function Button({
     styles.heights[thickness] ?? styles.heights.thick,
     className,
   );
+
+  if (href && disabled) {
+    return <span className={classNames}>{children}</span>;
+  }
 
   if (href) {
     return (
