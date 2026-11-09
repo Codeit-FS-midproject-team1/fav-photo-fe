@@ -16,12 +16,8 @@ export class ApiError extends Error {
   }
 }
 
-export async function request(
-  path,
-  { method = "GET", body, headers, ...rest } = {},
-) {
-  const isFormData =
-    typeof FormData !== "undefined" && body instanceof FormData;
+export async function request(path, { method = "GET", body, headers, ...rest } = {}) {
+  const isFormData = body instanceof FormData;
   let res;
 
   try {
