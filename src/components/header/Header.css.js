@@ -17,6 +17,11 @@ export const header = style({
   width: "100%",
 });
 
+export const mobileHeaderWrap = style({
+  display: "none",
+  "@media": { [media.mobile]: { display: "block", position: "relative", zIndex: 10 } },
+});
+
 export const inner = style({
   display: "flex",
   alignItems: "center",
@@ -118,3 +123,40 @@ export const mobileActions = style({
   alignItems: "center",
   gap: 12,
 });
+
+export const mobileMenu = style({
+  display: "flex",
+  flexDirection: "column",
+  padding: "8px 20px",
+  background: vars.color.black,
+  borderTop: `1px solid ${vars.color.gray400}`,
+});
+
+export const mobileUsername = style({
+  color: vars.color.gray200,
+  fontFamily: vars.font.br,
+});
+
+export const mobileMenuItem = style({
+  position: "relative",
+  display: "block",
+  width: "100%",
+  padding: "14px 0",
+  color: vars.color.gray200,
+  fontFamily: vars.font.br,
+  textAlign: "left",
+  border: 0,
+  selectors: {
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      left: -20,
+      right: -20,
+      bottom: 0,
+      height: 1,
+      background: vars.color.gray400,
+    },
+  },
+});
+
+

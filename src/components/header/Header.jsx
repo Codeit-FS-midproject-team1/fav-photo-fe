@@ -1,10 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import * as styles from "./Header.css.js";
 import logoImage from "@/assets/images/logo.svg";
 import Link from "next/link";
 import Icon from "@/components/icon/Icon.jsx";
+import { useState } from "react";
+import Dropdown from "@/components/dropdown/Dropdown.jsx";
+import { useRouter } from "next/navigation";
 
 function LoggedInActions({ points, username, unreadCount, onLogout }) {
+  const router = useRouter();
+  const userMenuOptions = [
+    { label: "내 정보", value: "/my-info" },
+    { label: "마이 갤러리", value: "/my-gallery" },
+    { label: "판매 중인 포토카드", value: "/my-sales" },
+    { label: "로그아웃", value: "logout" },
+  ];
+
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{(points ?? 0).toLocaleString()} P</span>
@@ -14,9 +27,16 @@ function LoggedInActions({ points, username, unreadCount, onLogout }) {
       <button type="button">
         <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
       </button>
-      <button className={styles.userButton} type="button">
-        {username}
-      </button>
+      <Dropdown
+        variant="filter"
+        options={userMenuOptions}
+        value={null}
+        placeholder={username}
+        onChange={(value) => {
+          if (value === "logout") onLogout?.();
+          else router.push(value);
+        }}
+      />
       <span className={styles.divider} />
       <button className={styles.logoutButton} type="button" onClick={onLogout}>
         로그아웃
@@ -34,30 +54,71 @@ function LoggedOutActions() {
   );
 }
 
-function MobileHeader({ isLoggedIn, isAuthLoading, unreadCount }) {
+function MobileHeader({
+  isLoggedIn,
+  isAuthLoading,
+  points,
+  username,
+  unreadCount,
+  onLogout,
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <div className={styles.mobileHeader}>
-      <button type="button" className={styles.menuButton}>
-        <Icon name="menu" size={18} />
-      </button>
+    <div className={styles.mobileHeaderWrap}>
+      <div className={styles.mobileHeader}>
+        <button
+          type="button"
+          className={styles.menuButton}
+          aria-label="메뉴"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <Icon name="menu" size={18} />
+        </button>
 
-      <Link href="/" className={styles.logo}>
-        <Image src={logoImage} alt="최애의 포토 로고" width={76} height={14} />
-      </Link>
-
-      {isAuthLoading ? null : isLoggedIn ? (
-        <div className={styles.mobileActions}>
-          <Link href="/random-box">
-            <Icon name="randomBox" />
-          </Link>
-          <button type="button">
-            <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
-          </button>
-        </div>
-      ) : (
-        <Link href="/login" className={styles.login}>
-          로그인
+        <Link href="/" className={styles.logo}>
+          <Image
+            src={logoImage}
+            alt="최애의 포토 로고"
+            width={76}
+            height={14}
+          />
         </Link>
+
+        {isAuthLoading ? null : isLoggedIn ? (
+          <div className={styles.mobileActions}>
+            <Link href="/random-box">
+              <Icon name="randomBox" />
+            </Link>
+            <button type="button">
+              <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+            </button>
+          </div>
+        ) : (
+          <Link href="/login" className={styles.login}>
+            로그인
+          </Link>
+        )}
+      </div>
+      {menuOpen && isLoggedIn && !isAuthLoading && (
+        <nav className={styles.mobileMenu}>
+          <span className={`${styles.points} ${styles.mobileMenuItem}`}>
+            {(points ?? 0).toLocaleString()} P
+          </span>
+          <span className={`${styles.mobileUsername} ${styles.mobileMenuItem}`}>
+            {username}
+          </span>
+          <button
+            className={`${styles.logoutButton} ${styles.mobileMenuItem}`}
+            type="button"
+            onClick={() => {
+              setMenuOpen(false);
+              onLogout?.();
+            }}
+          >
+            로그아웃
+          </button>
+        </nav>
       )}
     </div>
   );
@@ -100,7 +161,10 @@ export default function Header({
       <MobileHeader
         isLoggedIn={isLoggedIn}
         isAuthLoading={isAuthLoading}
+        points={points}
+        username={username}
         unreadCount={unreadCount}
+        onLogout={onLogout}
       />
     </header>
   );
