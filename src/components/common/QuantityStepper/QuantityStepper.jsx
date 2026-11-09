@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import styles from "./QuantityStepper.module.css";
+import * as styles from "./QuantityStepper.css.js";
 
 /**
  * 숫자만 관리하는 제어형 공통 컴포넌트.
