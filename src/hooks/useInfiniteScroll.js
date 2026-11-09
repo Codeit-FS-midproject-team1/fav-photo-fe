@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 // 목록 끝의 <div ref={ref} /> 가 화면에 보이면 다음 페이지를 불러온다
 export default function useInfiniteScroll(loadMore, hasMore) {
-  // 끝 요소가 나중에 생기거나 바뀌어도 알 수 있게 state 로 받는다
+  // 목록 끝의 <div ref={ref} /> 가 화면에 보이면 다음 페이지를 불러온다
+  // - 끝 요소는 로딩 중에도 그대로 둔다 (로딩 표시로 바꾸지 않는다)
+  // - 불러오기가 실패하면 hasMore 를 false 로 넘긴다 (안 그러면 재요청이 반복된다)
   const [target, ref] = useState(null);
   const loading = useRef(false);
   const latestLoadMore = useRef(loadMore);
