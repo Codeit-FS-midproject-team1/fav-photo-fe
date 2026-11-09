@@ -51,6 +51,7 @@ export const size = styleVariants({
   sm: sizeVariant(345),
   md: sizeVariant(400),
   lg: sizeVariant(560),
+  xl: sizeVariant(1160),
 });
 
 export const mobileType = styleVariants({
