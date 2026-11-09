@@ -7,6 +7,7 @@ import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
 import * as styles from "./PhotoCardCreateForm.css.js";
 import { createPhotoCard } from "@/lib/api/photoCards.js";
+import { ApiError } from "@/lib/api.js";
 
 const initialForm = {
   name: "",
@@ -221,8 +222,19 @@ export default function PhotoCardCreateForm() {
 
       // console.log("포토카드 생성 성공", result);
     } catch (error) {
-      setSubmitError(error.message);
-      setIsSubmitting(false);
+      // 입력값 문제(400)는 폼에 남아서 수정 가능
+      if (error instanceof ApiError && error.status === 400) {
+        setSubmitError(error.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 그 밖의 실패(네트워크, 서버 오류, 생성 횟수 초과 등)는 실패 화면으로
+      router.push(
+        `/my-gallery/create/fail?name=${encodeURIComponent(
+          form.name,
+        )}&method=${encodeURIComponent(form.method)}`,
+      );
     }
   };
 
