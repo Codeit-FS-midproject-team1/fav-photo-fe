@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import QuantityStepper from "../QuantityStepper/QuantityStepper";
-import styles from "./ListingFormModal.module.css.js";
+import * as styles from "./ListingFormModal.css.js";
 
 const METHOD_OPTIONS = [
   { value: "PHOTO", label: "사진" },
