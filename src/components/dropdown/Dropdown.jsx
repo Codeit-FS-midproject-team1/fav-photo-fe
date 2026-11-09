@@ -55,7 +55,6 @@ export default function Dropdown({
         id={id}
         type="button"
         aria-expanded={open}
-        aria-invalid={!!error}
         className={clsx(styles.trigger[variant], error && styles.triggerError)}
         onClick={() => setOpen(!open)}
       >
