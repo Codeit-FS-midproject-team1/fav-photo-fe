@@ -14,12 +14,13 @@ export function AuthProvider({ children }) {
   async function logout() {
     try {
       await api.logout(accessToken);
-    } catch (err) {
-      if (!(err instanceof ApiError && err.status === 401)) throw err;
-    } finally {
-      setAccessToken(null);
-      setUser(null);
+    } catch (error) {
+      if (!(error instanceof ApiError && error.status === 401)) {
+        throw error;
+      }
     }
+    setAccessToken(null);
+    setUser(null);
   }
 
   useEffect(() => {
