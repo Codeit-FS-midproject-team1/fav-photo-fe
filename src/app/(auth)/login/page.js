@@ -9,16 +9,28 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const router = useRouter();
   const { setAccessToken } = useAuth();
-  const { submit, isSubmitting, formError, fieldErrors, clearFieldError } =
-    useAuthSubmit();
+  const {
+    submit,
+    isSubmitting,
+    formError,
+    fieldErrors,
+    clearFieldError,
+    setFormError,
+  } = useAuthSubmit();
 
   async function handleLogin(credentials) {
     const result = await submit(() => api.login(credentials));
 
-    if (result.ok) {
-      setAccessToken(result.data.accessToken);
-      router.replace("/");
+    if (!result.ok) return;
+
+    const accessToken = result.data?.accessToken;
+    if (!accessToken) {
+      setFormError("로그인 응답에 액세스 토큰이 없습니다.");
+      return;
     }
+
+    setAccessToken(accessToken);
+    router.replace("/");
   }
 
   return (

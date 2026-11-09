@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ApiError } from "@/lib/api";
 
 export default function useAuthSubmit() {
+  const submittingRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
 
   async function submit(request) {
+    if (submittingRef.current) return { ok: false };
+
+    submittingRef.current = true;
     setIsSubmitting(true);
     setFormError("");
     setFieldErrors({});
@@ -30,6 +34,7 @@ export default function useAuthSubmit() {
 
       return { ok: false };
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   }
@@ -55,5 +60,6 @@ export default function useAuthSubmit() {
     fieldErrors,
     clearFieldError,
     clearErrors,
+    setFormError,
   };
 }
