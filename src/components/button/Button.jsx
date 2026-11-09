@@ -38,7 +38,9 @@ export default function Button({
   );
 
   if (href && disabled) {
-    return <span className={classNames}>{children}</span>;
+    return (
+      <span className={clsx(classNames, styles.disabledLink)}>{children}</span>
+    );
   }
 
   if (href) {

@@ -55,3 +55,8 @@ export const secondary = style({
   color: vars.color.white,
   borderRadius: 2,
 });
+
+export const disabledLink = style({
+  opacity: 0.5,
+  cursor: "not-allowed",
+});
