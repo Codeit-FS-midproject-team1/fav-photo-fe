@@ -1,0 +1,17 @@
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.purchase { display: grid; justify-items: start; gap: 10px; }
+.purchase p { margin: 0; }
+.primary, .secondary {
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  min-height: 44px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.primary { background: #efff04; color: #0f0f0f; }
+.secondary { background: transparent; color: #eee; }
+.primary:disabled, .secondary:disabled { opacity: .5; cursor: not-allowed; }
+.primary:focus-visible, .secondary:focus-visible { outline: 2px solid #efff04; outline-offset: 3px; }
+.error { margin: 12px 20px; color: #ff665d; overflow-wrap: anywhere; }
+.notice { margin: 12px 20px; color: #efff04; }

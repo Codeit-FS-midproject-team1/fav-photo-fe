@@ -1,0 +1,27 @@
+.page {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  background: #0f0f0f;
+  color: #fff;
+  text-align: center;
+}
+.heading { margin: 0; font-size: clamp(30px, 4vw, 44px); }
+.heading strong { color: #efff04; }
+.description { margin: 32px 0 44px; overflow-wrap: anywhere; }
+.actions { display: grid; width: min(100%, 380px); gap: 18px; }
+.link {
+  display: grid;
+  min-height: 54px;
+  place-items: center;
+  padding: 12px;
+  border: 1px solid #aaa;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+}
+.link:hover { border-color: #efff04; }
+.link:focus-visible { outline: 3px solid #efff04; outline-offset: 3px; }
