@@ -12,9 +12,14 @@ export function AuthProvider({ children }) {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   async function logout() {
-    await api.logout();
-    setAccessToken(null);
-    setUser(null);
+    try {
+      await api.logout(accessToken);
+    } catch (err) {
+      if (!(err instanceof ApiError && err.status === 401)) throw err;
+    } finally {
+      setAccessToken(null);
+      setUser(null);
+    }
   }
 
   useEffect(() => {
