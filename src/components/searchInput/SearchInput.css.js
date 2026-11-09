@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 
 export const form = style({
   display: "flex",
@@ -33,7 +33,7 @@ export const input = style({
   selectors: {
     "&::placeholder": {
       color: vars.color.gray200,
-      fontWeight: fontWeight.light,
+      fontWeight: vars.fontWeight.light,
     },
   },
 });
