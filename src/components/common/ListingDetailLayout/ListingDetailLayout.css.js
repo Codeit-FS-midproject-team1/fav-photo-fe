@@ -1,17 +1,15 @@
-
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css.js";
 
-// theme.css.js에서 확인된 white 토큰을 사용합니다.
-// 다른 토큰은 실제 팀 테마 확인 전까지 대체 색상을 사용합니다.
+// 실제 테마 토큰을 사용하고, 정의되지 않은 배경/경계 색상만 기존 색상으로 유지합니다.
 const colors = {
-  background: vars.color.black ?? "#0f0f0f",
-  surface: vars.color.gray900 ?? "#1e1e1e",
-  surfaceSubtle: vars.color.gray800 ?? "#303030",
+  background: vars.color.black,
+  surface: "#1e1e1e",
+  surfaceSubtle: "#303030",
   text: vars.color.white,
-  textSecondary: vars.color.gray300 ?? "#e5e5e5",
-  textMuted: vars.color.gray400 ?? "#b3b3b3",
-  border: vars.color.gray700 ?? "#404040",
+  textSecondary: vars.color.gray300,
+  textMuted: vars.color.gray300,
+  border: "#404040",
 };
 
 export const page = style({
