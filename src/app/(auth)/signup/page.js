@@ -10,7 +10,10 @@ export default function SignupPage() {
   const { submit, isSubmitting, formError, fieldErrors, clearFieldError } =
     useAuthSubmit();
 
-  async function handleSignup({ _passwordConfirm, ...credentials }) {
+  async function handleSignup({
+    passwordConfirm: _passwordConfirm,
+    ...credentials
+  }) {
     const result = await submit(() => api.signup(credentials));
 
     if (result.ok) {

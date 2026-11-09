@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
     async function restoreSession() {
       try {
         const { accessToken: newAccessToken } = await api.refresh();
-        if (!cancelled) setAccessToken(newAccessToken);
+        if (!cancelled) setAccessToken((prev) => prev ?? newAccessToken);
       } catch {
       } finally {
         if (!cancelled) setIsAuthLoading(false);
