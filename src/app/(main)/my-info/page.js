@@ -1,4 +1,3 @@
-// C:/Users/thcjf/Desktop/midproject-fe/src/app/(main)/my-info/page.js
 "use client";
 
 import { useState } from "react";
@@ -6,7 +5,7 @@ import Link from "next/link";
 import PasswordField from "@/components/passwordField/PasswordField";
 import TextField from "@/components/textField/TextField";
 import { useAuth } from "@/contexts/AuthContext";
-import { request } from "@/lib/api";
+import { api } from "@/lib/api";
 import * as styles from "./MyInfo.css";
 
 export default function MyInfoPage() {
@@ -15,14 +14,6 @@ export default function MyInfoPage() {
   const [passwordMessage, setPasswordMessage] = useState("");
   const [savingNickname, setSavingNickname] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
-
-  function patchProfile(field, body) {
-    return request(`/users/me/${field}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${accessToken}` },
-      body,
-    });
-  }
 
   async function changeNickname(event) {
     event.preventDefault();
@@ -43,7 +34,7 @@ export default function MyInfoPage() {
     setSavingNickname(true);
 
     try {
-      await patchProfile("nickname", { nickname });
+      await api.patchNickname(accessToken, { nickname });
       input.value = nickname;
       setUser((current) =>
         current?.id === user.id ? { ...current, nickname } : current,
@@ -72,7 +63,7 @@ export default function MyInfoPage() {
     setSavingPassword(true);
 
     try {
-      await patchProfile("password", { currentPassword, newPassword });
+      await api.patchPassword(accessToken, { currentPassword, newPassword });
       form.reset();
       setPasswordMessage("비밀번호를 변경했어요.");
     } catch (error) {
@@ -142,6 +133,7 @@ export default function MyInfoPage() {
                   label="현재 비밀번호"
                   name="currentPassword"
                   autoComplete="current-password"
+                  disabled={savingPassword}
                   required
                 />
                 <PasswordField
@@ -151,6 +143,7 @@ export default function MyInfoPage() {
                   autoComplete="new-password"
                   minLength={8}
                   maxLength={16}
+                  disabled={savingPassword}
                   required
                 />
                 <PasswordField
@@ -158,6 +151,7 @@ export default function MyInfoPage() {
                   name="confirmPassword"
                   placeholder="새 비밀번호를 한 번 더 입력해 주세요"
                   autoComplete="new-password"
+                  disabled={savingPassword}
                   required
                 />
                 <button className={styles.button} disabled={savingPassword}>
