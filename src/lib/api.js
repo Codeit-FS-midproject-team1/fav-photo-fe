@@ -16,7 +16,12 @@ export class ApiError extends Error {
   }
 }
 
-async function request(path, { method = "GET", body, headers, ...rest } = {}) {
+export async function request(
+  path,
+  { method = "GET", body, headers, ...rest } = {},
+) {
+  const isFormData =
+    typeof FormData !== "undefined" && body instanceof FormData;
   let res;
 
   try {
@@ -24,10 +29,15 @@ async function request(path, { method = "GET", body, headers, ...rest } = {}) {
       method,
       credentials: "include",
       headers: {
-        ...(body !== undefined && { "Content-Type": "application/json" }),
+        ...(body !== undefined &&
+          !isFormData && { "Content-Type": "application/json" }),
         ...headers,
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: isFormData
+        ? body
+        : body !== undefined
+          ? JSON.stringify(body)
+          : undefined,
       ...rest,
     });
   } catch {
