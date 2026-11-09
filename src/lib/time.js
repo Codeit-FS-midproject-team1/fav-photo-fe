@@ -14,12 +14,16 @@ export function timeAgo(date, now = new Date()) {
   if (diff < WEEK) return `${Math.floor(diff / DAY)}일 전`;
   if (diff < 4 * WEEK) return `${Math.floor(diff / WEEK)}주일 전`;
 
-  // 달력 기준 개월 수. 4주가 지났는데 달이 안 바뀌었어도 최소 1개월
-  const months =
+  // 달력 기준 개월 수. 아직 그달의 같은 시각이 안 됐으면 한 달을 뺀다
+  let months =
     (now.getFullYear() - then.getFullYear()) * 12 +
     now.getMonth() -
-    then.getMonth() -
-    (now.getDate() < then.getDate() ? 1 : 0);
+    then.getMonth();
+  const passed = new Date(then);
+  passed.setMonth(then.getMonth() + months);
+  if (passed > now) months -= 1;
+
+  // 4주가 지났는데 한달이 안됐어도 최소 1개월
   if (months < 12) return `${Math.max(months, 1)}개월 전`;
   return `${Math.floor(months / 12)}년 전`;
 }
