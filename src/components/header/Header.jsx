@@ -34,7 +34,7 @@ function LoggedOutActions() {
   );
 }
 
-function MobileHeader({ isLoggedIn, unreadCount }) {
+function MobileHeader({ isLoggedIn, isAuthLoading, unreadCount }) {
   return (
     <div className={styles.mobileHeader}>
       <button type="button" className={styles.menuButton}>
@@ -45,7 +45,7 @@ function MobileHeader({ isLoggedIn, unreadCount }) {
         <Image src={logoImage} alt="최애의 포토 로고" width={76} height={14} />
       </Link>
 
-      {isLoggedIn ? (
+      {isAuthLoading ? null : isLoggedIn ? (
         <div className={styles.mobileActions}>
           <Link href="/random-box">
             <Icon name="randomBox" />
@@ -65,6 +65,7 @@ function MobileHeader({ isLoggedIn, unreadCount }) {
 
 export default function Header({
   isLoggedIn,
+  isAuthLoading,
   points,
   username,
   unreadCount = 0,
@@ -96,7 +97,11 @@ export default function Header({
         </div>
       </div>
 
-      <MobileHeader isLoggedIn={isLoggedIn} unreadCount={unreadCount} />
+      <MobileHeader
+        isLoggedIn={isLoggedIn}
+        isAuthLoading={isAuthLoading}
+        unreadCount={unreadCount}
+      />
     </header>
   );
 }

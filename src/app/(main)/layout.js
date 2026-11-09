@@ -1,3 +1,5 @@
+"use client"
+
 import Header from "@/components/header/Header";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import { useRouter } from "next/navigation";
