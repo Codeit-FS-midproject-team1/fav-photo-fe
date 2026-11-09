@@ -1,6 +1,5 @@
 import { style } from '@vanilla-extract/css';
-
-const MOBILE = 'screen and (max-width: 767px)';
+import { media } from '@/styles/responsive.css';
 
 export const container = style({
   width: '100%',
@@ -10,8 +9,8 @@ export const container = style({
     'screen and (max-width: 1527px)': {
       padding: '0 24px',
     },
-    [MOBILE]: {
+    [media.mobile]: {
       padding: '0 16px',
     },
-  },
+  },  
 });

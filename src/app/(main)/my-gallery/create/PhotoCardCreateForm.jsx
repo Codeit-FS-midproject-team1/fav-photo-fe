@@ -40,6 +40,7 @@ export default function PhotoCardCreateForm() {
     Boolean(form.name.trim()) &&
     Boolean(form.method) &&
     Boolean(form.genre) &&
+    Boolean(form.description) &&
     Number.isInteger(price) &&
     price >= 1 &&
     price <= 1000 &&
@@ -149,7 +150,7 @@ export default function PhotoCardCreateForm() {
       nextErrors.genre = "장르를 선택해 주세요.";
     }
 
-    if (price === "") {
+    if (form.price === "") {
       nextErrors.price = "가격을 입력해 주세요.";
     } else if (!Number.isInteger(price) || price < 1 || price > 1000) {
       nextErrors.price = "가격은 1~1000 사이의 정수여야 합니다.";
@@ -162,6 +163,10 @@ export default function PhotoCardCreateForm() {
       totalQuantity > 10
     ) {
       nextErrors.totalQuantity = "총 발행량은 1~10사이의 정수여야 합니다.";
+    }
+
+    if (!form.description) {
+      nextErrors.description = "설명을 입력해 주세요";
     }
 
     setErrors(nextErrors);
@@ -214,7 +219,7 @@ export default function PhotoCardCreateForm() {
         )}&method=${encodeURIComponent(method)}`,
       );
 
-      console.log("포토카드 생성 성공", result);
+      // console.log("포토카드 생성 성공", result);
     } catch (error) {
       setSubmitError(error.message);
       setIsSubmitting(false);

@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
 let refreshRequest = null;
 
 /**
@@ -16,20 +16,52 @@ export class ApiError extends Error {
   }
 }
 
-async function request(path, { method = "GET", body, headers, ...rest } = {}) {
+// 추가
+function send(path, { method = "GET", body, headers, ...rest }) {
+  const isFormData = body instanceof FormData;
+  const token = getAccessToken();
+
+  return fetch(`${BASE_URL}${path}`, {
+    method,
+    credentials: "include",
+    headers: {
+      ...(body !== undefined &&
+        !isFormData && { "Content-Type": "application/json" }),
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...headers,
+    },
+    body:
+      body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
+    ...rest,
+  });
+}
+
+async function refreshAccessToken() {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if (!res.ok) {
+      clearAccessToken();
+      return false;
+    }
+    const { accessToken } = await res.json();
+    setAccessToken(accessToken);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function request(path, { skipRefresh = false, ...options } = {}) {
   let res;
 
   try {
-    res = await fetch(`${BASE_URL}${path}`, {
-      method,
-      credentials: "include",
-      headers: {
-        ...(body !== undefined && { "Content-Type": "application/json" }),
-        ...headers,
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-      ...rest,
-    });
+    res = await send(path, options);
+    if (res.status === 401 && !skipRefresh && (await refreshAccessToken())) {
+      res = await send(path, options);
+    }
   } catch {
     throw new ApiError(0, "네트워크 오류가 발생했습니다.");
   }
