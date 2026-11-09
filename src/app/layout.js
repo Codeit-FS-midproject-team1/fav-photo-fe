@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko">
       <body className={`${themeClass} ${notoSansKR.className} ${brB.variable}`}>
-        <Header isLoggedIn={true} points={1540} username={"유디"} unreadCount={1} /> {/* TODO: /users/me 연결 */}
+        <Header isLoggedIn={false} points={1540} username={"유디"} unreadCount={1} /> {/* TODO: /users/me 연결 */}
         {children}
       </body>
     </html>
