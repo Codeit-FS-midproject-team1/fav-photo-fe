@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 import { useEffect } from "react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 
 const AuthContext = createContext(null);
 
@@ -46,8 +46,13 @@ export function AuthProvider({ children }) {
       .then((userData) => {
         if (!cancelled) setUser(userData);
       })
-      .catch(() => {
-        if (!cancelled) setUser(null);
+      .catch((err) => {
+        if (cancelled) return;
+
+        if (err instanceof ApiError && err.status === 401) {
+          setAccessToken(null);
+          setUser(null);
+        }
       });
 
     return () => {
