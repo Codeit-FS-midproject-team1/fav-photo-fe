@@ -1,4 +1,4 @@
-import { fontWeight, vars } from "@/styles/theme.css";
+import { vars } from "@/styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
 export const content = style({

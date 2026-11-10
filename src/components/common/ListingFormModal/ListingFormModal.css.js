@@ -1,7 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css.js";
-
-const MOBILE = "screen and (max-width: 767px)";
+import { media } from "@/styles/responsive.css.js";
 
 export const content = style({
   width: "100%",
@@ -50,7 +49,7 @@ export const topFields = style({
   gap: "18px",
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       gridTemplateColumns: "1fr",
     },
   },
@@ -122,7 +121,7 @@ export const columns = style({
   gap: "16px",
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       gridTemplateColumns: "1fr",
     },
   },
@@ -143,7 +142,7 @@ export const count = style({
 
 export const error = style({
   margin: 0,
-  color: "#FF8C86",
+  color: vars.color.red,
   fontSize: "14px",
   lineHeight: 1.5,
   overflowWrap: "anywhere",
@@ -158,7 +157,7 @@ export const footer = style({
   marginTop: 0,
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       gap: "8px",
     },
   },
