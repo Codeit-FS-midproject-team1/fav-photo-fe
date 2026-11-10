@@ -212,6 +212,17 @@ export const counter = style({
   pointerEvents: "none",
 });
 
+// 생성 요청이 실패했을 때 버튼 위에 보이는 안내 문구
+export const submitError = style({
+  margin: 0,
+  color: vars.color.red,
+  fontSize: 16,
+  lineHeight: 1.5,
+  wordBreak: "keep-all",
+  whiteSpace: "pre-line",
+  textAlign: "center",
+});
+
 export const submitButton = style({
   width: "100%",
   height: 70,

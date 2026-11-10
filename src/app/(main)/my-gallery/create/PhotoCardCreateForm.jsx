@@ -7,6 +7,8 @@ import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
 import * as styles from "./PhotoCardCreateForm.css.js";
 import { createPhotoCard } from "@/lib/api/photoCards.js";
+import { ApiError } from "@/lib/api.js";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 const initialForm = {
   name: "",
@@ -34,6 +36,7 @@ export default function PhotoCardCreateForm() {
 
   const price = Number(form.price);
   const totalQuantity = Number(form.totalQuantity);
+  const { accessToken, isAuthLoading } = useAuth();
 
   const isFormValid =
     Boolean(image) &&
@@ -208,7 +211,7 @@ export default function PhotoCardCreateForm() {
         formData.delete("image");
       }
       // console.log(formData.get("image"));
-      const result = await createPhotoCard(formData);
+      const result = await createPhotoCard(accessToken, formData);
 
       const cardName = result.name || form.name;
       const method = result.method || form.method;
@@ -221,8 +224,46 @@ export default function PhotoCardCreateForm() {
 
       // console.log("포토카드 생성 성공", result);
     } catch (error) {
-      setSubmitError(error.message);
-      setIsSubmitting(false);
+      // ApiError 가 아니면(예상 못 한 에러) 결과를 알 수 없는 경우로 본다
+      const status = error instanceof ApiError ? error.status : 0;
+
+      // 2xx: 서버는 생성했고 응답 본문만 읽지 못했다 → 성공 화면
+      if (status >= 200 && status < 300) {
+        router.push(
+          `/my-gallery/create/success?name=${encodeURIComponent(
+            form.name,
+          )}&method=${encodeURIComponent(form.method)}`,
+        );
+        return;
+      }
+
+      // 400: 입력값 문제 → 폼에 남아서 수정
+      if (status === 400) {
+        setSubmitError(error.message);
+        setIsSubmitting(false);
+        return;
+      }
+      // 토큰 만료, 로그인 안함 401 -> 로그인페이지로 이동
+      if (status === 401) {
+        router.push("/login");
+        return;
+      }
+
+      // 0: 응답을 받지 못했다 → 서버가 만들었는지 알 수 없으므로 실패로 단정하지 않는다
+      if (status === 0) {
+        setSubmitError(
+          "생성 결과를 확인하지 못했습니다. \n마이갤러리에서 카드가 만들어졌는지 확인한 뒤 다시 시도해 주세요.",
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 서버가 오류로 응답한 경우(401, 403, 409, 5xx 등)만 실패 화면으로
+      router.push(
+        `/my-gallery/create/fail?name=${encodeURIComponent(
+          form.name,
+        )}&method=${encodeURIComponent(form.method)}`,
+      );
     }
   };
 
@@ -406,12 +447,15 @@ export default function PhotoCardCreateForm() {
               <p className={styles.counter}>{form.description.length}/200</p>
             </div>
           </Field>
-          {submitError && <p>{submitError}</p>}
-
+          {submitError && (
+            <p role="alert" className={styles.submitError}>
+              {submitError}
+            </p>
+          )}
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={isSubmitting || !isFormValid}
+            disabled={isSubmitting || !isFormValid || isAuthLoading}
           >
             {isSubmitting ? "생성 중.." : "생성하기"}
           </button>
