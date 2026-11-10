@@ -131,4 +131,18 @@ export const api = {
         Authorization: `Bearer ${accessToken}`,
       },
     }),
+
+  patchNickname: (accessToken, { nickname }) =>
+    request("/users/me/nickname", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${accessToken}` },
+      body: { nickname },
+    }),
+
+  patchPassword: (accessToken, { currentPassword, newPassword }) =>
+    request("/users/me/password", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${accessToken}` },
+      body: { currentPassword, newPassword },
+    }),
 };

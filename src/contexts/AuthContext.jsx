@@ -72,6 +72,7 @@ export function AuthProvider({ children }) {
         accessToken,
         setAccessToken,
         user,
+        setUser,
         isAuthenticated: Boolean(accessToken),
         isAuthLoading,
         logout,
