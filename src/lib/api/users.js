@@ -5,5 +5,7 @@ const toQuery = (params) =>
     Object.entries(params).filter(([, v]) => v != null && v !== ""),
   ).toString();
 
-export const getMyCards = (params = {}) =>
-  request(`/users/me/cards?${toQuery(params)}`);
+export const getMyCards = (accessToken, params = {}) =>
+  request(`/users/me/cards?${toQuery(params)}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });

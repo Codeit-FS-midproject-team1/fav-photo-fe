@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getMyCards } from "@/lib/api/users.js";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 // 서버 응답 items[] 한 줄 → CardTile이 쓰는 card 모양으로 바꾼다
 const toTileCard = (item) => ({
@@ -26,6 +27,7 @@ export default function useMyCards({
   pageSize,
 }) {
   const [result, setResult] = useState({ key: null, ...EMPTY, error: false });
+  const { accessToken, isAuthLoading } = useAuth();
 
   // 지금 조건을 문자열 하나로 표시한다. 결과의 key와 다르면 아직 불러오는 중
   const queryKey = JSON.stringify([
@@ -36,12 +38,13 @@ export default function useMyCards({
     page,
     pageSize,
   ]);
-  const loading = result.key !== queryKey;
+  const loading = isAuthLoading || (accessToken && result.key !== queryKey);
 
   useEffect(() => {
+    if (isAuthLoading || !accessToken) return;
     let ignore = false; // 늦게 도착한 옛 응답 무시용
 
-    getMyCards({ keyword, method, genre, sort, page, pageSize })
+    getMyCards(accessToken, { keyword, method, genre, sort, page, pageSize })
       .then((data) => {
         if (ignore) return;
         setResult({
@@ -60,7 +63,21 @@ export default function useMyCards({
     return () => {
       ignore = true;
     };
-  }, [keyword, method, genre, sort, page, pageSize, queryKey]);
+  }, [
+    keyword,
+    method,
+    genre,
+    sort,
+    page,
+    pageSize,
+    queryKey,
+    accessToken,
+    isAuthLoading,
+  ]);
+
+  if (!isAuthLoading && !accessToken) {
+    return { ...EMPTY, loading: false, error: false };
+  }
 
   return {
     cards: result.cards,

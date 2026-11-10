@@ -8,6 +8,7 @@ import Icon from "@/components/icon/Icon.jsx";
 import * as styles from "./PhotoCardCreateForm.css.js";
 import { createPhotoCard } from "@/lib/api/photoCards.js";
 import { ApiError } from "@/lib/api.js";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 const initialForm = {
   name: "",
@@ -35,6 +36,7 @@ export default function PhotoCardCreateForm() {
 
   const price = Number(form.price);
   const totalQuantity = Number(form.totalQuantity);
+  const { accessToken, isAuthLoading } = useAuth();
 
   const isFormValid =
     Boolean(image) &&
@@ -209,7 +211,7 @@ export default function PhotoCardCreateForm() {
         formData.delete("image");
       }
       // console.log(formData.get("image"));
-      const result = await createPhotoCard(formData);
+      const result = await createPhotoCard(accessToken, formData);
 
       const cardName = result.name || form.name;
       const method = result.method || form.method;
@@ -239,6 +241,11 @@ export default function PhotoCardCreateForm() {
       if (status === 400) {
         setSubmitError(error.message);
         setIsSubmitting(false);
+        return;
+      }
+      // 토큰 만료, 로그인 안함 401 -> 로그인페이지로 이동
+      if (status === 401) {
+        router.push("/login");
         return;
       }
 
@@ -448,7 +455,7 @@ export default function PhotoCardCreateForm() {
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={isSubmitting || !isFormValid}
+            disabled={isSubmitting || !isFormValid || isAuthLoading}
           >
             {isSubmitting ? "생성 중.." : "생성하기"}
           </button>
