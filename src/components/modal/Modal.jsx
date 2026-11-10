@@ -20,12 +20,16 @@ export default function Modal({
   children,
 }) {
   const panelRef = useRef(null);
+  const onCloseRef = useRef(onClose);
 
   const mounted = useSyncExternalStore(
     subscribeNoop,
     getClientSnapshot,
     getServerSnapshot,
   );
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!mounted || !open) return;
@@ -50,7 +54,7 @@ export default function Modal({
     const handleKeyDown = (event) => {
       // ESC로 모달을 닫습니다.
       if (event.key === "Escape") {
-        onClose?.();
+        onCloseRef.current?.();
         return;
       }
 
@@ -96,7 +100,7 @@ export default function Modal({
         previousFocus.focus?.();
       }
     };
-  }, [mounted, open, onClose]);
+  }, [mounted, open]);
 
   if (!mounted || !open) return null;
 
