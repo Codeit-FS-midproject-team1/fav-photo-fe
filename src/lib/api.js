@@ -1,4 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+export const GOOGLE_LOGIN_URL = `${BASE_URL}/auth/google`;
 
 let refreshRequest = null;
 
@@ -134,5 +135,11 @@ export const api = {
       method: "PATCH",
       headers: { Authorization: `Bearer ${accessToken}` },
       body: { currentPassword, newPassword },
+    }),
+
+  googleSignup: (nickname) =>
+    request("/auth/google/signup", {
+      method: "POST",
+      body: { nickname },
     }),
 };
