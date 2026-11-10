@@ -37,7 +37,7 @@ export const title = style({
 export const form = style({
   display: "flex",
   flexDirection: "column",
-  gap: 34,
+  gap: 26,
 });
 
 export const uploadRow = style({
