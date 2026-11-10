@@ -13,7 +13,11 @@ export const label = style({
 });
 
 export const error = style({
-  marginTop: -5, // 간격 5px로 조정
+  minHeight: 24,
   color: vars.color.red,
   fontWeight: vars.fontWeight.light,
+});
+
+export const errorHidden = style({
+  visibility: "hidden",
 });

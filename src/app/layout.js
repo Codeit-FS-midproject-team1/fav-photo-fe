@@ -1,9 +1,9 @@
 import "@/styles/reset.css.js";
 import "@/styles/globals.css.js";
 import { themeClass } from "@/styles/theme.css.js";
-import Header from "@/components/header/Header";
 import { Noto_Sans_KR } from "next/font/google";
 import localfont from "next/font/local";
+import { AuthProvider } from "@/contexts/AuthContext.jsx";
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ["latin"],
@@ -26,8 +26,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko">
       <body className={`${themeClass} ${notoSansKR.className} ${brB.variable}`}>
-        <Header isLoggedIn={false} points={1540} username={"유디"} unreadCount={1} /> {/* TODO: /users/me 연결 */}
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

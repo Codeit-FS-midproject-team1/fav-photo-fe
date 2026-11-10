@@ -4,7 +4,7 @@ import logoImage from "@/assets/images/logo.svg";
 import Link from "next/link";
 import Icon from "@/components/icon/Icon.jsx";
 
-function LoggedInActions({ points, username, unreadCount }) {
+function LoggedInActions({ points, username, unreadCount, onLogout }) {
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{(points ?? 0).toLocaleString()} P</span>
@@ -18,8 +18,8 @@ function LoggedInActions({ points, username, unreadCount }) {
         {username}
       </button>
       <span className={styles.divider} />
-      <button className={styles.logoutButton} type="button">
-        로그아웃 {/* TODO: 로그아웃 기능 연결 */}
+      <button className={styles.logoutButton} type="button" onClick={onLogout}>
+        로그아웃
       </button>
     </nav>
   );
@@ -34,7 +34,7 @@ function LoggedOutActions() {
   );
 }
 
-function MobileHeader({ isLoggedIn, unreadCount }) {
+function MobileHeader({ isLoggedIn, isAuthLoading, unreadCount }) {
   return (
     <div className={styles.mobileHeader}>
       <button type="button" className={styles.menuButton}>
@@ -45,7 +45,7 @@ function MobileHeader({ isLoggedIn, unreadCount }) {
         <Image src={logoImage} alt="최애의 포토 로고" width={76} height={14} />
       </Link>
 
-      {isLoggedIn ? (
+      {isAuthLoading ? null : isLoggedIn ? (
         <div className={styles.mobileActions}>
           <Link href="/random-box">
             <Icon name="randomBox" />
@@ -65,9 +65,11 @@ function MobileHeader({ isLoggedIn, unreadCount }) {
 
 export default function Header({
   isLoggedIn,
+  isAuthLoading,
   points,
   username,
   unreadCount = 0,
+  onLogout,
 }) {
   return (
     <header className={styles.header}>
@@ -82,11 +84,12 @@ export default function Header({
             />
           </Link>
 
-          {isLoggedIn ? (
+          {isAuthLoading ? null : isLoggedIn ? (
             <LoggedInActions
               points={points}
               username={username}
               unreadCount={unreadCount}
+              onLogout={onLogout}
             />
           ) : (
             <LoggedOutActions />
@@ -94,7 +97,11 @@ export default function Header({
         </div>
       </div>
 
-      <MobileHeader isLoggedIn={isLoggedIn} unreadCount={unreadCount} />
+      <MobileHeader
+        isLoggedIn={isLoggedIn}
+        isAuthLoading={isAuthLoading}
+        unreadCount={unreadCount}
+      />
     </header>
   );
 }
