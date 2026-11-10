@@ -4,7 +4,13 @@ import { useId, useState } from "react";
 
 import Modal from "@/components/modal/Modal";
 import Button from "@/components/button/Button";
-import QuantityStepper from "../QuantityStepper/QuantityStepper";
+import QuantityStepper from "@/components/common/QuantityStepper/QuantityStepper";
+
+import {
+  PRICE_MIN,
+  PRICE_MAX,
+  EXCHANGE_DESCRIPTION_MAX,
+} from "@/lib/constants.js";
 
 import * as styles from "./ListingFormModal.css.js";
 
@@ -39,10 +45,10 @@ function clampQuantity(value, max) {
  * 등록: maxQuantity = 보유 중인 판매 가능 수량
  * 수정: maxQuantity = 기존 남은 수량 + 추가 보유 수량
  *
- * quantity는 변경 후 남은 판매 수량을 의미합니다.
- * API 호출은 부모의 onSubmit에서 처리합니다.
+ * quantity는 변경 후 남은 판매 수량입니다.
+ * 실제 API 호출은 부모의 onSubmit에서 처리합니다.
  *
- * card/listing이 바뀌면 부모에서 key를 변경해
+ * card/listing이 변경되면 부모에서 key를 변경해
  * 입력 상태를 초기화해야 합니다.
  */
 export default function ListingFormModal({
@@ -55,6 +61,7 @@ export default function ListingFormModal({
   isSubmitting = false,
 }) {
   const titleId = useId();
+
   const editMode = Boolean(listing);
 
   const maxNumber = Number(maxQuantity);
@@ -69,7 +76,7 @@ export default function ListingFormModal({
   );
 
   const [price, setPrice] = useState(
-    String(listing?.price ?? card?.price ?? 1),
+    String(listing?.price ?? card?.price ?? PRICE_MIN),
   );
 
   const [exchangeMethod, setExchangeMethod] = useState(
@@ -88,6 +95,7 @@ export default function ListingFormModal({
   const [localSubmitting, setLocalSubmitting] = useState(false);
 
   const busy = isSubmitting || localSubmitting;
+
   const safeQuantity = clampQuantity(quantity, limit);
   const available = limit > 0;
 
@@ -104,13 +112,13 @@ export default function ListingFormModal({
 
     setError("");
 
-    // 1. 판매 가능 수량 확인
+    // 판매할 카드가 없으면 등록할 수 없습니다.
     if (!available) {
       setError("판매할 수 있는 카드가 없습니다.");
       return;
     }
 
-    // 2. 판매 수량 검증
+    // 수량은 판매 가능한 범위 내에서만 선택합니다.
     if (
       !Number.isInteger(safeQuantity) ||
       safeQuantity < 1 ||
@@ -120,19 +128,20 @@ export default function ListingFormModal({
       return;
     }
 
-    // 3. 판매 가격 검증
     const priceNumber = Number(price);
 
+    // 가격 정책은 공통 상수를 사용합니다.
     if (
       !Number.isInteger(priceNumber) ||
-      priceNumber < 1 ||
-      priceNumber > 1000
+      priceNumber < PRICE_MIN ||
+      priceNumber > PRICE_MAX
     ) {
-      setError("가격은 1~1,000P 사이의 정수여야 합니다.");
+      setError(
+        `가격은 ${PRICE_MIN}~${PRICE_MAX.toLocaleString("ko-KR")}P 사이의 정수여야 합니다.`,
+      );
       return;
     }
 
-    // 4. 교환 희망 제작 방식과 장르 검증
     const validMethod = METHOD_OPTIONS.some(
       (option) => option.value === exchangeMethod,
     );
@@ -141,18 +150,17 @@ export default function ListingFormModal({
       (option) => option.value === exchangeGenre,
     );
 
+    // 현재 폼은 교환 희망 방식과 장르를 필수로 처리합니다.
     if (!validMethod || !validGenre) {
       setError("교환 희망 제작 방식과 장르를 선택해 주세요.");
       return;
     }
 
-    // 5. 교환 설명 길이 검증
-    if (exchangeDescription.length > 200) {
-      setError("교환 설명은 200자 이하여야 합니다.");
+    if (exchangeDescription.length > EXCHANGE_DESCRIPTION_MAX) {
+      setError(`교환 설명은 ${EXCHANGE_DESCRIPTION_MAX}자 이하여야 합니다.`);
       return;
     }
 
-    // 6. 저장 함수 확인
     if (typeof onSubmit !== "function") {
       setError("저장 기능이 연결되지 않았습니다.");
       return;
@@ -161,6 +169,7 @@ export default function ListingFormModal({
     setLocalSubmitting(true);
 
     try {
+      // 데이터 저장 및 API 요청은 부모가 담당합니다.
       await onSubmit({
         quantity: safeQuantity,
         price: priceNumber,
@@ -178,13 +187,14 @@ export default function ListingFormModal({
   }
 
   return (
-    <Modal open={isOpen} onClose={handleClose} size="xl" mobileType="sheet">
-      <section
-        className={styles.content}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-      >
+    <Modal
+      open={isOpen}
+      onClose={handleClose}
+      size="xl"
+      mobileType="sheet"
+      labelledBy={titleId}
+    >
+      <section className={styles.content}>
         <header className={styles.header}>
           <h2 id={titleId} className={styles.title}>
             {editMode ? "판매글 수정" : "포토카드 판매 등록"}
@@ -196,9 +206,8 @@ export default function ListingFormModal({
         </header>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          {/* 판매 수량과 판매 가격을 가로 배치 */}
+          {/* 판매 수량과 가격 */}
           <div className={styles.topFields}>
-            {/* 판매 수량 */}
             <fieldset className={styles.fieldset} disabled={busy}>
               <legend className={styles.label}>판매 수량</legend>
 
@@ -218,7 +227,6 @@ export default function ListingFormModal({
               </p>
             </fieldset>
 
-            {/* 판매 가격 */}
             <div className={styles.field}>
               <label className={styles.label} htmlFor={`${titleId}-price`}>
                 판매 가격 (P)
@@ -229,8 +237,8 @@ export default function ListingFormModal({
                 className={styles.input}
                 type="number"
                 inputMode="numeric"
-                min="1"
-                max="1000"
+                min={PRICE_MIN}
+                max={PRICE_MAX}
                 step="1"
                 value={price}
                 onChange={(event) => setPrice(event.target.value)}
@@ -240,7 +248,7 @@ export default function ListingFormModal({
             </div>
           </div>
 
-          {/* 교환 희망 제작 방식과 장르 */}
+          {/* 교환 희망 조건 */}
           <div className={styles.columns}>
             <div className={styles.field}>
               <label className={styles.label} htmlFor={`${titleId}-method`}>
@@ -299,14 +307,16 @@ export default function ListingFormModal({
               id={`${titleId}-description`}
               className={styles.textarea}
               rows={3}
-              maxLength={200}
+              maxLength={EXCHANGE_DESCRIPTION_MAX}
               placeholder="원하는 교환 조건을 입력해 주세요."
               value={exchangeDescription}
               onChange={(event) => setExchangeDescription(event.target.value)}
               disabled={busy}
             />
 
-            <p className={styles.count}>{exchangeDescription.length}/200</p>
+            <p className={styles.count}>
+              {exchangeDescription.length}/{EXCHANGE_DESCRIPTION_MAX}
+            </p>
           </div>
 
           {/* 오류 메시지 */}
