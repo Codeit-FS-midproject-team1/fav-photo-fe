@@ -1,9 +1,7 @@
 import { style } from "@vanilla-extract/css";
 
 import { vars } from "@/styles/theme.css.js";
-
-const TABLET = "screen and (max-width: 1023px)";
-const MOBILE = "screen and (max-width: 767px)";
+import { media } from "@/styles/responsive.css.js";
 
 export const container = style({
   width: "100%",
@@ -16,7 +14,7 @@ export const container = style({
   fontFamily: vars.font.notoSans,
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       padding: "24px 16px",
     },
   },
@@ -29,11 +27,11 @@ export const main = style({
   gap: "48px",
 
   "@media": {
-    [TABLET]: {
+    [media.tabletOnly]: {
       gap: "28px",
     },
 
-    [MOBILE]: {
+    [media.mobile]: {
       gridTemplateColumns: "1fr",
       gap: "32px",
     },
@@ -100,7 +98,7 @@ export const title = style({
   overflowWrap: "anywhere",
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       fontSize: "24px",
     },
   },
@@ -248,7 +246,7 @@ export const actions = style({
   marginTop: "32px",
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       flexDirection: "column",
     },
   },
@@ -262,7 +260,7 @@ export const extraContent = style({
   borderTop: `1px solid ${vars.color.gray400}`,
 
   "@media": {
-    [MOBILE]: {
+    [media.mobile]: {
       marginTop: "40px",
     },
   },

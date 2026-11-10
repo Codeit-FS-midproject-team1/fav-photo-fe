@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 import Modal from "@/components/modal/Modal";
 import Button from "@/components/button/Button";
@@ -93,6 +93,7 @@ export default function ListingFormModal({
 
   const [error, setError] = useState("");
   const [localSubmitting, setLocalSubmitting] = useState(false);
+  const submitLockRef = useRef(false);
 
   const busy = isSubmitting || localSubmitting;
 
@@ -108,7 +109,7 @@ export default function ListingFormModal({
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (busy) return;
+    if (busy || submitLockRef.current) return;
 
     setError("");
 
@@ -166,6 +167,7 @@ export default function ListingFormModal({
       return;
     }
 
+    submitLockRef.current = true;
     setLocalSubmitting(true);
 
     try {
@@ -182,6 +184,7 @@ export default function ListingFormModal({
         submitError?.message || "저장에 실패했습니다. 다시 시도해 주세요.",
       );
     } finally {
+      submitLockRef.current = false;
       setLocalSubmitting(false);
     }
   }
