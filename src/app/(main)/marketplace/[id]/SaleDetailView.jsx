@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -34,6 +34,7 @@ export default function SaleDetailView() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const cancelLockRef = useRef(false);
   const [cancelError, setCancelError] = useState("");
   const [purchaseMessage, setPurchaseMessage] = useState(null);
   const [heldResult, setHeldResult] = useState({
@@ -151,7 +152,8 @@ export default function SaleDetailView() {
   };
 
   const handleCancel = async () => {
-    if (isCancelling) return;
+    if (isCancelling || cancelLockRef.current) return;
+    cancelLockRef.current = true;
     setIsCancelling(true);
     setCancelError("");
     try {
@@ -167,6 +169,7 @@ export default function SaleDetailView() {
     } catch (error) {
       setCancelError(error?.message || "판매 취소에 실패했습니다.");
     } finally {
+      cancelLockRef.current = false;
       setIsCancelling(false);
     }
   };

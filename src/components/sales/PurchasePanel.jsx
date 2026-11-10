@@ -11,6 +11,7 @@ import {
   PRICE_MAX,
   PURCHASE_QUANTITY_MIN,
 } from "@/lib/constants.js";
+import { isRequestResultUncertain } from "@/lib/isRequestResultUncertain.js";
 
 import * as styles from "./PurchasePanel.css.js";
 
@@ -23,32 +24,40 @@ export default function PurchasePanel({
   onRefreshListing,
 }) {
   const titleId = useId();
+
   const [quantity, setQuantity] = useState(PURCHASE_QUANTITY_MIN);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [isResultUncertain, setIsResultUncertain] = useState(false);
   const [needsListingRefresh, setNeedsListingRefresh] = useState(false);
+
   const pendingRequestRef = useRef(null);
   const submittingRef = useRef(false);
 
   const stock = Number(remainingQuantity);
   const unitPrice = Number(price);
+
   const isValidStock =
     Number.isSafeInteger(stock) && stock >= PURCHASE_QUANTITY_MIN;
+
   const isValidPrice =
     Number.isSafeInteger(unitPrice) &&
     unitPrice >= PRICE_MIN &&
     unitPrice <= PRICE_MAX;
+
   const selectedQuantity = isValidStock
     ? Math.max(PURCHASE_QUANTITY_MIN, Math.min(quantity, stock))
     : PURCHASE_QUANTITY_MIN;
+
   const totalPrice = unitPrice * selectedQuantity;
+
   const canBuy =
     isValidStock && isValidPrice && Number.isSafeInteger(totalPrice);
 
   const handleQuantityChange = (nextQuantity) => {
     if (isSubmitting || isResultUncertain) return;
+
     setQuantity(nextQuantity);
     setError("");
     setIsResultUncertain(false);
@@ -57,9 +66,11 @@ export default function PurchasePanel({
   };
 
   const handleOpenConfirm = () => {
-    if (!canBuy) return;
+    if (!canBuy || isSubmitting) return;
+
     setError("");
-    // 앞선 요청의 결과를 모르면 같은 식별자로 재시도한다는 사실을 안내합니다.
+
+    // 이전 구매 결과가 불확실하면 동일한 요청 키를 사용합니다.
     setIsResultUncertain(Boolean(pendingRequestRef.current));
     setNeedsListingRefresh(false);
     setIsConfirmOpen(true);
@@ -67,14 +78,17 @@ export default function PurchasePanel({
 
   const handleCloseConfirm = () => {
     if (isSubmitting) return;
+
     setIsConfirmOpen(false);
     setError("");
     setNeedsListingRefresh(false);
-    // 결과가 불확실한 요청의 식별자는 유지해 중복 구매를 방지합니다.
+
+    // 결과가 불확실한 구매 요청 식별자는 유지합니다.
   };
 
   const handleRefreshListing = () => {
     if (isSubmitting) return;
+
     setIsConfirmOpen(false);
     setNeedsListingRefresh(false);
     onRefreshListing?.();
@@ -82,6 +96,7 @@ export default function PurchasePanel({
 
   const handlePurchase = async () => {
     if (!canBuy || isSubmitting || submittingRef.current) return;
+
     if (!accessToken) {
       setError("로그인이 필요합니다.");
       return;
@@ -107,27 +122,34 @@ export default function PurchasePanel({
         accessToken,
         pendingRequestRef.current,
       );
-      pendingRequestRef.current = null;
-      setIsResultUncertain(false);
-      setNeedsListingRefresh(false);
-      setIsConfirmOpen(false);
-      onPurchased?.({ quantity: selectedQuantity });
     } catch (purchaseError) {
       const status = purchaseError?.status;
-      const isUncertain =
-        status === 0 || (typeof status === "number" && status >= 500);
+      const isUncertain = isRequestResultUncertain(purchaseError);
 
-      // 결과를 확신할 수 없는 경우만 동일한 요청 키를 재사용합니다.
-      if (!isUncertain) pendingRequestRef.current = null;
+      // 결과가 불확실한 경우에만 같은 요청 키를 유지합니다.
+      if (!isUncertain) {
+        pendingRequestRef.current = null;
+      }
+
       setIsResultUncertain(isUncertain);
       setNeedsListingRefresh(
         status === 400 || status === 404 || status === 409,
       );
       setError(purchaseError?.message || "구매에 실패했습니다.");
+
+      return;
     } finally {
       submittingRef.current = false;
       setIsSubmitting(false);
     }
+
+    // API 성공과 화면 갱신을 분리하여 구매 성공을 실패로 처리하지 않습니다.
+    pendingRequestRef.current = null;
+    setIsResultUncertain(false);
+    setNeedsListingRefresh(false);
+    setIsConfirmOpen(false);
+
+    onPurchased?.({ quantity: selectedQuantity });
   };
 
   if (!canBuy) {
@@ -142,6 +164,7 @@ export default function PurchasePanel({
     <div className={styles.container}>
       <div className={styles.quantityRow}>
         <span className={styles.label}>구매 수량</span>
+
         <QuantityStepper
           value={selectedQuantity}
           min={PURCHASE_QUANTITY_MIN}
@@ -180,23 +203,28 @@ export default function PurchasePanel({
           <h2 id={titleId} className={styles.confirmTitle}>
             포토카드를 구매하시겠습니까?
           </h2>
+
           <p className={styles.confirmText}>
             {selectedQuantity}장 · {totalPrice.toLocaleString("ko-KR")}P
           </p>
+
           <p className={styles.help}>
             구매를 확정하면 서버에서 포인트 잔액과 남은 수량을 다시 확인합니다.
           </p>
+
           {error && (
             <p className={styles.error} role="alert">
               {error}
             </p>
           )}
+
           {isResultUncertain && (
             <p className={styles.help} role="status">
               구매 결과를 확인하지 못했습니다. 다시 구매를 누르면 동일한 요청
               식별자로 재시도합니다. 먼저 구매 내역을 확인하는 것도 좋습니다.
             </p>
           )}
+
           <div className={styles.confirmActions}>
             {needsListingRefresh && (
               <Button
@@ -210,6 +238,7 @@ export default function PurchasePanel({
                 판매글 다시 조회
               </Button>
             )}
+
             <Button
               type="button"
               variant="secondary"
@@ -220,6 +249,7 @@ export default function PurchasePanel({
             >
               돌아가기
             </Button>
+
             <Button
               type="button"
               variant="primary"

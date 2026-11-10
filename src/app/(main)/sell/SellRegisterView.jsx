@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +10,7 @@ import ListingFormModal from "@/components/common/ListingFormModal/ListingFormMo
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import { createSaleListing, getSaleableCards } from "@/lib/api/saleListings.js";
 import { SALE_CARD_PAGE_SIZE } from "@/lib/constants.js";
+import { isRequestResultUncertain } from "@/lib/isRequestResultUncertain.js";
 
 import * as styles from "./SellRegisterView.css.js";
 
@@ -55,6 +56,8 @@ export default function SellRegisterView() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [notice, setNotice] = useState("");
   const [submissionError, setSubmissionError] = useState("");
+  // state 갱신 전 연속 제출을 차단합니다. 등록 API에는 중복 방지 키가 없습니다.
+  const submitLockRef = useRef(false);
 
   const isAuthenticated = !isAuthLoading && Boolean(accessToken);
 
@@ -127,10 +130,12 @@ export default function SellRegisterView() {
   };
 
   const handleSubmit = async (formValues) => {
-    if (!selectedCard || hasSubmitted || isSubmitting) {
+    if (submitLockRef.current || hasSubmitted || isSubmitting) return;
+    if (!selectedCard) {
       throw new Error("판매 등록을 진행할 수 없습니다.");
     }
 
+    submitLockRef.current = true;
     setIsSubmitting(true);
 
     let createdListing;
@@ -142,9 +147,7 @@ export default function SellRegisterView() {
       );
     } catch (error) {
       setIsSubmitting(false);
-      const status = error?.status;
-      const isUncertain =
-        status === 0 || (typeof status === "number" && status >= 500);
+      const isUncertain = isRequestResultUncertain(error);
 
       if (isUncertain) {
         // 등록 API에는 구매와 달리 중복 요청 방지 키가 없으므로 자동 재시도하지 않습니다.
@@ -159,6 +162,8 @@ export default function SellRegisterView() {
         return;
       }
 
+      // 결과가 불확실하지 않은 오류에서만 제출 잠금을 해제합니다.
+      submitLockRef.current = false;
       throw error;
     }
 
