@@ -9,6 +9,10 @@ const STATUS_CONFIG = {
     label: "교환 제시 후 대기 중",
     color: "offered",
   },
+  OFFER_PENDING: {
+    label: "교환 실패",
+    color: "offered",
+  },
 };
 
 export default function StatusChip({ status }) {
