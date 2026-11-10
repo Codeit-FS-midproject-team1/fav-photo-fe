@@ -43,11 +43,8 @@ const iconSources = {
   up: upIcon,
   visible: visibleIcon,
   randomBox: randomBox,
-<<<<<<< HEAD
   accepted: acceptedIcon,
-=======
   loginGoogle: loginGoogle,
->>>>>>> 800edcfff658045540c48bdc553933458e1c1ed6
 };
 
 export default function Icon({ name, size = 24 }) {
