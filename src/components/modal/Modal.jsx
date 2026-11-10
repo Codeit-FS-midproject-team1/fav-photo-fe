@@ -1,58 +1,67 @@
+
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import * as styles from "./Modal.css";
+
+import * as styles from "./Modal.css.js";
+
+// 서버와 클라이언트의 렌더링 차이를 안전하게 처리합니다.
+const subscribeNoop = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export default function Modal({
   open,
   onClose,
   size = "md",
   mobileType = "sheet",
+  labelledBy,
+  label,
   children,
 }) {
   const panelRef = useRef(null);
-  const onCloseRef = useRef(onClose);
-  const emptySubscribe = () => () => {};
-  const getClientSnapshot = () => true;
-  const getServerSnapshot = () => false;
+
   const mounted = useSyncExternalStore(
-    emptySubscribe,
+    subscribeNoop,
     getClientSnapshot,
     getServerSnapshot,
   );
 
   useEffect(() => {
-  onCloseRef.current = onClose;
-}, [onClose]);
-
-
-  useEffect(() => {
     if (!mounted || !open) return;
 
     const previousFocus = document.activeElement;
-    const panel = panelRef.current;
     const previousOverflow = document.body.style.overflow;
+    const panel = panelRef.current;
 
+    // 모달이 열려 있는 동안 배경 스크롤을 방지합니다.
     document.body.style.overflow = "hidden";
+
+    // 다이얼로그 역할이 지정된 패널에 포커스를 이동합니다.
     panel?.focus();
 
     const getFocusable = () =>
-      panel?.querySelectorAll(
-        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      ) ?? [];
+      Array.from(
+        panel?.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
 
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") {
+    const handleKeyDown = (event) => {
+      // ESC로 모달을 닫습니다.
+      if (event.key === "Escape") {
         onClose?.();
         return;
       }
 
-      if (e.key !== "Tab") return;
+      if (event.key !== "Tab") return;
 
       const focusable = getFocusable();
-      if (!focusable.length) {
-        e.preventDefault();
+
+      // 포커스 가능한 요소가 없다면 패널에 포커스를 유지합니다.
+      if (focusable.length === 0) {
+        event.preventDefault();
         panel?.focus();
         return;
       }
@@ -60,43 +69,73 @@ export default function Modal({
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
 
+      // Shift + Tab: 처음에서 마지막 요소로 이동
       if (
-        e.shiftKey &&
-        (document.activeElement === first || document.activeElement === panel)
+        event.shiftKey &&
+        (document.activeElement === first ||
+          document.activeElement === panel)
       ) {
-        e.preventDefault();
+        event.preventDefault();
         last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
+      }
+
+      // Tab: 마지막에서 처음 요소로 이동
+      else if (
+        !event.shiftKey &&
+        document.activeElement === last
+      ) {
+        event.preventDefault();
         first.focus();
       }
     };
 
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
+
       document.body.style.overflow = previousOverflow;
-      if (previousFocus?.isConnected) previousFocus.focus?.();
+
+      // 모달이 닫히면 이전에 포커스된 요소로 돌아갑니다.
+      if (previousFocus?.isConnected) {
+        previousFocus.focus?.();
+      }
     };
   }, [mounted, open, onClose]);
 
   if (!mounted || !open) return null;
 
-  const handleOverlayMouseDown = (e) => {
-    if (e.target === e.currentTarget) onClose?.();
+  const handleOverlayMouseDown = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose?.();
+    }
   };
 
   return createPortal(
-    <div className={styles.overlay} onMouseDown={handleOverlayMouseDown}>
+    <div
+      className={styles.overlay}
+      onMouseDown={handleOverlayMouseDown}
+    >
       <div
         ref={panelRef}
         tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={labelledBy}
+        aria-label={
+          labelledBy ? undefined : label || "대화상자"
+        }
         className={`${styles.panel} ${styles.size[size]} ${styles.mobileType[mobileType]}`}
       >
-        <button type="button" className={styles.closeButton} onClick={onClose}>
+        <button
+          type="button"
+          className={styles.closeButton}
+          aria-label="닫기"
+          onClick={onClose}
+        >
           ×
         </button>
+
         {children}
       </div>
     </div>,
