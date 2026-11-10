@@ -12,7 +12,13 @@ export function AuthProvider({ children }) {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   async function logout() {
-    await api.logout();
+    try {
+      await api.logout(accessToken);
+    } catch (error) {
+      if (!(error instanceof ApiError && error.status === 401)) {
+        throw error;
+      }
+    }
     setAccessToken(null);
     setUser(null);
   }
@@ -66,6 +72,7 @@ export function AuthProvider({ children }) {
         accessToken,
         setAccessToken,
         user,
+        setUser,
         isAuthenticated: Boolean(accessToken),
         isAuthLoading,
         logout,
