@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 import ResultScreen from "@/components/resultScreen/ResultScreen.jsx";
+import Button from "@/components/button/Button.jsx";
 import { getSaleListing } from "@/lib/api/saleListings.js";
 
 import * as styles from "./SellSuccessView.css.js";
 
 export default function SellSuccessView() {
   const { id } = useParams();
+  const [retryCount, setRetryCount] = useState(0);
   const [result, setResult] = useState({ id: null, listing: null, error: "" });
 
   useEffect(() => {
@@ -36,7 +38,12 @@ export default function SellSuccessView() {
     return () => {
       isActive = false;
     };
-  }, [id]);
+  }, [id, retryCount]);
+
+  const handleRetry = () => {
+    setResult({ id: null, listing: null, error: "" });
+    setRetryCount((count) => count + 1);
+  };
 
   if (typeof id !== "string" || !id) {
     return (
@@ -61,6 +68,9 @@ export default function SellSuccessView() {
         <p>
           이미 등록되었을 수 있으므로 새 판매 등록을 중복으로 시도하지 마세요.
         </p>
+        <Button type="button" variant="secondary" onClick={handleRetry}>
+          판매글 다시 조회
+        </Button>
       </main>
     );
   }

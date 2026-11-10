@@ -171,11 +171,16 @@ export default function SaleDetailView() {
     }
   };
 
-  const handlePurchased = () => {
+  const handlePurchased = ({ quantity } = {}) => {
+    const hasQuantity = Number.isSafeInteger(quantity) && quantity > 0;
+
     setPurchaseMessage({
       listingId: id,
-      text: "구매가 완료되었습니다. 최신 판매 수량을 확인하고 있습니다.",
+      text: hasQuantity
+        ? `${quantity}장 구매가 완료되었습니다.`
+        : "구매가 완료되었습니다.",
     });
+
     handleRetry();
   };
 
@@ -286,6 +291,7 @@ export default function SaleDetailView() {
         remainingQuantity={remainingQuantity}
         accessToken={accessToken}
         onPurchased={handlePurchased}
+        onRefreshListing={handleRetry}
       />
     );
   } else if (
