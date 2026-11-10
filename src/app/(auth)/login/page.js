@@ -1,7 +1,7 @@
 "use client";
 
 import AuthForm from "@/components/authForm/AuthForm.jsx";
-import { api } from "@/lib/api";
+import { api, GOOGLE_LOGIN_URL } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import useAuthSubmit from "@/hooks/useAuthSubmit";
 import { useRouter } from "next/navigation";
@@ -33,6 +33,10 @@ export default function LoginPage() {
     router.replace("/");
   }
 
+  function handleGoogleLogin() {
+    window.location.assign(GOOGLE_LOGIN_URL);
+  }
+
   return (
     <AuthForm
       mode="login"
@@ -41,6 +45,7 @@ export default function LoginPage() {
       formError={formError}
       fieldErrors={fieldErrors}
       onFieldChange={clearFieldError}
+      onGoogleLogin={handleGoogleLogin}
     />
   );
 }

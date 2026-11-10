@@ -8,7 +8,12 @@ import Button from "@/components/button/Button.jsx";
 import PasswordField from "@/components/passwordField/PasswordField.jsx";
 import TextField from "@/components/textField/TextField.jsx";
 import * as styles from "./AuthForm.css.js";
-import { validateLogin, validateSignup } from "./validation.js";
+import {
+  validateLogin,
+  validateNickname,
+  validateSignup,
+} from "./validation.js";
+import Icon from "@/components/icon/Icon.jsx";
 
 const formCopy = {
   login: {
@@ -34,6 +39,7 @@ export default function AuthForm({
   fieldErrors = {},
   isSubmitting = false,
   onFieldChange,
+  onGoogleLogin,
 }) {
   const [values, setValues] = useState({
     nickname: "",
@@ -46,9 +52,20 @@ export default function AuthForm({
   const [submitted, setSubmitted] = useState(false);
 
   const isSignup = mode === "signup";
-  const copy = formCopy[isSignup ? "signup" : "login"];
-  const fields = isSignup ? signupFields : loginFields;
-  const errors = isSignup ? validateSignup(values) : validateLogin(values);
+  const isGoogleSignup = mode === "googleSignup";
+  const showNickname = isSignup || isGoogleSignup;
+  const copy = showNickname ? formCopy.signup : formCopy.login;
+
+  let fields = loginFields;
+  let errors = validateLogin(values);
+
+  if (isGoogleSignup) {
+    fields = ["nickname"];
+    errors = { nickname: validateNickname(values.nickname) };
+  } else if (isSignup) {
+    fields = signupFields;
+    errors = validateSignup(values);
+  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -62,6 +79,7 @@ export default function AuthForm({
 
     return clientError || fieldErrors[field] || "";
   }
+
   function handleSubmit(event) {
     event.preventDefault();
     setSubmitted(true);
@@ -74,7 +92,9 @@ export default function AuthForm({
   return (
     <main className={styles.main}>
       <section className={styles.panel}>
-        <Image className={styles.logo} src={logoImage} alt="최애의 포토" />
+        <Link href={"/"}>
+          <Image className={styles.logo} src={logoImage} alt="최애의 포토" />
+        </Link>
 
         <form
           className={styles.form}
@@ -87,7 +107,7 @@ export default function AuthForm({
           }}
           noValidate
         >
-          {isSignup && (
+          {showNickname && (
             <TextField
               label="닉네임"
               name="nickname"
@@ -98,24 +118,28 @@ export default function AuthForm({
               required
             />
           )}
-          <TextField
-            label="이메일"
-            name="email"
-            type="email"
-            placeholder="이메일을 입력해 주세요"
-            value={values.email}
-            onChange={handleChange}
-            error={getError("email")}
-            required
-          />
-          <PasswordField
-            label="비밀번호"
-            name="password"
-            value={values.password}
-            onChange={handleChange}
-            error={getError("password")}
-            required
-          />
+          {!isGoogleSignup && (
+            <>
+              <TextField
+                label="이메일"
+                name="email"
+                type="email"
+                placeholder="이메일을 입력해 주세요"
+                value={values.email}
+                onChange={handleChange}
+                error={getError("email")}
+                required
+              />
+              <PasswordField
+                label="비밀번호"
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+                error={getError("password")}
+                required
+              />
+            </>
+          )}
           {isSignup && (
             <PasswordField
               label="비밀번호 확인"
@@ -136,6 +160,20 @@ export default function AuthForm({
           >
             {isSubmitting ? "처리 중..." : copy.title}
           </Button>
+
+          {onGoogleLogin && (
+            <Button
+              type="button"
+              variant="secondary"
+              thickness="thin"
+              disabled={isSubmitting}
+              onClick={onGoogleLogin}
+              className={styles.googleButton}
+            >
+              <Icon name="loginGoogle" size={32} />
+              Google로 시작하기
+            </Button>
+          )}
         </form>
 
         <p className={styles.footer}>
