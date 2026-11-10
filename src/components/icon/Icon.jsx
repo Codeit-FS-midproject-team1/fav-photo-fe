@@ -20,6 +20,7 @@ import upIcon from "@/assets/images/up.svg";
 import visibleIcon from "@/assets/images/visible.svg";
 import randomBox from "@/assets/images/random_box.webp";
 import acceptedIcon from "@/assets/images/accepted.svg";
+import loginGoogle from "@/assets/images/login_google.svg";
 
 const iconSources = {
   minus: minusIcon,
@@ -42,7 +43,11 @@ const iconSources = {
   up: upIcon,
   visible: visibleIcon,
   randomBox: randomBox,
+<<<<<<< HEAD
   accepted: acceptedIcon,
+=======
+  loginGoogle: loginGoogle,
+>>>>>>> 800edcfff658045540c48bdc553933458e1c1ed6
 };
 
 export default function Icon({ name, size = 24 }) {
