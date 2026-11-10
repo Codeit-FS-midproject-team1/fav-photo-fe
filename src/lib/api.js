@@ -16,7 +16,10 @@ export class ApiError extends Error {
   }
 }
 
-export async function request(path, { method = "GET", body, headers, ...rest } = {}) {
+export async function request(
+  path,
+  { method = "GET", body, headers, ...rest } = {},
+) {
   const isFormData = body instanceof FormData;
   let res;
 
@@ -114,9 +117,12 @@ export const api = {
 
   refresh,
 
-  logout: () =>
+  logout: (accessToken) =>
     request("/auth/logout", {
       method: "POST",
+      headers: accessToken
+        ? { Authorization: `Bearer ${accessToken}` }
+        : undefined,
     }),
 
   getMe: (accessToken) =>
