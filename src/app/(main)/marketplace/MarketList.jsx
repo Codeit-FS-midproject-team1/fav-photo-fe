@@ -36,7 +36,7 @@ export default function MarketList({ accessToken, query }) {
         ...data.items.filter((item) => !prev.some((p) => p.id === item.id)),
       ]);
     } catch (e) {
-      setError(e.message);
+      setError(e.message || "목록을 불러오지 못했어요.");
     }
   }, hasMore);
 
