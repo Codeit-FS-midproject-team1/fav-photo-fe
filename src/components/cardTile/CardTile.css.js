@@ -1,5 +1,8 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { media } from "@/styles/responsive.css";
+
+// 시안: PC 패딩 40 · 태블릿 20 · 모바일 10 (모바일은 글자도 작고 로고가 없다)
 
 export const card = style({
   display: "flex",
@@ -14,6 +17,10 @@ export const card = style({
   font: "inherit",
   textAlign: "left",
   selectors: { "button&": { cursor: "pointer" } },
+  "@media": {
+    [media.tabletOnly]: { padding: 20 },
+    [media.mobile]: { padding: 10 },
+  },
 });
 
 export const imageBox = style({
@@ -48,6 +55,9 @@ export const info = style({
   flexDirection: "column",
   gap: 10,
   marginTop: 25,
+  "@media": {
+    [media.mobile]: { gap: 5, marginTop: 10 },
+  },
 });
 
 export const name = style({
@@ -56,6 +66,9 @@ export const name = style({
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
+  "@media": {
+    [media.mobile]: { fontSize: 14 },
+  },
 });
 
 export const meta = style({
@@ -63,8 +76,17 @@ export const meta = style({
   justifyContent: "space-between",
   fontSize: 16,
   fontWeight: vars.fontWeight.light,
+  "@media": {
+    [media.mobile]: { fontSize: 10 },
+  },
 });
-export const tags = style({ display: "flex", gap: 10 });
+export const tags = style({
+  display: "flex",
+  gap: 10,
+  "@media": {
+    [media.mobile]: { gap: 5 },
+  },
+});
 
 export const bar = style({
   color: vars.color.gray400,
@@ -85,6 +107,9 @@ export const divider = style({
   margin: "20px 0",
   border: 0,
   borderTop: `1px solid ${vars.color.gray400}`,
+  "@media": {
+    [media.mobile]: { margin: "10px 0" },
+  },
 });
 
 export const rows = style({
@@ -92,6 +117,9 @@ export const rows = style({
   flexDirection: "column",
   gap: 10,
   margin: 0,
+  "@media": {
+    [media.mobile]: { gap: 5 },
+  },
 });
 
 export const row = style({
@@ -104,14 +132,33 @@ export const label = style({
   fontSize: 16,
   fontWeight: vars.fontWeight.light,
   color: vars.color.gray300,
+  "@media": {
+    [media.mobile]: { fontSize: 10 },
+  },
 });
 
-export const value = style({ margin: 0, fontSize: 18 });
+export const value = style({
+  margin: 0,
+  fontSize: 18,
+  "@media": {
+    [media.mobile]: { fontSize: 10 },
+  },
+});
 
 export const total = style({
   marginLeft: 5,
   fontWeight: vars.fontWeight.light,
   color: vars.color.gray300,
+  "@media": {
+    [media.mobile]: { marginLeft: 2 },
+  },
 });
 
-export const logo = style({ alignSelf: "center", marginTop: 40 });
+export const logo = style({
+  alignSelf: "center",
+  marginTop: 40,
+  "@media": {
+    [media.tabletOnly]: { marginTop: 30 },
+    [media.mobile]: { display: "none" },
+  },
+});
