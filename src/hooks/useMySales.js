@@ -14,6 +14,7 @@ const toTileCard = (item) => ({
   name: item.photoCard.name,
   method: item.photoCard.method,
   genre: item.photoCard.genre,
+  description: item.photoCard.description,
   nickname: item.photoCard.creator.nickname,
   price: item.photoCard.price,
   quantity: item.quantity, // 판매 등록 수량 중 남은 장수 (교환 제안은 항상 1)
