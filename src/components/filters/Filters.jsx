@@ -3,10 +3,12 @@
 import * as styles from "./Filters.css.js";
 import Dropdown from "../dropdown/Dropdown";
 
-// 필터는 한 번에 하나만. 다른 필터를 고르면 앞의 값은 지워지고, 같은 값을 다시 고르면 해제된다
+// 필터마다 값은 하나씩. 같은 값을 다시 고르면 그 필터만 해제된다
 export default function Filters({ groups, values, onChange }) {
-  const select = (key, value) =>
-    onChange(values[key] === value ? {} : { [key]: value });
+  const select = (key, value) => {
+    const { [key]: current, ...rest } = values;
+    onChange(current === value ? rest : { ...rest, [key]: value });
+  };
 
   return (
     <div className={styles.filters}>
