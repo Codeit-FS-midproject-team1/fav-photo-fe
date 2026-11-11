@@ -80,7 +80,7 @@ export const mobileSell = style({
       position: "fixed",
       left: "50%",
       bottom: 40,
-      zIndex: 10,
+      zIndex: 1,
       transform: "translateX(-50%)",
     },
   },
