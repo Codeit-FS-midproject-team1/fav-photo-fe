@@ -5,7 +5,7 @@ const STATUS_CONFIG = {
     label: "판매 중",
     color: "onSale",
   },
-  OFFERED: {
+  OFFER_PENDING: {
     label: "교환 제시 후 대기 중",
     color: "offered",
   },
