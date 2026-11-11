@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
@@ -10,6 +11,8 @@ import Modal from "@/components/modal/Modal";
 import ListingDetailLayout from "@/components/common/ListingDetailLayout/ListingDetailLayout.jsx";
 import ListingFormModal from "@/components/common/ListingFormModal/ListingFormModal.jsx";
 import PurchasePanel from "@/components/sales/PurchasePanel.jsx";
+import ExchangeOfferFlow from "@/components/exchangeOffer/ExchangeOfferFlow.jsx";
+import ExchangeOfferListSection from "@/components/exchangeOffer/ExchangeOfferListSection.jsx";
 import {
   getSaleListing,
   updateSaleListing,
@@ -35,6 +38,8 @@ export default function SaleDetailView() {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [isExchangeOpen, setIsExchangeOpen] = useState(false);
+  const [exchangeListVersion, setExchangeListVersion] = useState(0);
   const [isCancelling, setIsCancelling] = useState(false);
 
   const cancelLockRef = useRef(false);
@@ -87,7 +92,7 @@ export default function SaleDetailView() {
     return () => {
       isActive = false;
     };
-  }, [id, retryCount, accessToken, isAuthLoading]);
+  }, [id, retryCount, isAuthLoading, accessToken]);
 
   // 판매글이 현재 화면의 조회 결과일 때만
   // 보유 카드 조회를 허용합니다.
@@ -320,6 +325,13 @@ export default function SaleDetailView() {
     isOnSale &&
     hasRemainingStock;
 
+  const canOfferExchange =
+    isAuthenticated &&
+    sellerId != null &&
+    !isSeller &&
+    (isOnSale || listing.status === "EXCHANGE_ONLY") &&
+    hasRemainingStock;
+
   // 추가 보유 카드 수량
   const hasHeldQuantity =
     heldLookupKey !== null &&
@@ -364,18 +376,33 @@ export default function SaleDetailView() {
         </Button>
       </div>
     );
-  } else if (canPurchase) {
-    // 구매자: 구매 패널
+  } else if (canPurchase || canOfferExchange) {
     actions = (
-      <PurchasePanel
-        key={id}
-        listingId={id}
-        price={listing.price}
-        remainingQuantity={remainingQuantity}
-        accessToken={accessToken}
-        onPurchased={handlePurchased}
-        onRefreshListing={handleRetry}
-      />
+      <div className={styles.actionRow}>
+        {canPurchase && (
+          <PurchasePanel
+            key={id}
+            listingId={id}
+            price={listing.price}
+            remainingQuantity={remainingQuantity}
+            accessToken={accessToken}
+            onPurchased={handlePurchased}
+            onRefreshListing={handleRetry}
+          />
+        )}
+
+        {canOfferExchange && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="responsive"
+            thickness="thin"
+            onClick={() => setIsExchangeOpen(true)}
+          >
+            교환 제안하기
+          </Button>
+        )}
+      </div>
     );
   } else if (
     !isAuthLoading &&
@@ -443,8 +470,31 @@ export default function SaleDetailView() {
           </p>
         )}
 
-      {/* 판매글 상세 정보 */}
-      <ListingDetailLayout listing={listing} actions={actions} />
+      {/* 판매글 상세 및 교환 제안 목록 */}
+      <ListingDetailLayout listing={listing} actions={actions}>
+        {isAuthenticated &&
+          sellerId != null &&
+          listing.status !== "CANCELED" && (
+            <ExchangeOfferListSection
+              key={`${id}-${exchangeListVersion}`}
+              listingId={id}
+              sellerId={sellerId}
+              onAccepted={handleRetry}
+            />
+          )}
+      </ListingDetailLayout>
+
+      {/* 교환 제안 모달 */}
+      {isExchangeOpen && (
+        <ExchangeOfferFlow
+          key={id}
+          listingId={id}
+          onClose={() => setIsExchangeOpen(false)}
+          onSuccess={() => {
+            setExchangeListVersion((version) => version + 1);
+          }}
+        />
+      )}
 
       {/* 판매글 수정 모달 */}
       {isEditOpen && (

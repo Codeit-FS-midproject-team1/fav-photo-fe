@@ -1,5 +1,3 @@
-// src/components/authForm/validation.js
-
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const signupPasswordPattern =
   /^[A-Za-z0-9_!@#$%^&*()\-+=[\]{};:'",.<>/?\\|`~]+$/;
