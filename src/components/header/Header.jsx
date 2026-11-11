@@ -15,6 +15,7 @@ function LoggedInActions({
   points,
   username,
   unreadCount,
+  notification,
   onLogout,
   onOpenRandomPoint,
 }) {
@@ -36,9 +37,11 @@ function LoggedInActions({
       >
         <Icon name="randomBox" />
       </button>
-      <button type="button">
-        <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
-      </button>
+      {notification ?? (
+        <button type="button">
+          <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+        </button>
+      )}
       <Dropdown
         variant="filter"
         options={userMenuOptions}
@@ -147,6 +150,7 @@ export default function Header({
   points,
   username,
   unreadCount = 0,
+  notification,
   onLogout,
 }) {
   const [randomPointOpen, setRandomPointOpen] = useState(false);
@@ -185,6 +189,7 @@ export default function Header({
               points={points}
               username={username}
               unreadCount={unreadCount}
+              notification={notification}
               onLogout={handleLogout}
               onOpenRandomPoint={openRandomPoint}
             />
