@@ -9,7 +9,13 @@ import * as styles from "./CardImageModal.css.js";
  */
 export default function CardImageModal({ card, onClose }) {
   return (
-    <Modal open onClose={onClose} size="xl" mobileType="sheet">
+    <Modal
+      label={card.name}
+      open
+      onClose={onClose}
+      size="xl"
+      mobileType="sheet"
+    >
       <h2 className={styles.title}>{card.name}</h2>
       <div className={styles.imageBox}>
         {/* eslint-disable-next-line @next/next/no-img-element -- 서버 이미지 주소라 CardTile 과 같이 img 사용 */}
@@ -17,9 +23,7 @@ export default function CardImageModal({ card, onClose }) {
       </div>
       {card.description && (
         <div className={styles.descriptionBox}>
-          {card.description && (
-            <p className={styles.description}>{card.description}</p>
-          )}
+          <p className={styles.description}>{card.description}</p>
         </div>
       )}
     </Modal>
