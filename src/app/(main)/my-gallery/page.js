@@ -102,6 +102,9 @@ export default function MyGalleryPage() {
       ? `(${remainingCreation}/${creation.limit})`
       : "";
 
+  // 남은 횟수가 0일 때만 막기.
+  const canCreate = remainingCreation !== 0;
+
   // 검색·필터·정렬이 바뀌면 1페이지부터 다시 본다
   const changeKeyword = (next) => {
     setKeyword(next);
@@ -179,8 +182,9 @@ export default function MyGalleryPage() {
               href="/my-gallery/create"
               thickness="thin"
               className={styles.actionButton}
+              disabled={!canCreate}
             >
-              포토카드 생성하기({creationText})
+              포토카드 생성하기{creationText}
             </Button>
             <Button
               thickness="thin"
@@ -253,8 +257,9 @@ export default function MyGalleryPage() {
             href="/my-gallery/create"
             thickness="compact"
             className={styles.mobileButton}
+            disabled={!canCreate}
           >
-            생성하기
+            생성하기{creationText}
           </Button>
           <Button
             thickness="compact"
