@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
@@ -512,7 +511,7 @@ export default function SaleDetailView() {
       <Modal
         open={isCancelOpen}
         onClose={handleCloseCancel}
-        size="md"
+        size="lg"
         labelledBy={cancelTitleId}
       >
         <div className={styles.confirmBody}>
