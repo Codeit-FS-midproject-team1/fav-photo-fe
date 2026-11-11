@@ -19,7 +19,9 @@ export const header = style({
 
 export const mobileHeaderWrap = style({
   display: "none",
-  "@media": { [media.mobile]: { display: "block", position: "relative", zIndex: 10 } },
+  "@media": {
+    [media.mobile]: { display: "block", position: "relative", zIndex: 200 },
+  },
 });
 
 export const inner = style({
@@ -91,7 +93,6 @@ export const points = style({
   fontWeight: vars.fontWeight.bold,
 });
 
-
 export const userButton = style({
   color: vars.color.gray200,
   fontFamily: vars.font.br,
@@ -158,5 +159,3 @@ export const mobileMenuItem = style({
     },
   },
 });
-
-

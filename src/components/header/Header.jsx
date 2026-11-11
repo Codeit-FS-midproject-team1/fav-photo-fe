@@ -75,6 +75,7 @@ function MobileHeader({
   points,
   username,
   unreadCount,
+  notification,
   onLogout,
   onOpenRandomPoint,
 }) {
@@ -110,9 +111,11 @@ function MobileHeader({
             >
               <Icon name="randomBox" />
             </button>
-            <button type="button">
-              <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
-            </button>
+            {notification ?? (
+              <button type="button">
+                <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+              </button>
+            )}
           </div>
         ) : (
           <Link href="/login" className={styles.login}>
@@ -205,6 +208,7 @@ export default function Header({
         points={points}
         username={username}
         unreadCount={unreadCount}
+        notification={notification}
         onLogout={handleLogout}
         onOpenRandomPoint={openRandomPoint}
       />
