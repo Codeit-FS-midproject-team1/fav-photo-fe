@@ -38,7 +38,7 @@ export default function NotificationDropdown() {
   useEffect(() => {
     if (!open) return;
     const handleClick = (e) => {
-      if (!ref.current.contains(e.target)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
     };
     const handleKey = (e) => {
       if (e.key === "Escape") setOpen(false);
