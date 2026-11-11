@@ -45,8 +45,10 @@ export function createSaleListing(photoCardId, formValues, accessToken) {
 }
 
 // 판매글 상세 조회
-export function getSaleListing(id) {
-  return request(getSaleListingPath(id));
+export function getSaleListing(id, accessToken) {
+  return request(getSaleListingPath(id), {
+    headers: getAuthHeaders(accessToken),
+  });
 }
 
 // 판매글 수정

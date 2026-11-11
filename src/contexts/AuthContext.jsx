@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+
 import { api, ApiError } from "@/lib/api";
 
 const AuthContext = createContext(null);
@@ -11,31 +11,52 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
+  // 기존 로그아웃 기능 유지
   async function logout() {
     await api.logout();
     setAccessToken(null);
     setUser(null);
   }
 
+  // 구매 후 사용자 정보 및 포인트 갱신
+  async function refreshUser() {
+    if (!accessToken) return null;
+
+    const userData = await api.getMe(accessToken);
+
+    setUser(userData);
+
+    return userData;
+  }
+
+  // 세션 복구
   useEffect(() => {
     let cancelled = false;
 
     async function restoreSession() {
       try {
         const { accessToken: newAccessToken } = await api.refresh();
-        if (!cancelled) setAccessToken((prev) => prev ?? newAccessToken);
+
+        if (!cancelled) {
+          setAccessToken((prev) => prev ?? newAccessToken);
+        }
       } catch {
+        // 기존 동작 유지
       } finally {
-        if (!cancelled) setIsAuthLoading(false);
+        if (!cancelled) {
+          setIsAuthLoading(false);
+        }
       }
     }
 
     restoreSession();
+
     return () => {
       cancelled = true;
     };
   }, []);
 
+  // 로그인 사용자 정보 조회
   useEffect(() => {
     if (!accessToken) return;
 
@@ -44,7 +65,9 @@ export function AuthProvider({ children }) {
     api
       .getMe(accessToken)
       .then((userData) => {
-        if (!cancelled) setUser(userData);
+        if (!cancelled) {
+          setUser(userData);
+        }
       })
       .catch((err) => {
         if (cancelled) return;
@@ -69,6 +92,7 @@ export function AuthProvider({ children }) {
         isAuthenticated: Boolean(accessToken),
         isAuthLoading,
         logout,
+        refreshUser,
       }}
     >
       {children}
