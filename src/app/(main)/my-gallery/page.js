@@ -8,6 +8,7 @@ import Container from "@/components/container/Container.jsx";
 import PageTitle from "@/components/pageTitle/PageTitle.jsx";
 import Button from "@/components/button/Button.jsx";
 import CardPickerModal from "@/components/cardPickerModal/CardPickerModal.jsx";
+import CardImageModal from "@/components/cardImageModal/CardImageModal.jsx";
 import MethodText from "@/components/methodText/MethodText.jsx";
 import SearchInput from "@/components/searchInput/SearchInput.jsx";
 import Filters from "@/components/filters/Filters.jsx";
@@ -21,9 +22,7 @@ import * as styles from "./MyGallery.css.js";
 
 const PAGE_SIZE_DESKTOP = 15; // 3열 × 5행
 const PAGE_SIZE_OTHER = 16; // 2열 × 8행 (태블릿·모바일)
-// 여기부터
 const METHODS = ["PHOTO", "CRAFT", "AI", "ETC"];
-// 여기까지
 
 const METHOD_OPTIONS = [
   { value: "PHOTO", label: "촬영" },
@@ -78,6 +77,7 @@ export default function MyGalleryPage() {
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // 모바일 필터 패널
+  const [viewingCard, setViewingCard] = useState(null); // 크게 보고 있는 카드
 
   const openPicker = () => setIsPickerOpen(true);
   const closePicker = () => setIsPickerOpen(false);
@@ -161,6 +161,7 @@ export default function MyGalleryPage() {
                 { label: "가격", value: `${card.price} P` },
                 { label: "수량", value: card.quantity },
               ]}
+              onClick={() => setViewingCard(card)}
             />
           ))}
         </div>
@@ -276,6 +277,13 @@ export default function MyGalleryPage() {
           title="나의 포토카드 판매하기"
           onSelect={handleSelect}
           onClose={closePicker}
+        />
+      )}
+
+      {viewingCard && (
+        <CardImageModal
+          card={viewingCard}
+          onClose={() => setViewingCard(null)}
         />
       )}
     </main>
