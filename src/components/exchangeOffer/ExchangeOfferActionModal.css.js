@@ -22,12 +22,13 @@ export const content = style({
 
 export const title = style({
   fontFamily: vars.font.br,
-  fontSize: 30,
+  fontSize: 24,
   lineHeight: 1.3,
+  whiteSpace: "nowrap",
 
   "@media": {
     [media.mobile]: {
-      fontSize: 22,
+      fontSize: 18,
     },
   },
 });
