@@ -120,6 +120,18 @@ function NotificationList({ accessToken, onUnreadCount, onClose }) {
 
   return (
     <div className={styles.panel}>
+      <div className={styles.mobileBar}>
+        <button
+          type="button"
+          aria-label="알림 닫기"
+          className={styles.back}
+          onClick={onClose}
+        >
+          <Icon name="back" />
+        </button>
+        <h2 className={styles.mobileTitle}>알림</h2>
+      </div>
+
       {done && items.length === 0 && (
         <p className={styles.empty}>알림이 없어요.</p>
       )}
