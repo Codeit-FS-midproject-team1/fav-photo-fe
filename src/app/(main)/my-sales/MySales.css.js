@@ -73,7 +73,6 @@ export const chip = styleVariants({
   ETC: { ...chipBase, color: vars.color.pink },
 });
 
-// 여기부터
 /* ---------- 검색·필터·정렬 ---------- */
 
 export const toolbar = style({
