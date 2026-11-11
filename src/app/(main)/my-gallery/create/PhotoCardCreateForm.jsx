@@ -204,7 +204,8 @@ export default function PhotoCardCreateForm() {
       )
       .catch(() =>
         setUser((current) =>
-          current?.id === requestedUserId
+          // 지금 유저가 있고, 요청한 사람과 같을 때만 creation을 지운다
+          current && current?.id === requestedUserId
             ? { ...current, creation: null }
             : current,
         ),
