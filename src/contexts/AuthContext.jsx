@@ -13,7 +13,13 @@ export function AuthProvider({ children }) {
 
   // 기존 로그아웃 기능 유지
   async function logout() {
-    await api.logout();
+    try {
+      await api.logout(accessToken);
+    } catch (error) {
+      if (!(error instanceof ApiError && error.status === 401)) {
+        throw error;
+      }
+    }
     setAccessToken(null);
     setUser(null);
   }
@@ -89,6 +95,7 @@ export function AuthProvider({ children }) {
         accessToken,
         setAccessToken,
         user,
+        setUser,
         isAuthenticated: Boolean(accessToken),
         isAuthLoading,
         logout,

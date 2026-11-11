@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css.js";
-import { media } from "@/styles/responsive.css";
+import { media, responsiveWidths } from "@/styles/responsive.css";
 
 export const main = style({
   display: "flex",
@@ -11,11 +11,14 @@ export const main = style({
 });
 
 export const panel = style({
-  width: "100%",
-  maxWidth: 520,
+  ...responsiveWidths.desktop,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+  "@media": {
+    [media.tabletOnly]: responsiveWidths.tablet,
+    [media.mobile]: responsiveWidths.mobile,
+  },
 });
 
 export const logo = style({
@@ -46,6 +49,16 @@ export const formError = style({
 export const submitButton = style({
   width: "100%",
   marginTop: 10,
+});
+
+export const googleButton = style({
+  background: vars.color.white,
+  color: vars.color.black,
+  fontWeight: vars.fontWeight.regular,
+  fontSize: 18,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 12,
 });
 
 export const footer = style({

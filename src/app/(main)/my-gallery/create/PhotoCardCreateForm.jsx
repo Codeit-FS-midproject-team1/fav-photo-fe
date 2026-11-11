@@ -7,6 +7,8 @@ import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
 import * as styles from "./PhotoCardCreateForm.css.js";
 import { createPhotoCard } from "@/lib/api/photoCards.js";
+import { api, ApiError } from "@/lib/api.js";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 const initialForm = {
   name: "",
@@ -34,6 +36,7 @@ export default function PhotoCardCreateForm() {
 
   const price = Number(form.price);
   const totalQuantity = Number(form.totalQuantity);
+  const { accessToken, isAuthLoading, user, setUser } = useAuth();
 
   const isFormValid =
     Boolean(image) &&
@@ -47,6 +50,19 @@ export default function PhotoCardCreateForm() {
     Number.isInteger(totalQuantity) &&
     totalQuantity >= 1 &&
     totalQuantity <= 10;
+
+  // 생성 횟수 확인
+  const creation = user?.creation;
+  const isQuotaExhausted = creation ? creation.used >= creation.limit : false;
+
+  // 다음 초기화 날짜를 한국 시간으로 표시
+  const resetDateText = creation
+    ? new Date(creation.nextResetAt).toLocaleDateString("ko-KR", {
+        month: "long",
+        day: "numeric",
+        timeZone: "Asia/Seoul",
+      })
+    : "";
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -174,6 +190,28 @@ export default function PhotoCardCreateForm() {
     return Object.keys(nextErrors).length === 0;
   };
 
+  // 생성 횟수가 바뀌었을 수 있을 때 내 정보를 다시 받아 user.creation 을 최신으로 만든다
+  // 화면 이동을 막지 않도록 기다리지 않고, 실패해도 무시한다
+  // 응답이 늦게 와서 그사이 로그아웃했거나 다른 계정으로 바뀌었으면 무시한다
+  // 갱신에 실패하면 옛 횟수를 보여 주지 않도록 creation 을 지워 "모르는 상태"로 둔다
+  const refreshUser = () => {
+    const requestedUserId = user?.id;
+
+    api
+      .getMe(accessToken)
+      .then((me) =>
+        setUser((current) => (current?.id === me.id ? me : current)),
+      )
+      .catch(() =>
+        setUser((current) =>
+          // 지금 유저가 있고, 요청한 사람과 같을 때만 creation을 지운다
+          current && current?.id === requestedUserId
+            ? { ...current, creation: null }
+            : current,
+        ),
+      );
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -208,7 +246,10 @@ export default function PhotoCardCreateForm() {
         formData.delete("image");
       }
       // console.log(formData.get("image"));
-      const result = await createPhotoCard(formData);
+      const result = await createPhotoCard(accessToken, formData);
+
+      // 생성 횟수 갱신
+      refreshUser();
 
       const cardName = result.name || form.name;
       const method = result.method || form.method;
@@ -221,8 +262,55 @@ export default function PhotoCardCreateForm() {
 
       // console.log("포토카드 생성 성공", result);
     } catch (error) {
-      setSubmitError(error.message);
-      setIsSubmitting(false);
+      // ApiError 가 아니면(예상 못 한 에러) 결과를 알 수 없는 경우로 본다
+      const status = error instanceof ApiError ? error.status : 0;
+
+      // 2xx: 서버는 생성했고 응답 본문만 읽지 못했다 → 성공 화면
+      if (status >= 200 && status < 300) {
+        // 서버에서는 만들어졌으므로 생성 횟수도 갱신한다
+        refreshUser();
+        router.push(
+          `/my-gallery/create/success?name=${encodeURIComponent(
+            form.name,
+          )}&method=${encodeURIComponent(form.method)}`,
+        );
+        return;
+      }
+
+      // 400: 입력값 문제 → 폼에 남아서 수정
+      if (status === 400) {
+        setSubmitError(error.message);
+        setIsSubmitting(false);
+        return;
+      }
+      // 409: 이번 달 생성 횟수 초과 → 폼에 남아서 안내하고, 횟수를 다시 받아 버튼을 막는다
+      if (status === 409) {
+        setSubmitError(error.message);
+        setIsSubmitting(false);
+        refreshUser();
+        return;
+      }
+      // 토큰 만료, 로그인 안함 401 -> 로그인페이지로 이동
+      if (status === 401) {
+        router.push("/login");
+        return;
+      }
+
+      // 0: 응답을 받지 못했다 → 서버가 만들었는지 알 수 없으므로 실패로 단정하지 않는다
+      if (status === 0) {
+        setSubmitError(
+          "생성 결과를 확인하지 못했습니다. \n마이갤러리에서 카드가 만들어졌는지 확인한 뒤 다시 시도해 주세요.",
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      //  그 밖의 서버 오류(403, 5xx 등)는 실패 화면으로
+      router.push(
+        `/my-gallery/create/fail?name=${encodeURIComponent(
+          form.name,
+        )}&method=${encodeURIComponent(form.method)}`,
+      );
     }
   };
 
@@ -239,6 +327,14 @@ export default function PhotoCardCreateForm() {
       <h1 className={styles.title}>포토카드 생성</h1>
       <section className={styles.container}>
         <form className={styles.form} onSubmit={handleSubmit}>
+          {isQuotaExhausted && (
+            <p role="alert" className={styles.submitError}>
+              이번 달 포토카드 생성 횟수({creation.limit}회)를 모두
+              사용했습니다.
+              {"\n"}
+              {resetDateText}부터 다시 만들 수 있습니다.
+            </p>
+          )}
           <Field
             label="사진 업로드"
             htmlFor="photo-card-image"
@@ -406,12 +502,17 @@ export default function PhotoCardCreateForm() {
               <p className={styles.counter}>{form.description.length}/200</p>
             </div>
           </Field>
-          {submitError && <p>{submitError}</p>}
-
+          {submitError && (
+            <p role="alert" className={styles.submitError}>
+              {submitError}
+            </p>
+          )}
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={isSubmitting || !isFormValid}
+            disabled={
+              isSubmitting || !isFormValid || isAuthLoading || isQuotaExhausted
+            }
           >
             {isSubmitting ? "생성 중.." : "생성하기"}
           </button>

@@ -37,7 +37,7 @@ export const title = style({
 export const form = style({
   display: "flex",
   flexDirection: "column",
-  gap: 34,
+  gap: 26,
 });
 
 export const uploadRow = style({
@@ -210,6 +210,17 @@ export const counter = style({
   color: vars.color.gray300,
   fontSize: 14,
   pointerEvents: "none",
+});
+
+// 생성 요청이 실패했을 때 버튼 위에 보이는 안내 문구
+export const submitError = style({
+  margin: 0,
+  color: vars.color.red,
+  fontSize: 16,
+  lineHeight: 1.5,
+  wordBreak: "keep-all",
+  whiteSpace: "pre-line",
+  textAlign: "center",
 });
 
 export const submitButton = style({

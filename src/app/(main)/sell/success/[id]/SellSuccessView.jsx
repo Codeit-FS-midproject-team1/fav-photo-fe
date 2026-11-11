@@ -1,11 +1,12 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 import ResultScreen from "@/components/resultScreen/ResultScreen.jsx";
 import Button from "@/components/button/Button.jsx";
-import { useAuth } from "@/contexts/AuthContext.jsx";
 import { getSaleListing } from "@/lib/api/saleListings.js";
 
 import * as styles from "./SellSuccessView.css.js";
@@ -13,7 +14,6 @@ import * as styles from "./SellSuccessView.css.js";
 export default function SellSuccessView() {
   const { id } = useParams();
   const { accessToken, isAuthLoading } = useAuth();
-
   const [retryCount, setRetryCount] = useState(0);
 
   const [result, setResult] = useState({
@@ -30,21 +30,17 @@ export default function SellSuccessView() {
 
     let isActive = true;
 
-    getSaleListing(id, accessToken)
-      .then((listing) => {
+    async function loadSaleListing() {
+      try {
+        const listing = await getSaleListing(id, accessToken);
         if (!isActive) return;
 
         if (!listing || typeof listing !== "object" || listing.id == null) {
           throw new Error("판매글 조회 응답 형식이 올바르지 않습니다.");
         }
 
-        setResult({
-          id,
-          listing,
-          error: "",
-        });
-      })
-      .catch((error) => {
+        setResult({ id, listing, error: "" });
+      } catch (error) {
         if (!isActive) return;
 
         setResult({
@@ -52,7 +48,10 @@ export default function SellSuccessView() {
           listing: null,
           error: error?.message || "판매글 확인에 실패했습니다.",
         });
-      });
+      }
+    }
+
+    loadSaleListing();
 
     return () => {
       isActive = false;
@@ -61,16 +60,10 @@ export default function SellSuccessView() {
 
   // 판매글 다시 조회
   const handleRetry = () => {
-    setResult({
-      id: null,
-      listing: null,
-      error: "",
-    });
-
+    setResult({ id: null, listing: null, error: "" });
     setRetryCount((count) => count + 1);
   };
 
-  // 잘못된 판매글 주소
   if (typeof id !== "string" || !id) {
     return (
       <main className={styles.state} role="alert">
@@ -79,7 +72,6 @@ export default function SellSuccessView() {
     );
   }
 
-  // 로그인 정보 확인 중
   if (isAuthLoading) {
     return (
       <main className={styles.state} role="status">
@@ -88,7 +80,6 @@ export default function SellSuccessView() {
     );
   }
 
-  // 비로그인 사용자
   if (!accessToken) {
     return (
       <main className={styles.state}>
@@ -100,7 +91,6 @@ export default function SellSuccessView() {
     );
   }
 
-  // 판매글 조회 중
   if (result.id !== id) {
     return (
       <main className={styles.state} role="status">
@@ -109,7 +99,6 @@ export default function SellSuccessView() {
     );
   }
 
-  // 판매글 조회 실패
   if (result.error) {
     return (
       <main className={styles.state} role="alert">
@@ -126,11 +115,8 @@ export default function SellSuccessView() {
   }
 
   const listing = result.listing;
-
   const cardName = listing.photoCard?.name ?? listing.cardName ?? "포토카드";
-
   const quantity = listing.saleQuantity;
-
   const quantityText = Number.isSafeInteger(quantity) ? `${quantity}장` : "";
 
   return (

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "../modal/Modal.jsx";
 import SearchInput from "../searchInput/SearchInput.jsx";
 import Dropdown from "../dropdown/Dropdown.jsx";
 import CardTile from "../cardTile/CardTile.jsx";
-import { getMyCards } from "@/lib/api/users.js";
+import useMyCards from "@/hooks/useMyCards.js";
 import { media } from "@/styles/responsive.css";
 import * as styles from "./CardPickerModal.css.js";
 
@@ -30,73 +30,44 @@ const GENRE_OPTIONS = [
 const PAGE_SIZE_DESKTOP = 15; // 3열 × 5행
 const PAGE_SIZE_OTHER = 16; // 2열 × 8행 (태블릿·모바일)
 
-// 서버 응답 items[] 한 줄 → CardTile이 쓰는 card 모양으로 바꾼다
-const toTileCard = (item) => ({
-  id: item.photoCard.id,
-  imageUrl: item.photoCard.imageUrl,
-  name: item.photoCard.name,
-  method: item.photoCard.method,
-  genre: item.photoCard.genre,
-  nickname: item.photoCard.creator.nickname,
-  price: item.photoCard.price,
-  quantity: item.quantity, // 지금 보유(HELD) 중인 장수
-});
-
 export default function CardPickerModal({ title, onSelect, onClose }) {
   const [keyword, setKeyword] = useState("");
   const [method, setMethod] = useState(null);
   const [genre, setGenre] = useState(null);
-  const [result, setResult] = useState({ key: null, cards: [], error: false });
 
-  // 지금 조건을 문자열 하나로 표시한다. 결과의 key와 다르면 아직 불러오는 중
-  const queryKey = `${keyword}|${method}|${genre}`;
-  const loading = result.key !== queryKey;
-
-  useEffect(() => {
-    let ignore = false; // 늦게 도착한 옛 응답 무시용
-
-    const pageSize = window.matchMedia(media.desktop).matches
+  // 모달이 처음 열릴 때 화면 크기로 한 번 정한다 (서버에서 그릴 땐 window가 없다)
+  const [pageSize] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia(media.desktop).matches
       ? PAGE_SIZE_DESKTOP
-      : PAGE_SIZE_OTHER;
+      : PAGE_SIZE_OTHER,
+  );
 
-    getMyCards({ keyword, method, genre, page: 1, pageSize })
-      .then((data) => {
-        if (ignore) return;
-        setResult({
-          key: queryKey,
-          cards: data.items.map(toTileCard),
-          error: false,
-        });
-      })
-      .catch(() => {
-        if (ignore) return;
-        setResult({ key: queryKey, cards: [], error: true });
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, [keyword, method, genre, queryKey]);
+  const { cards, loading, error } = useMyCards({
+    keyword,
+    method,
+    genre,
+    pageSize,
+  });
 
   const renderBody = () => {
     if (loading) {
       return <p className={styles.message}>불러오는 중…</p>;
     }
-    if (result.error) {
+    if (error) {
       return (
         <p className={styles.message}>
           카드를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
         </p>
       );
     }
-    if (result.cards.length === 0) {
+    if (cards.length === 0) {
       return (
         <p className={styles.message}>선택할 수 있는 보유 카드가 없습니다.</p>
       );
     }
     return (
       <div className={styles.grid}>
-        {result.cards.map((card) => (
+        {cards.map((card) => (
           <CardTile
             key={card.id}
             card={card}
