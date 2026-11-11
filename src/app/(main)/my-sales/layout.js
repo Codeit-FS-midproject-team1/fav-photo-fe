@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 
 // 마이갤러리 아래 모든 페이지는 로그인한 사용자만 볼 수 있다
-export default function MyGalleryLayout({ children }) {
+export default function MySalesLayout({ children }) {
   const router = useRouter();
   const { isAuthenticated, isAuthLoading } = useAuth();
 

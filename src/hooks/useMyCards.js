@@ -9,6 +9,7 @@ const toTileCard = (item) => ({
   id: item.photoCard.id,
   imageUrl: item.photoCard.imageUrl,
   name: item.photoCard.name,
+  description: item.photoCard.description,
   method: item.photoCard.method,
   genre: item.photoCard.genre,
   nickname: item.photoCard.creator.nickname,

@@ -12,6 +12,8 @@ import Filters from "@/components/filters/Filters.jsx";
 import Dropdown from "@/components/dropdown/Dropdown.jsx";
 import CardTile from "@/components/cardTile/CardTile.jsx";
 import Pagination from "@/components/pagination/Pagination.jsx";
+import CardImageModal from "@/components/cardImageModal/CardImageModal.jsx";
+
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import useMySales from "@/hooks/useMySales.js";
 import StatusChip from "@/components/statusChip/StatusChip.jsx";
@@ -20,9 +22,7 @@ import * as styles from "./MySales.css.js";
 
 const PAGE_SIZE_DESKTOP = 15; // 3열 × 5행
 const PAGE_SIZE_OTHER = 16; // 2열 × 8행 (태블릿·모바일)
-// 여기부터
 const METHODS = ["PHOTO", "CRAFT", "AI", "ETC"];
-// 여기까지
 
 const METHOD_OPTIONS = [
   { value: "PHOTO", label: "촬영" },
@@ -43,12 +43,15 @@ const GENRE_OPTIONS = [
 const STATUS_OPTIONS = [
   { value: "ON_SALE", label: "판매 중" },
   { value: "SOLD_OUT", label: "품절" },
-  { value: "OFFERED", label: "교환 제시 후 대기 중" },
+  { value: "OFFER_PENDING", label: "교환 제시 후 대기 중" },
   { value: "EXCHANGED", label: "교환 완료" },
 ];
 
 // 이미지 위에 칩을 띄우는 상태
-const CHIP_STATUSES = ["ON_SALE", "OFFERED"];
+const CHIP_STATUSES = ["ON_SALE", "OFFER_PENDING"];
+// 아직 내 소유인 상태 (판매·제안에 걸려 있을 뿐). 품절·교환 완료는 이미 남의 카드라
+// 우클릭 저장을 막고 크게 보기도 열지 않는다
+const OWNED_STATUSES = ["ON_SALE", "OFFER_PENDING"];
 
 const FILTER_GROUPS = [
   { key: "method", label: "제작방식", options: METHOD_OPTIONS },
@@ -61,12 +64,13 @@ const SORT_OPTIONS = [
   { value: "OLDEST", label: "오래된 순" },
 ];
 
-export default function MyGalleryPage() {
+export default function MySalesPage() {
   // 목록 조건
   const [keyword, setKeyword] = useState("");
   const [filter, setFilter] = useState({}); // { method } / { genre } / { status } 중 하나
   const [sort, setSort] = useState("LATEST");
   const [page, setPage] = useState(1);
+  const [viewingCard, setViewingCard] = useState(null);
 
   // 처음 열릴 때 화면 크기로 한 번 정한다
   const [pageSize] = useState(() =>
@@ -141,23 +145,28 @@ export default function MyGalleryPage() {
     return (
       <>
         <div className={styles.grid}>
-          {cards.map((card) => (
-            <CardTile
-              key={card.key}
-              card={card}
-              owned={card.status !== "EXCHANGED"}
-              soldOut={card.status === "SOLD_OUT"}
-              badge={
-                CHIP_STATUSES.includes(card.status) ? (
-                  <StatusChip status={card.status} />
-                ) : undefined
-              }
-              rows={[
-                { label: "가격", value: `${card.price} P` },
-                { label: "잔여", value: card.quantity },
-              ]}
-            />
-          ))}
+          {cards.map((card) => {
+            const isOwned = OWNED_STATUSES.includes(card.status);
+            return (
+              <CardTile
+                key={card.key}
+                card={card}
+                owned={isOwned}
+                soldOut={card.status === "SOLD_OUT"}
+                accepted={card.status === "EXCHANGED"}
+                badge={
+                  CHIP_STATUSES.includes(card.status) ? (
+                    <StatusChip status={card.status} />
+                  ) : undefined
+                }
+                rows={[
+                  { label: "가격", value: `${card.price} P` },
+                  { label: "잔여", value: card.quantity },
+                ]}
+                onClick={isOwned ? () => setViewingCard(card) : undefined}
+              />
+            );
+          })}
         </div>
         <Pagination
           page={page}
@@ -225,6 +234,12 @@ export default function MyGalleryPage() {
         </div>
         {renderList()}
       </Container>
+      {viewingCard && (
+        <CardImageModal
+          card={viewingCard}
+          onClose={() => setViewingCard(null)}
+        />
+      )}
     </main>
   );
 }
