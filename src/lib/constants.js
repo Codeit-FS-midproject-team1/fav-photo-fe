@@ -13,3 +13,6 @@ export const EXCHANGE_DESCRIPTION_MAX = 200;
 export const PURCHASE_QUANTITY_MIN = 1;
 
 export const SALE_CARD_PAGE_SIZE = 15;
+
+// 마켓 목록 한 번에 불러올 개수
+export const MARKET_PAGE_SIZE = 15;

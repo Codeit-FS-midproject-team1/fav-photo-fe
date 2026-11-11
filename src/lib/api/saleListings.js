@@ -45,10 +45,11 @@ export function createSaleListing(photoCardId, formValues, accessToken) {
 }
 
 // 판매글 상세 조회
-export function getSaleListing(id) {
-  return request(getSaleListingPath(id));
+export function getSaleListing(id, accessToken) {
+  return request(getSaleListingPath(id), {
+    headers: getAuthHeaders(accessToken),
+  });
 }
-
 // 판매글 수정
 export function updateSaleListing(id, formValues, accessToken) {
   const {
@@ -175,4 +176,15 @@ export async function getHeldPhotoCardQuantity(
 
     page += 1;
   }
+}
+
+// 마켓 목록 (검색·필터·정렬·페이지)
+export function getSaleListings(params, accessToken) {
+  const query = new URLSearchParams(
+    Object.entries(params).filter(([, value]) => value != null && value !== ""),
+  );
+
+  return request(`/sale-listings?${query.toString()}`, {
+    headers: getAuthHeaders(accessToken),
+  });
 }

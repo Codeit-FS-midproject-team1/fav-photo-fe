@@ -8,8 +8,17 @@ import Icon from "@/components/icon/Icon.jsx";
 import { useState } from "react";
 import Dropdown from "@/components/dropdown/Dropdown.jsx";
 import { useRouter } from "next/navigation";
+import RandomPointModal from "@/components/randomPoint/RandomPointModal.jsx";
+import { useRandomPointDraw } from "@/hooks/useRandomPointDraw.js";
 
-function LoggedInActions({ points, username, unreadCount, onLogout }) {
+function LoggedInActions({
+  points,
+  username,
+  unreadCount,
+  notification,
+  onLogout,
+  onOpenRandomPoint,
+}) {
   const router = useRouter();
   const userMenuOptions = [
     { label: "내 정보", value: "/my-info" },
@@ -21,12 +30,18 @@ function LoggedInActions({ points, username, unreadCount, onLogout }) {
   return (
     <nav className={styles.actions}>
       <span className={styles.points}>{(points ?? 0).toLocaleString()} P</span>
-      <button type="button">
+      <button
+        type="button"
+        aria-label="랜덤 포인트 상자 열기"
+        onClick={onOpenRandomPoint}
+      >
         <Icon name="randomBox" />
       </button>
-      <button type="button">
-        <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
-      </button>
+      {notification ?? (
+        <button type="button">
+          <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+        </button>
+      )}
       <Dropdown
         variant="filter"
         options={userMenuOptions}
@@ -60,7 +75,9 @@ function MobileHeader({
   points,
   username,
   unreadCount,
+  notification,
   onLogout,
+  onOpenRandomPoint,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
@@ -87,12 +104,18 @@ function MobileHeader({
 
         {isAuthLoading ? null : isLoggedIn ? (
           <div className={styles.mobileActions}>
-            <Link href="/random-box">
+            <button
+              type="button"
+              aria-label="랜덤 포인트 상자 열기"
+              onClick={onOpenRandomPoint}
+            >
               <Icon name="randomBox" />
-            </Link>
-            <button type="button">
-              <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
             </button>
+            {notification ?? (
+              <button type="button">
+                <Icon name={unreadCount > 0 ? "alarmActive" : "alarmDefault"} />
+              </button>
+            )}
           </div>
         ) : (
           <Link href="/login" className={styles.login}>
@@ -130,8 +153,27 @@ export default function Header({
   points,
   username,
   unreadCount = 0,
+  notification,
   onLogout,
 }) {
+  const [randomPointOpen, setRandomPointOpen] = useState(false);
+
+  const { draw, result, error, loading, exhausted } = useRandomPointDraw();
+
+  const openRandomPoint = () => {
+    setRandomPointOpen(true);
+  };
+
+  const closeRandomPoint = () => {
+    if (loading) return;
+    setRandomPointOpen(false);
+  };
+
+  const handleLogout = () => {
+    setRandomPointOpen(false);
+    onLogout?.();
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.desktopHeader}>
@@ -150,7 +192,9 @@ export default function Header({
               points={points}
               username={username}
               unreadCount={unreadCount}
-              onLogout={onLogout}
+              notification={notification}
+              onLogout={handleLogout}
+              onOpenRandomPoint={openRandomPoint}
             />
           ) : (
             <LoggedOutActions />
@@ -164,7 +208,19 @@ export default function Header({
         points={points}
         username={username}
         unreadCount={unreadCount}
-        onLogout={onLogout}
+        notification={notification}
+        onLogout={handleLogout}
+        onOpenRandomPoint={openRandomPoint}
+      />
+
+      <RandomPointModal
+        open={randomPointOpen && isLoggedIn && !isAuthLoading}
+        onClose={closeRandomPoint}
+        onDraw={draw}
+        loading={loading}
+        result={result}
+        error={error}
+        limitReached={exhausted}
       />
     </header>
   );
