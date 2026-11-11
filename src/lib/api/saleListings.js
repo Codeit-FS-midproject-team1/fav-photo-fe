@@ -176,3 +176,14 @@ export async function getHeldPhotoCardQuantity(
     page += 1;
   }
 }
+
+// 마켓 목록 (검색·필터·정렬·페이지)
+export function getSaleListings(params, accessToken) {
+  const query = new URLSearchParams(
+    Object.entries(params).filter(([, value]) => value != null && value !== ""),
+  );
+
+  return request(`/sale-listings?${query.toString()}`, {
+    headers: getAuthHeaders(accessToken),
+  });
+}
