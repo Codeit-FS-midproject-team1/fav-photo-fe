@@ -7,7 +7,7 @@ import Field from "@/components/field/Field";
 import Icon from "@/components/icon/Icon.jsx";
 import * as styles from "./PhotoCardCreateForm.css.js";
 import { createPhotoCard } from "@/lib/api/photoCards.js";
-import { ApiError } from "@/lib/api.js";
+import { api, ApiError } from "@/lib/api.js";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 
 const initialForm = {
@@ -36,7 +36,7 @@ export default function PhotoCardCreateForm() {
 
   const price = Number(form.price);
   const totalQuantity = Number(form.totalQuantity);
-  const { accessToken, isAuthLoading } = useAuth();
+  const { accessToken, isAuthLoading, setUser } = useAuth();
 
   const isFormValid =
     Boolean(image) &&
@@ -212,6 +212,12 @@ export default function PhotoCardCreateForm() {
       }
       // console.log(formData.get("image"));
       const result = await createPhotoCard(accessToken, formData);
+
+      // 생성 횟수 갱신
+      api
+        .getMe(accessToken)
+        .then(setUser)
+        .catch(() => {});
 
       const cardName = result.name || form.name;
       const method = result.method || form.method;

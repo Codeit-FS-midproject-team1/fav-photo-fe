@@ -93,6 +93,15 @@ export default function MyGalleryPage() {
     ? METHODS.reduce((sum, method) => sum + methodCounts[method], 0)
     : 0;
 
+  const creation = user?.creation;
+  const remainingCreation = creation
+    ? Math.max(creation.limit - creation.used, 0)
+    : null;
+  const creationText =
+    remainingCreation !== null
+      ? `(${remainingCreation}/${creation.limit})`
+      : "";
+
   // 검색·필터·정렬이 바뀌면 1페이지부터 다시 본다
   const changeKeyword = (next) => {
     setKeyword(next);
@@ -171,7 +180,7 @@ export default function MyGalleryPage() {
               thickness="thin"
               className={styles.actionButton}
             >
-              포토카드 생성하기
+              포토카드 생성하기({creationText})
             </Button>
             <Button
               thickness="thin"
