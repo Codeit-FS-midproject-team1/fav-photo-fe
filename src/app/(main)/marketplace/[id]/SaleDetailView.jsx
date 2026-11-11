@@ -10,6 +10,8 @@ import Modal from "@/components/modal/Modal";
 import ListingDetailLayout from "@/components/common/ListingDetailLayout/ListingDetailLayout.jsx";
 import ListingFormModal from "@/components/common/ListingFormModal/ListingFormModal.jsx";
 import PurchasePanel from "@/components/sales/PurchasePanel.jsx";
+import ExchangeOfferFlow from "@/components/exchangeOffer/ExchangeOfferFlow.jsx";
+import ExchangeOfferListSection from "@/components/exchangeOffer/ExchangeOfferListSection.jsx";
 import {
   getSaleListing,
   updateSaleListing,
@@ -33,6 +35,8 @@ export default function SaleDetailView() {
   });
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [isExchangeOpen, setIsExchangeOpen] = useState(false);
+  const [exchangeListVersion, setExchangeListVersion] = useState(0);
   const [isCancelling, setIsCancelling] = useState(false);
   const cancelLockRef = useRef(false);
   const [cancelError, setCancelError] = useState("");
@@ -44,12 +48,12 @@ export default function SaleDetailView() {
   });
 
   useEffect(() => {
-    if (typeof id !== "string" || !id) return;
+    if (typeof id !== "string" || !id || isAuthLoading) return;
     let isActive = true;
 
     async function loadSaleListing() {
       try {
-        const listing = await getSaleListing(id);
+        const listing = await getSaleListing(id, accessToken);
         if (!isActive) return;
         if (!listing || typeof listing !== "object" || Array.isArray(listing)) {
           throw new Error("판매글 응답 형식이 올바르지 않습니다.");
@@ -70,7 +74,7 @@ export default function SaleDetailView() {
     return () => {
       isActive = false;
     };
-  }, [id, retryCount]);
+  }, [id, retryCount, isAuthLoading, accessToken]);
 
   // 판매글이 현재 화면의 조회 결과일 때만 보유 카드 조회를 허용합니다.
   const activeListing =
@@ -248,6 +252,12 @@ export default function SaleDetailView() {
     !isSeller &&
     isOnSale &&
     hasRemainingStock;
+  const canOfferExchange =
+    isAuthenticated &&
+    sellerId != null &&
+    !isSeller &&
+    (isOnSale || listing.status === "EXCHANGE_ONLY") &&
+    hasRemainingStock;
 
   // 서버 조회 전/실패 시에는 기존 수량까지만 수정하고, 조회 성공 시 HELD 수량을 더합니다.
   const hasHeldQuantity =
@@ -285,17 +295,33 @@ export default function SaleDetailView() {
         </Button>
       </div>
     );
-  } else if (canPurchase) {
+  } else if (canPurchase || canOfferExchange) {
     actions = (
-      <PurchasePanel
-        key={id}
-        listingId={id}
-        price={listing.price}
-        remainingQuantity={remainingQuantity}
-        accessToken={accessToken}
-        onPurchased={handlePurchased}
-        onRefreshListing={handleRetry}
-      />
+      <div className={styles.actionRow}>
+        {canPurchase && (
+          <PurchasePanel
+            key={id}
+            listingId={id}
+            price={listing.price}
+            remainingQuantity={remainingQuantity}
+            accessToken={accessToken}
+            onPurchased={handlePurchased}
+            onRefreshListing={handleRetry}
+          />
+        )}
+
+        {canOfferExchange && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="responsive"
+            thickness="thin"
+            onClick={() => setIsExchangeOpen(true)}
+          >
+            교환 제안하기
+          </Button>
+        )}
+      </div>
     );
   } else if (
     !isAuthLoading &&
@@ -355,7 +381,30 @@ export default function SaleDetailView() {
           </p>
         )}
 
-      <ListingDetailLayout listing={listing} actions={actions} />
+      <ListingDetailLayout listing={listing} actions={actions}>
+        {isAuthenticated &&
+          sellerId != null &&
+          listing.status !== "CANCELED" && (
+            <ExchangeOfferListSection
+              key={`${id}-${exchangeListVersion}`}
+              listingId={id}
+              sellerId={sellerId}
+              onAccepted={handleRetry}
+            />
+          )}
+      </ListingDetailLayout>
+
+      {isExchangeOpen && (
+        <ExchangeOfferFlow
+          key={id}
+          listingId={id}
+          onClose={() => setIsExchangeOpen(false)}
+          onSuccess={() => {
+            setExchangeListVersion((version) => version + 1);
+            handleRetry();
+          }}
+        />
+      )}
 
       {isEditOpen && (
         <ListingFormModal

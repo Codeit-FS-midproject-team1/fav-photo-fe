@@ -24,7 +24,11 @@ const SUCCESS_MESSAGES = {
   accept: "교환 제안을 승인했습니다.",
 };
 
-export default function ExchangeOfferListSection({ listingId, sellerId }) {
+export default function ExchangeOfferListSection({
+  listingId,
+  sellerId,
+  onAccepted,
+}) {
   const { user, accessToken, isAuthLoading } = useAuth();
 
   const { items, loading, error, refresh } = useExchangeOffers(listingId);
@@ -71,6 +75,8 @@ export default function ExchangeOfferListSection({ listingId, sellerId }) {
     setSubmitting(true);
     setActionError("");
 
+    let actionSucceeded = false;
+
     try {
       await requestAction(accessToken, offer.id);
 
@@ -80,6 +86,7 @@ export default function ExchangeOfferListSection({ listingId, sellerId }) {
 
       setActionTarget(null);
       refresh();
+      actionSucceeded = true;
     } catch (err) {
       setActionError(
         err instanceof Error
@@ -89,6 +96,10 @@ export default function ExchangeOfferListSection({ listingId, sellerId }) {
     } finally {
       submittingRef.current = false;
       setSubmitting(false);
+    }
+
+    if (actionSucceeded && action === "accept") {
+      onAccepted?.();
     }
   };
 
