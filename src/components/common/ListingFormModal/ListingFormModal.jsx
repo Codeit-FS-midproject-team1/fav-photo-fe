@@ -15,9 +15,9 @@ import {
 import * as styles from "./ListingFormModal.css.js";
 
 const METHOD_OPTIONS = [
-  { value: "PHOTO", label: "사진" },
-  { value: "CRAFT", label: "수공예" },
-  { value: "AI", label: "AI" },
+  { value: "PHOTO", label: "촬영" },
+  { value: "CRAFT", label: "제작" },
+  { value: "AI", label: "AI생성" },
   { value: "ETC", label: "기타" },
 ];
 

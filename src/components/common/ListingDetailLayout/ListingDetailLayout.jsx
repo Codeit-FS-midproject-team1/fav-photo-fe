@@ -3,9 +3,9 @@
 import * as styles from "./ListingDetailLayout.css.js";
 
 const METHOD_LABELS = {
-  PHOTO: "사진",
-  CRAFT: "수공예",
-  AI: "AI",
+  PHOTO: "촬영",
+  CRAFT: "제작",
+  AI: "AI생성",
   ETC: "기타",
 };
 
