@@ -43,12 +43,12 @@ const GENRE_OPTIONS = [
 const STATUS_OPTIONS = [
   { value: "ON_SALE", label: "판매 중" },
   { value: "SOLD_OUT", label: "품절" },
-  { value: "OFFER_PENDING", label: "교환 제시 후 대기 중" },
+  { value: "OFFERED", label: "교환 제시 후 대기 중" },
   { value: "EXCHANGED", label: "교환 완료" },
 ];
 
 // 이미지 위에 칩을 띄우는 상태
-const CHIP_STATUSES = ["ON_SALE", "OFFER_PENDING"];
+const CHIP_STATUSES = ["ON_SALE", "OFFERED"];
 
 const FILTER_GROUPS = [
   { key: "method", label: "제작방식", options: METHOD_OPTIONS },
