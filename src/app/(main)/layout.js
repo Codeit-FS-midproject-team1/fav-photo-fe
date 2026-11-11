@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import Header from "@/components/header/Header";
+import NotificationDropdown from "@/components/notificationDropdown/NotificationDropdown";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,6 +30,7 @@ export default function MainLayout({ children }) {
         points={user?.points ?? 0}
         username={user?.nickname ?? ""}
         unreadCount={0}
+        notification={<NotificationDropdown />}
         onLogout={handleLogout}
       />
       {logoutError && (
