@@ -57,22 +57,25 @@ export default function ExchangeOfferFlow({ listingId, onClose, onSuccess }) {
     setSubmitting(true);
     setError("");
 
-    try {
-      const offer = await createExchangeOffer(accessToken, id, data);
+    let createdOffer;
 
-      // 성공 결과 처리는 부모 화면에서 담당
-      onSuccess?.(offer);
-      onClose?.();
+    try {
+      createdOffer = await createExchangeOffer(accessToken, id, data);
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : "교환 제안 중 오류가 발생했습니다.",
       );
+      return;
     } finally {
       submittingRef.current = false;
       setSubmitting(false);
     }
+
+    // API 성공 후 UI 처리 (API 오류 처리와 분리)
+    onSuccess?.(createdOffer);
+    onClose?.();
   };
 
   return (
