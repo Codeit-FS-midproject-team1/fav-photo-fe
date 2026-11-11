@@ -19,7 +19,6 @@ import searchIcon from "@/assets/images/search.svg";
 import upIcon from "@/assets/images/up.svg";
 import visibleIcon from "@/assets/images/visible.svg";
 import randomBox from "@/assets/images/random_box.webp";
-import acceptedIcon from "@/assets/images/accepted.svg";
 import loginGoogle from "@/assets/images/login_google.svg";
 
 const iconSources = {
@@ -43,7 +42,6 @@ const iconSources = {
   up: upIcon,
   visible: visibleIcon,
   randomBox: randomBox,
-  accepted: acceptedIcon,
   loginGoogle: loginGoogle,
 };
 
