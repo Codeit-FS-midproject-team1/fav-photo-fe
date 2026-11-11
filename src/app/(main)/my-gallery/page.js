@@ -3,6 +3,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 import Icon from "@/components/icon/Icon.jsx";
+import { useRouter } from "next/navigation";
 
 import Container from "@/components/container/Container.jsx";
 import PageTitle from "@/components/pageTitle/PageTitle.jsx";
@@ -15,6 +16,10 @@ import Filters from "@/components/filters/Filters.jsx";
 import Dropdown from "@/components/dropdown/Dropdown.jsx";
 import CardTile from "@/components/cardTile/CardTile.jsx";
 import Pagination from "@/components/pagination/Pagination.jsx";
+import ListingFormModal from "@/components/common/ListingFormModal/ListingFormModal.jsx";
+
+import { createSaleListing } from "@/lib/api/saleListings.js";
+import { isRequestResultUncertain } from "@/lib/isRequestResultUncertain.js";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import useMyCards from "@/hooks/useMyCards.js";
 import { media } from "@/styles/responsive.css";
@@ -78,16 +83,56 @@ export default function MyGalleryPage() {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // 모바일 필터 패널
   const [viewingCard, setViewingCard] = useState(null); // 크게 보고 있는 카드
+  const [sellingCard, setSellingCard] = useState(null); // 판매 등록 중인 카드
+  const [isLeaving, setIsLeaving] = useState(false); // 결과 화면으로 이동 중
+
+  const router = useRouter();
 
   const openPicker = () => setIsPickerOpen(true);
   const closePicker = () => setIsPickerOpen(false);
 
-  const handleSelect = () => {
+  const handleSelect = (card) => {
     closePicker();
-    // TODO: 판매 등록 모달이 생기면 card를 넘긴다 (card.id = photoCardId)
+    setSellingCard(card); // card.id = photoCardId, card.quantity = 보유 수량
   };
 
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
+
+  const handleSellSubmit = async (formValues) => {
+    let created;
+    try {
+      created = await createSaleListing(
+        sellingCard.id,
+        formValues,
+        accessToken,
+      );
+    } catch (error) {
+      // 서버에 등록됐을 수도 있는 경우: 모달에 안내만 띄운다 (중복 등록 방지)
+      if (isRequestResultUncertain(error)) {
+        throw new Error(
+          "판매 등록 결과를 확인하지 못했습니다. 다시 등록하기 전에 나의 판매 내역을 확인해 주세요.",
+        );
+      }
+      // 서버가 실패를 분명히 알려 준 경우: 실패 화면으로 이동
+      const params = new URLSearchParams({
+        name: sellingCard.name ?? "포토카드",
+        count: String(formValues.quantity),
+        reason: error?.message || "판매 등록 요청을 처리하지 못했습니다.",
+      });
+      setIsLeaving(true);
+      router.push(`/result/sell/fail?${params.toString()}`);
+      return;
+    }
+
+    setIsLeaving(true);
+    // 성공했는데 응답에 id가 없으면 판매 내역으로 보낸다
+    if (created?.id == null) {
+      router.push("/my-sales");
+      return;
+    }
+    router.push(`/sell/success/${encodeURIComponent(String(created.id))}`);
+  };
+
   const methodCounts = summary?.methodCounts;
   const totalCount = methodCounts
     ? METHODS.reduce((sum, method) => sum + methodCounts[method], 0)
@@ -284,6 +329,17 @@ export default function MyGalleryPage() {
         <CardImageModal
           card={viewingCard}
           onClose={() => setViewingCard(null)}
+        />
+      )}
+
+      {sellingCard && (
+        <ListingFormModal
+          key={sellingCard.id}
+          card={sellingCard}
+          maxQuantity={sellingCard.quantity}
+          onSubmit={handleSellSubmit}
+          onClose={() => setSellingCard(null)}
+          isSubmitting={isLeaving}
         />
       )}
     </main>
