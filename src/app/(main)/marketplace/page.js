@@ -63,8 +63,9 @@ export default function MarketplacePage() {
     <Container>
       <main className={styles.page}>
         <PageTitle title="마켓플레이스">
-          {/* TODO: 판매하기 모달 연결 */}
-          <Button thickness="thin">나의 포토카드 판매하기</Button>
+          <Button href="/sell" thickness="thin">
+            나의 포토카드 판매하기
+          </Button>
         </PageTitle>
 
         <div className={styles.toolbar}>

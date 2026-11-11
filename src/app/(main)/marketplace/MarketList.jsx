@@ -42,7 +42,11 @@ export default function MarketList({ accessToken, query }) {
 
   return (
     <div className={styles.list}>
-      {totalCount === 0 ? (
+      {totalCount === null && !error ? (
+        <p role="status" className={styles.message}>
+          불러오는 중이에요.
+        </p>
+      ) : totalCount === 0 ? (
         <p className={styles.message}>조건에 맞는 포토카드가 없어요.</p>
       ) : (
         <CardGrid>
