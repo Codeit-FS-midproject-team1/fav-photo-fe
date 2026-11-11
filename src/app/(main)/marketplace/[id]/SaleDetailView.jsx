@@ -401,7 +401,6 @@ export default function SaleDetailView() {
           onClose={() => setIsExchangeOpen(false)}
           onSuccess={() => {
             setExchangeListVersion((version) => version + 1);
-            handleRetry();
           }}
         />
       )}
