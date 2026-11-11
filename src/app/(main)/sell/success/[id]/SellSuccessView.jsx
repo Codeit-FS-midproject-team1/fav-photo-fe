@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 import ResultScreen from "@/components/resultScreen/ResultScreen.jsx";
 import Button from "@/components/button/Button.jsx";
@@ -11,34 +12,43 @@ import * as styles from "./SellSuccessView.css.js";
 
 export default function SellSuccessView() {
   const { id } = useParams();
+  const { accessToken, isAuthLoading } = useAuth();
   const [retryCount, setRetryCount] = useState(0);
   const [result, setResult] = useState({ id: null, listing: null, error: "" });
 
   useEffect(() => {
-    if (typeof id !== "string" || !id) return;
+    if (typeof id !== "string" || !id || isAuthLoading) return;
+
     let isActive = true;
 
-    getSaleListing(id)
-      .then((listing) => {
+    async function loadSaleListing() {
+      try {
+        const listing = await getSaleListing(id, accessToken);
+
         if (!isActive) return;
+
         if (!listing || typeof listing !== "object" || listing.id == null) {
           throw new Error("판매글 조회 응답 형식이 올바르지 않습니다.");
         }
+
         setResult({ id, listing, error: "" });
-      })
-      .catch((error) => {
+      } catch (error) {
         if (!isActive) return;
+
         setResult({
           id,
           listing: null,
           error: error?.message || "판매글 확인에 실패했습니다.",
         });
-      });
+      }
+    }
+
+    loadSaleListing();
 
     return () => {
       isActive = false;
     };
-  }, [id, retryCount]);
+  }, [id, retryCount, isAuthLoading, accessToken]);
 
   const handleRetry = () => {
     setResult({ id: null, listing: null, error: "" });
