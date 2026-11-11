@@ -62,15 +62,20 @@ export default function MarketplacePage() {
   return (
     <Container>
       <main className={styles.page}>
-        <PageTitle title="마켓플레이스">
-          <Button href="/sell" thickness="thin">
-            나의 포토카드 판매하기
-          </Button>
-        </PageTitle>
+        {/* 모바일 시안에는 제목이 없고, 판매하기 버튼이 화면 아래에 떠 있다 */}
+        <div className={styles.title}>
+          <PageTitle title="마켓플레이스">
+            <Button href="/sell" thickness="thin">
+              나의 포토카드 판매하기
+            </Button>
+          </PageTitle>
+        </div>
 
         <div className={styles.toolbar}>
           <div className={styles.searchAndFilters}>
-            <SearchInput onSearch={setKeyword} />
+            <div className={styles.search}>
+              <SearchInput onSearch={setKeyword} />
+            </div>
             <Filters
               groups={FILTER_GROUPS}
               values={filter}
@@ -99,6 +104,12 @@ export default function MarketplacePage() {
             query={query}
           />
         )}
+
+        <div className={styles.mobileSell}>
+          <Button href="/sell" thickness="thin">
+            나의 포토카드 판매하기
+          </Button>
+        </div>
       </main>
     </Container>
   );
