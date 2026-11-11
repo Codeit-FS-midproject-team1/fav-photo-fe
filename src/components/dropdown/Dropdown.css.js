@@ -36,6 +36,7 @@ export const trigger = styleVariants({
     font: "inherit",
     fontSize: 16,
     fontWeight: vars.fontWeight.bold,
+    whiteSpace: "nowrap",
     cursor: "pointer",
   },
 });

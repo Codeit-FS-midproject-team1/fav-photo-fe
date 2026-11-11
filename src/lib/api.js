@@ -1,12 +1,13 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+export const GOOGLE_LOGIN_URL = `${BASE_URL}/auth/google`;
+
 let refreshRequest = null;
 
 /**
  * @param {number} status - HTTP 상태 코드 (네트워크 오류는 0)
  * @param {string} message - 에러 메시지
- * @param {Object|null} fields - 입력 항목별 에러 (예: { email: '형식이 올바르지 않습니다' })
+ * @param {Object|null} fields - 입력 항목별 에러
  */
-
 export class ApiError extends Error {
   constructor(status, message, fields = null) {
     super(message);
@@ -44,6 +45,7 @@ export async function request(
   }
 
   let text;
+
   try {
     text = await res.text();
   } catch {
@@ -78,17 +80,6 @@ export async function request(
   return data;
 }
 
-function toQuery(params = {}) {
-  const search = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
-      search.append(key, value);
-    }
-  });
-  const query = search.toString();
-  return query ? `?${query}` : "";
-}
-
 function refresh() {
   if (!refreshRequest) {
     refreshRequest = request("/auth/refresh", {
@@ -101,7 +92,7 @@ function refresh() {
   return refreshRequest;
 }
 
-/** 화면에서 쓰는 API 목록 (백엔드가 정해지면 경로와 메서드를 맞춰 추가) */
+/** 화면에서 사용하는 공통 API */
 export const api = {
   login: (credentials) =>
     request("/auth/login", {
@@ -144,5 +135,11 @@ export const api = {
       method: "PATCH",
       headers: { Authorization: `Bearer ${accessToken}` },
       body: { currentPassword, newPassword },
+    }),
+
+  googleSignup: (nickname) =>
+    request("/auth/google/signup", {
+      method: "POST",
+      body: { nickname },
     }),
 };
