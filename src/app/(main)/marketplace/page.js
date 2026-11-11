@@ -11,6 +11,7 @@ import Dropdown from "@/components/dropdown/Dropdown";
 import { useAuth } from "@/contexts/AuthContext";
 import MarketList from "./MarketList";
 import * as styles from "./Marketplace.css.js";
+import { getSaleListings } from "@/lib/api/saleListings.js";
 
 const FILTER_GROUPS = [
   {
@@ -59,6 +60,12 @@ export default function MarketplacePage() {
   const [sort, setSort] = useState("latest");
   const query = { keyword, ...filter, sort };
 
+  // 바텀시트 "N개 포토보기"에 보여 줄 개수
+  const countListings = (draft) =>
+    getSaleListings({ keyword, ...draft, pageSize: 1 }, accessToken).then(
+      (data) => data.totalCount,
+    );
+
   return (
     <Container>
       <main className={styles.page}>
@@ -80,6 +87,8 @@ export default function MarketplacePage() {
               groups={FILTER_GROUPS}
               values={filter}
               onChange={setFilter}
+              mobileSheet
+              getCount={accessToken ? countListings : undefined}
             />
           </div>
           <Dropdown
