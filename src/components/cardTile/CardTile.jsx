@@ -7,6 +7,7 @@ import * as styles from "./CardTile.css.js";
 import MethodText from "../methodText/MethodText.jsx";
 import logoImage from "@/assets/images/logo.svg";
 import soldOutImage from "@/assets/images/soldout.svg";
+import acceptedImage from "@/assets/images/accepted.svg";
 
 const GENRE_LABEL = {
   LANDSCAPE: "풍경",
@@ -24,6 +25,7 @@ export default function CardTile({
   card,
   rows = [],
   soldOut = false,
+  accepted = false,
   badge,
   owned = false,
   href,
@@ -43,12 +45,19 @@ export default function CardTile({
         <img
           src={card.imageUrl}
           alt={card.name}
-          className={clsx(styles.image, soldOut && styles.dimmed)}
+          className={clsx(styles.image, (soldOut || accepted) && styles.dimmed)}
           draggable={owned}
           onContextMenu={owned ? undefined : blockSave}
         />
         {soldOut && (
           <Image src={soldOutImage} alt="SOLD OUT" className={styles.soldOut} />
+        )}
+        {accepted && (
+          <Image
+            src={acceptedImage}
+            alt="ACCEPTED"
+            className={styles.soldOut}
+          />
         )}
         {badge && <div className={styles.badge}>{badge}</div>}
       </div>
