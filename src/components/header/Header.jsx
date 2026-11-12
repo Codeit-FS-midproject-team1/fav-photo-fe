@@ -24,7 +24,6 @@ function LoggedInActions({
     { label: "내 정보", value: "/my-info" },
     { label: "마이 갤러리", value: "/my-gallery" },
     { label: "나의 거래 포토카드", value: "/my-sales" },
-    { label: "로그아웃", value: "logout" },
   ];
 
   return (
