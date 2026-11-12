@@ -41,10 +41,10 @@ export function AuthProvider({ children }) {
 
     async function restoreSession() {
       try {
-        const { accessToken: newAccessToken } = await api.refresh();
+        const session = await api.refresh();
 
-        if (!cancelled) {
-          setAccessToken((prev) => prev ?? newAccessToken);
+        if (!cancelled && session) {
+          setAccessToken((prev) => prev ?? session.accessToken);
         }
       } catch {
         // 기존 동작 유지
