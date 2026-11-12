@@ -28,6 +28,9 @@ export const image = style({
   maxWidth: "100%",
   maxHeight: "65vh",
   objectFit: "contain",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+  WebkitTouchCallout: "none",
   "@media": {
     [media.mobile]: { maxHeight: "50vh" }, // 설명까지 한 화면에 들어오게
   },
