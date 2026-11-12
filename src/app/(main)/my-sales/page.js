@@ -48,9 +48,6 @@ const STATUS_OPTIONS = [
 
 // 이미지 위에 칩을 띄우는 상태
 const CHIP_STATUSES = ["ON_SALE", "OFFER_PENDING"];
-// 아직 내 소유인 상태 (판매·제안에 걸려 있을 뿐). 품절·교환 완료는 이미 남의 카드라
-// 우클릭 저장을 막는다
-const OWNED_STATUSES = ["ON_SALE", "OFFER_PENDING"];
 
 const FILTER_GROUPS = [
   { key: "method", label: "제작방식", options: METHOD_OPTIONS },
@@ -144,12 +141,10 @@ export default function MySalesPage() {
       <>
         <div className={styles.grid}>
           {cards.map((card) => {
-            const isOwned = OWNED_STATUSES.includes(card.status);
             return (
               <CardTile
                 key={card.key}
                 card={card}
-                owned={isOwned}
                 soldOut={card.status === "SOLD_OUT"}
                 accepted={card.status === "EXCHANGED"}
                 badge={

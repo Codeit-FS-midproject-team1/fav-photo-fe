@@ -201,7 +201,6 @@ export default function MyGalleryPage() {
             <CardTile
               key={card.id}
               card={card}
-              owned
               rows={[
                 { label: "가격", value: `${card.price} P` },
                 { label: "수량", value: card.quantity },
