@@ -52,10 +52,7 @@ function SignupContent() {
     const result = await submit(() =>
       api.signup({ nickname, email, password }),
     );
-    if (result.ok) {
-      sessionStorage.setItem("signupRewardEmail", email.trim().toLowerCase());
-      router.replace("/login");
-    }
+    if (result.ok) setSuccessDestination("/login");
   }
 
   function finishSignup() {
