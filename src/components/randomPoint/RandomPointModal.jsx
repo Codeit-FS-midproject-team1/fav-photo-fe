@@ -26,7 +26,9 @@ export default function RandomPointModal({
       <section className={styles.content}>
         <p className={styles.eyebrow}>랜덤 포인트</p>
 
-        <h2 className={styles.title}>포인트 상자 뽑기</h2>
+        <h2 className={styles.title}>
+          <span className={styles.titleAccent}>포인트</span> 상자 뽑기
+        </h2>
 
         <p className={styles.description}>
           하루 최대 3번, 한 번에 5~15P를 받을 수 있어요!

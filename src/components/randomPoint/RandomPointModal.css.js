@@ -48,6 +48,10 @@ export const title = style({
   },
 });
 
+export const titleAccent = style({
+  color: "#EFFF00",
+});
+
 export const description = style({
   fontSize: 16,
   lineHeight: 1.6,
