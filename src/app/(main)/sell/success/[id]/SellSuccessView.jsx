@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -128,12 +127,12 @@ export default function SellSuccessView() {
       } 판매 등록이 완료되었습니다.`}
       actions={[
         {
-          text: "판매글 상세 보기",
-          href: `/marketplace/${encodeURIComponent(id)}`,
+          text: "나의 판매 포토카드에서 확인하기",
+          href: "/my-sales",
         },
         {
-          text: "마이갤러리로 이동",
-          href: "/my-gallery",
+          text: "마켓플레이스로 돌아가기",
+          href: "/marketplace",
         },
       ]}
     />
