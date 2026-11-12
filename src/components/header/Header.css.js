@@ -29,7 +29,6 @@ export const inner = style({
   alignItems: "center",
   justifyContent: "space-between",
   width: "100%",
-  maxWidth: 1640,
   margin: "0 auto",
   padding: "28px max(32px, calc((100vw - 1480px) / 2))",
 
