@@ -9,6 +9,7 @@ const toTileCard = (item) => ({
   key: `${item.type}-${item.id}`, // 판매글 id와 제안 id가 겹칠 수 있어 type을 붙인다
   type: item.type,
   status: item.status,
+  saleListingId: item.saleListingId, // 눌렀을 때 이동할 판매글
   id: item.photoCard.id,
   imageUrl: item.photoCard.imageUrl,
   name: item.photoCard.name,

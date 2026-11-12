@@ -12,7 +12,6 @@ import Filters from "@/components/filters/Filters.jsx";
 import Dropdown from "@/components/dropdown/Dropdown.jsx";
 import CardTile from "@/components/cardTile/CardTile.jsx";
 import Pagination from "@/components/pagination/Pagination.jsx";
-import CardImageModal from "@/components/cardImageModal/CardImageModal.jsx";
 
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import useMySales from "@/hooks/useMySales.js";
@@ -50,7 +49,7 @@ const STATUS_OPTIONS = [
 // 이미지 위에 칩을 띄우는 상태
 const CHIP_STATUSES = ["ON_SALE", "OFFER_PENDING"];
 // 아직 내 소유인 상태 (판매·제안에 걸려 있을 뿐). 품절·교환 완료는 이미 남의 카드라
-// 우클릭 저장을 막고 크게 보기도 열지 않는다
+// 우클릭 저장을 막는다
 const OWNED_STATUSES = ["ON_SALE", "OFFER_PENDING"];
 
 const FILTER_GROUPS = [
@@ -70,7 +69,6 @@ export default function MySalesPage() {
   const [filter, setFilter] = useState({}); // { method } / { genre } / { status } 중 하나
   const [sort, setSort] = useState("LATEST");
   const [page, setPage] = useState(1);
-  const [viewingCard, setViewingCard] = useState(null);
 
   // 처음 열릴 때 화면 크기로 한 번 정한다
   const [pageSize] = useState(() =>
@@ -163,7 +161,7 @@ export default function MySalesPage() {
                   { label: "가격", value: `${card.price} P` },
                   { label: "잔여", value: card.quantity },
                 ]}
-                onClick={isOwned ? () => setViewingCard(card) : undefined}
+                href={`/marketplace/${card.saleListingId}`}
               />
             );
           })}
@@ -234,12 +232,6 @@ export default function MySalesPage() {
         </div>
         {renderList()}
       </Container>
-      {viewingCard && (
-        <CardImageModal
-          card={viewingCard}
-          onClose={() => setViewingCard(null)}
-        />
-      )}
     </main>
   );
 }
