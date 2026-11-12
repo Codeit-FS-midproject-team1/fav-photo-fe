@@ -79,6 +79,8 @@
 
 ## 파일 구조
 
+### Frontend
+
 ```text
 src/
 ├── app/
@@ -100,6 +102,29 @@ src/
 ├── lib/
 └── styles/
 ```
+
+
+### Backend
+
+```text
+src/
+├── constants/
+├── controllers/
+├── middlewares/
+├── prisma/
+├── repositories/
+├── routes/
+├── schemas/
+├── services/
+├── swagger/
+├── utils/
+├── app.js
+├── container.js
+└── server.js
+```
+
+- [Frontend 저장소](https://github.com/Codeit-FS-midproject-team1/fav-photo-fe)
+- [Backend 저장소](https://github.com/Codeit-FS-midproject-team1/fav-photo-be)
 
 ---
 
