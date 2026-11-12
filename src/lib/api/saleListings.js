@@ -64,7 +64,7 @@ export function updateSaleListing(id, formValues, accessToken) {
     method: "PATCH",
     headers: getAuthHeaders(accessToken),
     body: {
-      remainingQuantity: quantity,
+      quantity: quantity,
       price,
       exchangeMethod,
       exchangeGenre,

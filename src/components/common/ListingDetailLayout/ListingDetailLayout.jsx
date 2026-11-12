@@ -133,8 +133,15 @@ export default function ListingDetailLayout({
                 className={styles.mediaImage}
                 role="img"
                 aria-label={`${cardName} 이미지`}
+                draggable={false}
+                onContextMenu={(event) => event.preventDefault()}
+                onDragStart={(event) => event.preventDefault()}
                 style={{
                   backgroundImage: `url(${JSON.stringify(imageUrl)})`,
+                  userSelect: "none",
+                  WebkitUserSelect: "none",
+                  WebkitUserDrag: "none",
+                  WebkitTouchCallout: "none",
                 }}
               />
             ) : (
