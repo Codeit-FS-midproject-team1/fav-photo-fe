@@ -75,6 +75,12 @@ export default function ListingDetailLayout({
   const photoCard =
     listing?.photoCard ?? listing?.photo_card ?? listing?.card ?? {};
 
+  // 포토카드 원본 설명
+  const cardDescription =
+    typeof photoCard.description === "string"
+      ? photoCard.description.trim()
+      : "";
+
   const cardName = displayText(
     photoCard.name ?? listing?.cardName ?? listing?.name,
     "포토카드",
@@ -162,7 +168,10 @@ export default function ListingDetailLayout({
               <span className={styles.tag}>{genre}</span>
             </div>
           </header>
-
+          {/* 포토카드 설명 */}
+          {cardDescription && (
+            <p className={styles.cardDescription}>{cardDescription}</p>
+          )}
           {/* 판매자 및 가격 정보 */}
           <dl className={styles.infoList}>
             <div className={styles.infoRow}>

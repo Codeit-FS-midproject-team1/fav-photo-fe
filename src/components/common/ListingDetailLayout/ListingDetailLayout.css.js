@@ -85,7 +85,7 @@ export const header = style({
   display: "flex",
   flexDirection: "column",
   gap: "16px",
-  marginBottom: "32px",
+  marginBottom: "15px",
 });
 
 export const title = style({
@@ -264,4 +264,13 @@ export const extraContent = style({
       marginTop: "40px",
     },
   },
+});
+// 포토카드 설명
+export const cardDescription = style({
+  margin: "12px 0 20px",
+  color: vars.color.gray300,
+  fontSize: "14px",
+  lineHeight: 1.6,
+  whiteSpace: "pre-wrap",
+  overflowWrap: "anywhere",
 });
