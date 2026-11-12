@@ -1,9 +1,10 @@
 // signup/page.js
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthForm from "@/components/authForm/AuthForm.jsx";
+import ConfirmModal from "@/components/confirmModal/ConfirmModal.jsx";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import useAuthSubmit from "@/hooks/useAuthSubmit";
 import { api } from "@/lib/api";
@@ -20,6 +21,7 @@ function SignupContent() {
   const router = useRouter();
   const isGoogleSignup = useSearchParams().get("mode") === "google";
   const { setAccessToken } = useAuth();
+  const [successDestination, setSuccessDestination] = useState(null);
   const {
     submit,
     isSubmitting,
@@ -30,6 +32,8 @@ function SignupContent() {
   } = useAuthSubmit();
 
   async function handleSignup({ nickname, email, password }) {
+    if (successDestination) return;
+
     if (isGoogleSignup) {
       const result = await submit(() => api.googleSignup(nickname));
       if (!result.ok) return;
@@ -41,27 +45,40 @@ function SignupContent() {
       }
 
       setAccessToken(accessToken);
-      router.replace("/");
+      setSuccessDestination("/");
       return;
     }
 
     const result = await submit(() =>
       api.signup({ nickname, email, password }),
     );
-    if (result.ok) router.replace("/login");
+    if (result.ok) setSuccessDestination("/login");
+  }
+
+  function finishSignup() {
+    router.replace(successDestination);
   }
 
   const mode = isGoogleSignup ? "googleSignup" : "signup";
 
   return (
-    <AuthForm
-      key={mode}
-      mode={mode}
-      onSubmit={handleSignup}
-      isSubmitting={isSubmitting}
-      formError={formError}
-      fieldErrors={fieldErrors}
-      onFieldChange={clearFieldError}
-    />
+    <>
+      <AuthForm
+        key={mode}
+        mode={mode}
+        onSubmit={handleSignup}
+        isSubmitting={isSubmitting || Boolean(successDestination)}
+        formError={formError}
+        fieldErrors={fieldErrors}
+        onFieldChange={clearFieldError}
+      />
+      <ConfirmModal
+        open={Boolean(successDestination)}
+        title="회원가입을 축하합니다!"
+        message="10포인트가 지급되었습니다"
+        onConfirm={finishSignup}
+        onClose={finishSignup}
+      />
+    </>
   );
 }
