@@ -93,7 +93,7 @@ function MobileHeader({
           <Icon name="menu" size={18} />
         </button>
 
-        <Link href="/" className={styles.logo}>
+        <Link href={isLoggedIn ? "/marketplace" : "/"} className={styles.logo}>
           <Image
             src={logoImage}
             alt="최애의 포토 로고"
@@ -102,7 +102,7 @@ function MobileHeader({
           />
         </Link>
 
-        {isAuthLoading ? null : isLoggedIn ? (
+        {!isAuthLoading && isLoggedIn ? (
           <div className={styles.mobileActions}>
             <button
               type="button"
@@ -123,24 +123,53 @@ function MobileHeader({
           </Link>
         )}
       </div>
-      {menuOpen && isLoggedIn && !isAuthLoading && (
+      {menuOpen && (
         <nav className={styles.mobileMenu}>
-          <span className={`${styles.points} ${styles.mobileMenuItem}`}>
-            {(points ?? 0).toLocaleString()} P
-          </span>
-          <span className={`${styles.mobileUsername} ${styles.mobileMenuItem}`}>
-            {username}
-          </span>
-          <button
-            className={`${styles.logoutButton} ${styles.mobileMenuItem}`}
-            type="button"
-            onClick={() => {
-              setMenuOpen(false);
-              onLogout?.();
-            }}
-          >
-            로그아웃
-          </button>
+          {!isAuthLoading && isLoggedIn ? (
+            <>
+              <span className={`${styles.points} ${styles.mobileMenuItem}`}>
+                {(points ?? 0).toLocaleString()} P
+              </span>
+              <span
+                className={`${styles.mobileUsername} ${styles.mobileMenuItem}`}
+              >
+                {username}
+              </span>
+              {[
+                { href: "/my-info", label: "내 정보" },
+                { href: "/my-gallery", label: "마이갤러리" },
+                { href: "/my-sales", label: "나의 거래 포토카드" },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={styles.mobileMenuItem}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              ))}
+              <button
+                className={`${styles.logoutButton} ${styles.mobileMenuItem}`}
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onLogout?.();
+                }}
+              >
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className={styles.mobileMenuItem}>
+                로그인
+              </Link>
+              <Link href="/signup" className={styles.mobileMenuItem}>
+                회원가입
+              </Link>
+            </>
+          )}
         </nav>
       )}
     </div>
@@ -178,7 +207,7 @@ export default function Header({
     <header className={styles.header}>
       <div className={styles.desktopHeader}>
         <div className={styles.inner}>
-          <Link href="/">
+          <Link href={isLoggedIn ? "/marketplace" : "/"}>
             <Image
               src={logoImage}
               alt="최애의 포토 로고"
@@ -187,7 +216,7 @@ export default function Header({
             />
           </Link>
 
-          {isAuthLoading ? null : isLoggedIn ? (
+          {!isAuthLoading && isLoggedIn ? (
             <LoggedInActions
               points={points}
               username={username}
